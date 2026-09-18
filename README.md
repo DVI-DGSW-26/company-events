@@ -63,72 +63,83 @@
 
 ---
 
-## 인터넷 배포 (Vercel + 회사 Google 계정 로그인)
+## 인터넷 배포 (Vercel + 사내 통합 로그인)
 
-사내망 밖에서도 쓰려고 Vercel 에 배포합니다. **로그인하지 않으면 사진 한 장도 열리지 않습니다.**
-화면만 가리는 게 아니라 `middleware.js` 가 `/photos`, `/downloads`, `/articles` 를 포함한
-모든 경로를 검사하므로, 파일 주소를 직접 쳐도 막힙니다.
+사내망 밖에서도 쓰려고 Vercel 에 배포하고, **다른 사내 서비스와 같은 계정**으로 로그인하게 했습니다.
+회사 Keycloak(`api.dvi-ind.com/dauth`, realm `dvi`)을 그대로 씁니다.
 
-### 1. Google OAuth 키 발급 (최초 1회)
+**로그인하지 않으면 사진 한 장도 열리지 않습니다.** 화면만 가리는 게 아니라
+`middleware.js` 가 `/photos`, `/downloads`, `/articles`, `/assets/data.js` 를 포함한
+모든 경로를 검사하므로 파일 주소를 직접 입력해도 401 로 막힙니다.
 
-[Google Cloud Console](https://console.cloud.google.com/apis/credentials) 에 **회사 계정으로** 접속합니다.
-
-1. 프로젝트를 하나 만듭니다 (이름 예: `행사 아카이브`)
-2. **OAuth 동의 화면** → User Type **내부(Internal)** 선택
-   → 앱 이름 `행사 아카이브`, 지원 이메일은 담당자 주소
-   *내부로 만들면 `dvi-ind.com` 계정만 쓸 수 있어 가장 안전합니다*
-3. **사용자 인증 정보 → 사용자 인증 정보 만들기 → OAuth 클라이언트 ID**
-   - 애플리케이션 유형: **웹 애플리케이션**
-   - 승인된 리디렉션 URI 에 아래를 **정확히** 넣습니다
-
-     ```
-     https://<배포주소>.vercel.app/api/auth/callback
-     ```
-
-4. 만들어진 **클라이언트 ID** 와 **클라이언트 보안 비밀번호** 를 복사합니다
-
-### 2. Vercel 환경변수 넣기
-
-Vercel 프로젝트 → **Settings → Environment Variables** 에서 4개를 추가합니다.
-Production, Preview, Development 에 모두 체크하세요.
-
-| 이름 | 값 |
+| 항목 | 값 |
 |---|---|
-| `GOOGLE_CLIENT_ID` | 1단계에서 받은 클라이언트 ID |
-| `GOOGLE_CLIENT_SECRET` | 1단계에서 받은 보안 비밀번호 |
-| `ALLOWED_DOMAIN` | `dvi-ind.com` |
-| `SESSION_SECRET` | 아무도 모르는 긴 임의 문자열 |
+| 방식 | OpenID Connect · Authorization Code + PKCE(S256) |
+| 엔드포인트 | 코드에 박지 않고 `.well-known/openid-configuration` 에서 읽음 |
+| 검증 | `iss` · `aud` · `nonce` · `exp` 확인 (선택적으로 이메일 도메인까지) |
+| 세션 | HMAC-SHA256 서명 쿠키 12시간 · HttpOnly · Secure · SameSite=Lax |
 
-`SESSION_SECRET` 은 아래 명령으로 만들 수 있습니다.
+### 1. Keycloak 클라이언트 등록 (백엔드 담당)
+
+realm `dvi` 에 이 사이트용 클라이언트를 하나 만듭니다.
+
+- Client ID: `company-events` (원하는 이름으로 해도 됩니다)
+- Standard flow 사용, PKCE `S256`
+- **Valid redirect URIs** 에 아래를 정확히 등록 — 이게 빠지면 로그인이 막힙니다
+
+  ```
+  https://company-events-theta.vercel.app/api/auth/callback
+  ```
+
+- Confidential(비공개) 클라이언트면 Client Secret 을, Public 이면 비밀번호 없이 PKCE 만 씁니다
+
+### 2. Vercel 환경변수
+
+Vercel 프로젝트 → **Settings → Environment Variables**
+(Production / Preview / Development 모두 체크)
+
+| 이름 | 값 | 필수 |
+|---|---|---|
+| `OIDC_ISSUER` | `https://api.dvi-ind.com/dauth/realms/dvi` | 필수 |
+| `OIDC_CLIENT_ID` | 1단계에서 등록한 Client ID | 필수 |
+| `OIDC_CLIENT_SECRET` | Confidential 클라이언트일 때만 | 선택 |
+| `SESSION_SECRET` | 임의의 긴 문자열 (아래 명령으로 생성) | 필수 |
+| `ALLOWED_DOMAIN` | `dvi-ind.com` — 비워 두면 인증된 사내 계정 전부 허용 | 선택 |
+| `OIDC_SCOPE` | 기본값 `openid profile email` | 선택 |
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
 ```
 
-> 이 4개는 **절대 저장소에 넣지 마세요.** 이 저장소는 공개 상태입니다.
-> 값을 바꾸면 Vercel 에서 **Redeploy** 를 해야 반영됩니다.
+> 이 값들은 **저장소에 넣지 마세요.** 이 저장소는 공개 상태입니다.
+> 값을 바꾼 뒤에는 Vercel 에서 **Redeploy** 를 해야 반영됩니다.
 
 ### 3. 배포
 
-환경변수를 넣은 뒤 Vercel 에서 **Redeploy** 를 누르면 끝입니다.
+환경변수를 넣고 **Redeploy** 하면 끝입니다.
 빌드는 하지 않고 저장소에 들어 있는 사진·ZIP 을 그대로 내보냅니다 (`vercel.json`).
 
 ### 동작 확인
 
-1. 시크릿 창으로 배포 주소를 엽니다 → 로그인 화면이 떠야 합니다
-2. 로그인 없이 `https://<배포주소>/photos/e01/001_엑셀01_시상식_단체사진.jpg` 를 직접 열어 봅니다
+1. 시크릿 창으로 배포 주소 접속 → 로그인 화면이 떠야 합니다
+2. 로그인 없이 사진 주소를 직접 열어 봅니다
    → **401 로그인이 필요합니다** 가 나와야 정상입니다
-3. 회사 Google 계정으로 로그인 → 목록이 뜨고 오른쪽 위에 계정이 표시됩니다
-4. 개인 Gmail 로 로그인 시도 → `dvi-ind.com 계정으로만 접속할 수 있습니다` 가 나와야 정상입니다
+3. `사내 계정으로 로그인` → Keycloak 화면 → 돌아오면 목록이 뜨고 우측 상단에 계정 표시
+4. 다른 사내 서비스에 이미 로그인돼 있으면 Keycloak 화면 없이 바로 들어옵니다
 
 ### 자주 막히는 곳
 
 | 증상 | 원인 |
 |---|---|
-| `redirect_uri_mismatch` | 3-1 의 리디렉션 URI 가 실제 배포 주소와 다름. 끝의 `/api/auth/callback` 까지 정확히 일치해야 함 |
+| `Invalid redirect_uri` | 1단계의 Valid redirect URIs 에 콜백 주소가 없음. 끝의 `/api/auth/callback` 까지 정확히 일치해야 함 |
+| `설정이 필요합니다` 화면 | 환경변수 누락. 화면에 빠진 변수 이름이 표시됨 |
+| 토큰 발급 거절 (502) | Confidential 클라이언트인데 `OIDC_CLIENT_SECRET` 이 없거나 값이 틀림 |
 | 로그인 후에도 계속 로그인 화면 | `SESSION_SECRET` 미설정 또는 Redeploy 안 함 |
-| 화면은 뜨는데 사진이 전부 깨짐 | `npm run build` 후 `photos/` 등을 커밋·푸시하지 않음 |
-| 배포는 됐는데 빈 화면 | Vercel 프로젝트 설정에서 Output Directory 를 `.` 로 지정 |
+| 로그인은 되는데 403 | `ALLOWED_DOMAIN` 과 계정 이메일 도메인이 다름. 사내 계정 전부 허용하려면 이 변수를 지우세요 |
+| 화면은 뜨는데 사진이 깨짐 | `npm run build` 후 `photos/` 등을 커밋·푸시하지 않음 |
+
+> 로그아웃은 **이 사이트의 세션만** 지웁니다. 같은 계정으로 열어 둔 다른 사내 서비스는
+> 그대로 유지됩니다. SSO 전체를 끊고 싶으면 Keycloak 의 `end_session_endpoint` 로 보내면 됩니다.
 
 ---
 
@@ -223,7 +234,7 @@ npm run build      # 사진 변환 · ZIP 묶기 · 목록 갱신
 | `downloads/` | 행사별 전체 ZIP | 아니오 — 빌드가 생성 |
 | `assets/data.js` | 화면이 읽는 목록 데이터 | 아니오 — 빌드가 생성 |
 | `tools/` | 빌드 스크립트 | 예 |
-| `middleware.js`, `api/auth/`, `lib/`, `login.html` | 배포본 로그인 | 예 |
+| `middleware.js`, `api/auth/`, `lib/`, `login.html` | 배포본 사내 통합 로그인(Keycloak) | 예 |
 | `vercel.json` | Vercel 배포 설정 | 예 |
 
 `source/` (촬영 원본 547MB) 만 `.gitignore` 로 빼고, 나머지 생성 폴더는 **일부러 저장소에 올립니다**.
