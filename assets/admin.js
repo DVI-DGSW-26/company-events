@@ -62,14 +62,17 @@ function showBootError(e) {
     box.append(el('p', null,
       '행사 등록·수정은 저장소에 기록하는 방식이라 접근 토큰이 필요합니다. ' +
       'Vercel 환경변수에 아래 값을 넣고 Redeploy 하면 바로 됩니다.'));
+    const WHAT = {
+      GH_REPO: 'GH_REPO              DVI-DGSW-26/company-events',
+      GH_APP_ID: 'GH_APP_ID            GitHub App 설정 화면의 App ID (숫자)',
+      GH_APP_PRIVATE_KEY: 'GH_APP_PRIVATE_KEY   App 에서 내려받은 .pem 내용 전체',
+    };
     const pre = el('pre');
-    pre.textContent = missing[1].split(/,\s*/).map((k) => (
-      k === 'GH_REPO' ? 'GH_REPO    DVI-DGSW-26/company-events'
-                      : 'GH_TOKEN   GitHub 저장소 쓰기 토큰 (Contents: Read and write)'
-    )).join('\n');
+    pre.textContent = missing[1].split(/,\s*/).map((k) => WHAT[k] ?? k).join('\n');
     box.append(pre);
     box.append(el('p', 'fine',
-      '토큰 만드는 곳: GitHub → Settings → Developer settings → Fine-grained personal access tokens'));
+      'GitHub App 을 쓰는 이유는 개인 토큰이면 그 사람이 조직에서 빠질 때 저장 기능이 멈추기 때문입니다. ' +
+      '만드는 곳: 조직 Settings → Developer settings → GitHub Apps. 자세한 절차는 README 를 보세요.'));
   } else {
     box.append(el('p', null, e.message));
     box.append(el('p', 'fine', '잠시 뒤 새로 고쳐 보고, 계속 같으면 담당자에게 이 메시지를 알려주세요.'));

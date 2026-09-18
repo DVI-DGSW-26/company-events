@@ -106,8 +106,10 @@ Vercel 프로젝트 → **Settings → Environment Variables**
 | `OIDC_CLIENT_SECRET` | Confidential 클라이언트일 때만 | 선택 |
 | `SESSION_SECRET` | 임의의 긴 문자열 (아래 명령으로 생성) | 필수 |
 | `REQUIRED_REALM_ROLE` | 기본값 `employee` — 재직자 판별에 쓰는 realm 역할 | 선택 |
-| `GH_TOKEN` | 저장소에 쓸 수 있는 GitHub 토큰 (contents:write) | 등록·수정 기능에 필요 |
 | `GH_REPO` | `DVI-DGSW-26/company-events` | 등록·수정 기능에 필요 |
+| `GH_APP_ID` | GitHub App 의 App ID (숫자) | 등록·수정 기능에 필요 |
+| `GH_APP_PRIVATE_KEY` | App 에서 내려받은 `.pem` 내용 전체 | 등록·수정 기능에 필요 |
+| `GH_APP_INSTALLATION_ID` | 비워 두면 저장소를 보고 알아서 찾습니다 | 선택 |
 | `GH_BRANCH` | 기본값 `main` | 선택 |
 | `OIDC_SCOPE` | 기본값 `openid profile email` | 선택 |
 
@@ -197,14 +199,77 @@ SSO 에 로그인하기 때문입니다. 대신 Keycloak realm 역할 `employee`
 > **올린 사진은 긴 변 1920px 로 줄여 저장합니다.** 브라우저에서 줄여 보내기 때문에
 > 촬영 원본은 올라가지 않습니다. 원본은 지금처럼 공유드라이브에 보관하세요.
 
-### GitHub 토큰 만들기
+### GitHub App 만들기 (최초 1회)
 
-등록·수정 기능은 저장소에 커밋해야 해서 토큰이 필요합니다.
+등록·수정 기능은 저장소에 커밋해야 하므로 쓰기 권한이 필요합니다.
+**개인 토큰은 쓰지 않습니다.** 발급한 사람이 조직에서 빠지는 순간 저장 기능이 멈추고,
+어제까지 되던 게 갑자기 안 되는 종류의 고장이라 원인을 찾기 어렵습니다.
+대신 **조직이 소유하는 GitHub App** 을 씁니다. 담당자가 바뀌어도 그대로 살아 있습니다.
 
-1. GitHub → Settings → Developer settings → **Fine-grained personal access tokens**
-2. Repository access: `DVI-DGSW-26/company-events` 만 선택
-3. Permissions → Repository permissions → **Contents: Read and write**
-4. 만들어진 토큰을 Vercel 환경변수 `GH_TOKEN` 에 넣고 Redeploy
+**1. App 만들기** — 조직 소유자 권한이 필요합니다
+
+```
+https://github.com/organizations/DVI-DGSW-26/settings/apps/new
+```
+
+| 항목 | 값 |
+|---|---|
+| GitHub App name | `디비전 행사 아카이브` (아무 이름) |
+| Homepage URL | `https://company-events-theta.vercel.app` |
+| Webhook | **Active 체크를 끕니다** (쓰지 않습니다) |
+| Repository permissions → **Contents** | **Read and write** |
+| Where can this GitHub App be installed? | `Only on this account` |
+
+`Contents` 하나만 바꾸면 됩니다. 나머지는 손대지 않습니다.
+
+**2. App ID 확인** — 만들어진 설정 화면 위쪽의 `App ID` (숫자) 를 적어 둡니다
+
+**3. 비밀키 내려받기** — 같은 화면 아래 `Private keys` → **Generate a private key**
+→ `.pem` 파일이 내려옵니다. 메모장으로 열어 **`-----BEGIN` 줄부터 `-----END` 줄까지 전체** 복사합니다
+
+**4. 저장소에 설치** — 왼쪽 `Install App` → `Install`
+→ `Only select repositories` → **`company-events`** 선택
+
+**5. Vercel 환경변수 3개**
+
+```
+GH_REPO              DVI-DGSW-26/company-events
+GH_APP_ID            2단계의 숫자
+GH_APP_PRIVATE_KEY   3단계에서 복사한 .pem 전체 (여러 줄 그대로 붙여넣기)
+```
+
+넣고 **Redeploy** 하면 됩니다. 설치 번호는 저장소를 보고 알아서 찾으므로 넣지 않아도 됩니다.
+
+> 봇 계정 토큰을 쓰는 방식으로 되돌리려면 위 3개 대신 `GH_TOKEN` 과 `GH_REPO` 만 넣으면
+> 코드 수정 없이 그대로 동작합니다. 다만 그 계정 관리를 계속 해야 합니다.
+
+### 잘 들어갔는지 확인
+
+사이트에서 **행사 관리** → 아무 행사나 열어봅니다.
+
+| 증상 | 원인 |
+|---|---|
+| 행사 목록과 사진이 나옴 | 정상입니다 |
+| `설정이 한 단계 남았습니다` | 환경변수 누락 또는 Redeploy 안 함. 화면에 빠진 변수 이름이 나옵니다 |
+| `GitHub App 이 … 설치되지 않았습니다` | 4번 설치 단계를 빠뜨림 |
+| `GitHub App 토큰을 받지 못했습니다 (401)` | `GH_APP_ID` 가 틀렸거나 비밀키가 중간에 잘림 |
+| `GitHub 요청 실패 (403)` | App 권한에 `Contents: Read and write` 가 안 걸림 |
+| `형식을 알 수 없습니다` | `.pem` 을 `BEGIN`/`END` 줄까지 통째로 넣지 않음 |
+
+---
+
+## 인수인계 전에 해야 할 것
+
+지금 **Vercel 프로젝트가 개인 계정 아래**에 있습니다 (`leeyujin0527s-projects`).
+담당자가 바뀌거나 퇴사하기 전에 반드시 회사 소유로 옮겨야 합니다.
+
+- Vercel 에 회사 팀(Team) 을 만들고 프로젝트를 이전합니다
+  (프로젝트 Settings → 맨 아래 **Transfer Project**)
+- 이전하면 배포 주소가 바뀔 수 있습니다. 바뀌면 Keycloak 클라이언트의
+  **Valid redirect URIs** 를 새 주소의 `/api/auth/callback` 으로 고쳐야 합니다
+- 환경변수 6개는 새 프로젝트에 다시 넣어야 합니다
+
+저장소(`DVI-DGSW-26`)와 GitHub App 은 이미 조직 소유라 그대로 두면 됩니다.
 
 ---
 
