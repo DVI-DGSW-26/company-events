@@ -38,8 +38,41 @@ async function boot() {
     state.doc = s.data;
     $('who').textContent = s.user?.name ? `${s.user.name} 님` : '';
     renderPicks();
+
+    // 목록 화면의 '수정' 은 /admin.html#행사ID 로 들어온다
+    const wanted = location.hash.slice(1);
+    if (wanted && state.doc.events.some((e) => e.id === wanted)) await open(wanted);
   } catch (e) {
-    $('blank').innerHTML = `<p style="color:#B4231C">${e.message}</p>`;
+    showBootError(e);
+  }
+}
+
+/** 시작하지 못한 이유를 사람이 조치할 수 있는 형태로 보여준다 */
+function showBootError(e) {
+  $('newEvent').disabled = true;          // 저장할 수 없는 상태에서 입력하게 두지 않는다
+  const box = $('blank');
+  box.classList.add('edit--error');
+  box.replaceChildren();
+
+  const missing = /환경변수가 설정되지 않았습니다:\s*(.+)$/.exec(e.message);
+  const h = el('h2', null, missing ? '설정이 한 단계 남았습니다' : '행사 자료를 불러오지 못했습니다');
+  box.append(h);
+
+  if (missing) {
+    box.append(el('p', null,
+      '행사 등록·수정은 저장소에 기록하는 방식이라 접근 토큰이 필요합니다. ' +
+      'Vercel 환경변수에 아래 값을 넣고 Redeploy 하면 바로 됩니다.'));
+    const pre = el('pre');
+    pre.textContent = missing[1].split(/,\s*/).map((k) => (
+      k === 'GH_REPO' ? 'GH_REPO    DVI-DGSW-26/company-events'
+                      : 'GH_TOKEN   GitHub 저장소 쓰기 토큰 (Contents: Read and write)'
+    )).join('\n');
+    box.append(pre);
+    box.append(el('p', 'fine',
+      '토큰 만드는 곳: GitHub → Settings → Developer settings → Fine-grained personal access tokens'));
+  } else {
+    box.append(el('p', null, e.message));
+    box.append(el('p', 'fine', '잠시 뒤 새로 고쳐 보고, 계속 같으면 담당자에게 이 메시지를 알려주세요.'));
   }
 }
 

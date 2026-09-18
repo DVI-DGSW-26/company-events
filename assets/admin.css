@@ -43,6 +43,7 @@ a{color:inherit}
   background:var(--mark);color:#fff;border-radius:var(--r);font-weight:600;
 }
 .newbtn:hover{background:var(--mark-deep)}
+.newbtn[disabled]{opacity:.45;pointer-events:none}
 .picks{list-style:none;margin:0;padding:0;background:#fff;border:var(--edge);border-radius:var(--r);overflow:hidden}
 .picks button{
   display:block;width:100%;text-align:left;padding:.55rem .75rem;
@@ -60,6 +61,16 @@ a{color:inherit}
   background:#fff;border:var(--edge);border-radius:var(--r);padding:1.25rem 1.375rem 1.5rem;
 }
 .edit--blank{display:grid;place-items:center;min-height:16rem;color:var(--alu-500)}
+.edit--error{display:block;place-items:initial;color:var(--alu-900);text-align:left}
+.edit--error h2{margin:0 0 .625rem;font-size:1.0625rem;font-weight:600}
+.edit--error p{margin:0 0 .875rem;color:var(--alu-700);max-width:52ch;line-height:1.75}
+.edit--error p.fine{font-size:.75rem;color:var(--alu-500)}
+.edit--error pre{
+  margin:0 0 .875rem;padding:.75rem .875rem;
+  background:var(--alu-50);border-left:2px solid var(--mark);border-radius:var(--r);
+  font-family:ui-monospace,Consolas,monospace;font-size:.75rem;line-height:1.9;
+  white-space:pre-wrap;overflow-x:auto;
+}
 .edit[hidden],.edit--blank[hidden]{display:none}
 .edit__head{display:flex;align-items:baseline;gap:.625rem;margin-bottom:1.125rem}
 .edit__head h1{margin:0;font-size:1.25rem;font-weight:600;letter-spacing:-.02em}

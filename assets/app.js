@@ -109,9 +109,34 @@ function renderList() {
       cell('r-host', e.host ?? ''),
       cellNode(materials(e)),
       cellNode(rowDownload(e)),
+      manageCell(e),
     );
     tb.append(tr);
   });
+}
+
+/* 등록·수정·삭제 — 권한이 있을 때만 그린다 */
+let isAdmin = false;
+
+function manageCell(e) {
+  const td = el('td', 't-admin');
+  if (!isAdmin) return td;
+
+  const box = el('div', 'manage');
+
+  const edit = el('a', null, '수정');
+  edit.href = `/admin.html#${e.id}`;
+  edit.title = `${e.title} 수정`;
+  edit.addEventListener('click', (ev) => ev.stopPropagation());
+
+  const del = el('button', null, '삭제');
+  del.type = 'button';
+  del.title = `${e.title} 삭제`;
+  del.addEventListener('click', (ev) => { ev.stopPropagation(); confirmDelete(e); });
+
+  box.append(edit, del);
+  td.append(box);
+  return td;
 }
 
 const cell = (cls, text) => { const td = el('td'); td.append(el('span', cls, text)); return td; };
@@ -483,6 +508,7 @@ $('pvClose').addEventListener('click', () => { $('preview').hidden = true; });
 
 /* 키보드 */
 document.addEventListener('keydown', (ev) => {
+  if (!sheet.hidden) { if (ev.key === 'Escape') closeSheet(); return; }
   if (state.lb >= 0) {
     if (ev.key === 'Escape') closeLightbox();
     else if (ev.key === 'ArrowLeft') stepLb(-1);
@@ -509,10 +535,75 @@ if (!LOCAL_FILE) {
       // 개인 메일로 SSO 를 쓰는 계정은 이메일이 비어 있을 수 있다
       $('accountWho').textContent = [me.name, me.email].filter(Boolean).join(' · ') || '사내 계정';
       $('account').hidden = false;
-      if (me.admin) $('adminLink').hidden = false;
+      if (me.admin) {
+        isAdmin = true;
+        document.body.dataset.admin = '1';
+        $('adminLink').hidden = false;
+        $('newEvent').hidden = false;
+        renderList();          // 관리 열을 다시 그린다
+      }
     })
     .catch(() => {});
 }
+
+/* ── 목록에서 바로 삭제 ───────────────────────────────────── */
+const toast = (msg, ms = 6000) => {
+  const t = $('toast');
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { t.hidden = true; }, ms);
+};
+
+const sheet = $('sheet');
+let pending = null;
+const closeSheet = () => { sheet.hidden = true; pending = null; };
+
+function confirmDelete(e) {
+  pending = e;
+  $('sheetBody').textContent =
+    `${e.title}\n\n사진 ${e.photos.length}장과 기사 ${e.articles.length}건이 함께 지워집니다.\n` +
+    '저장소 이력에는 남아 있어 필요하면 되살릴 수 있습니다.';
+  sheet.hidden = false;
+  $('sheetNo').focus();
+}
+
+$('sheetNo').addEventListener('click', closeSheet);
+sheet.addEventListener('click', (ev) => { if (ev.target === sheet) closeSheet(); });
+
+$('sheetYes').addEventListener('click', async () => {
+  const e = pending;
+  if (!e) return;
+  const yes = $('sheetYes');
+  yes.disabled = true;
+  try {
+    // 편집 도중 다른 사람이 저장했는지 보려면 기준 커밋이 필요하다
+    const s = await fetch('/api/admin/state', { headers: { accept: 'application/json' } });
+    const head = s.ok ? (await s.json()).head : undefined;
+
+    const res = await fetch('/api/admin/delete', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id: e.id, title: e.title, head }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || `삭제하지 못했습니다 (${res.status})`);
+
+    closeSheet();
+    // 목록에서 즉시 빼 준다. 실제 반영은 1~2분 뒤 배포까지 걸린다.
+    const at = EVENTS.findIndex((x) => x.id === e.id);
+    if (at >= 0) EVENTS.splice(at, 1);
+    if (state.id === e.id) { state.id = null; $('preview').hidden = true; }
+    renderList();
+    if (state.visible.length && !state.id) select(state.visible[0].id);
+    toast(`'${e.title}' 을 삭제했습니다.\n사이트에 완전히 반영되기까지 1~2분 걸립니다.`);
+  } catch (err) {
+    closeSheet();
+    toast(`삭제하지 못했습니다.\n${err.message}`, 9000);
+  } finally {
+    yes.disabled = false;
+  }
+});
 
 /* ── 시작 — 홈 화면 없이 최신 행사를 바로 펼친다 ──────────── */
 renderList();

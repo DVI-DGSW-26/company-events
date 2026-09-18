@@ -606,3 +606,61 @@ a{color:inherit}
   .head{animation:rise .22s ease both}
   @keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 }
+
+/* ─────────────────── 관리 기능 (admin 역할에게만 보인다) ─────────────────── */
+/* 권한이 없으면 열과 버튼이 애초에 그려지지 않는다.
+   화면에서 감추는 것과 별개로 /api/admin/* 에서 다시 확인한다. */
+.c-admin,
+.grid tbody td.t-admin{display:none}
+body[data-admin="1"] .c-admin,
+body[data-admin="1"] .grid tbody td.t-admin{display:table-cell}
+.c-admin{width:106px}
+
+.newevent{
+  margin-left:auto;flex:none;
+  display:inline-flex;align-items:center;height:32px;padding:0 .8rem;
+  background:var(--mark);color:var(--white);
+  border-radius:var(--r);font-size:var(--t-base);font-weight:600;
+  text-decoration:none;white-space:nowrap;
+}
+.newevent[hidden]{display:none}
+.newevent:hover{background:var(--mark-deep)}
+
+.manage{display:flex;gap:.25rem;justify-content:flex-end}
+.manage a,.manage button{
+  height:26px;padding:0 .5rem;
+  border:1px solid var(--alu-200);border-radius:var(--r);
+  background:var(--white);font-size:var(--t-sm);color:var(--alu-700);
+  text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;
+}
+.manage a:hover{border-color:var(--mark);color:var(--mark-deep);background:var(--mark-wash)}
+.manage button:hover{border-color:#B4231C;color:#B4231C;background:#FBEBEA}
+
+/* 삭제 확인창 */
+.sheet{
+  position:fixed;inset:0;z-index:60;display:grid;place-items:center;
+  background:rgba(14,18,20,.45);padding:1.5rem;
+}
+.sheet[hidden]{display:none}
+.sheet__box{
+  background:var(--white);border-radius:6px;padding:1.5rem;
+  max-width:26rem;width:100%;box-shadow:0 18px 50px -20px rgba(0,0,0,.5);
+}
+.sheet__box h3{margin:0 0 .5rem;font-size:1rem}
+.sheet__box p{margin:0 0 1.25rem;color:var(--alu-700);white-space:pre-line}
+.sheet__acts{display:flex;justify-content:flex-end;gap:.5rem}
+.btn--quiet{background:var(--white);border:1px solid var(--alu-200);color:var(--alu-700)}
+.btn--quiet:hover{border-color:var(--alu-500)}
+.btn--danger{background:var(--white);border:1px solid var(--alu-200);color:#B4231C}
+.btn--danger:hover{background:#FBEBEA;border-color:#B4231C}
+.btn[disabled]{opacity:.5;pointer-events:none}
+
+/* 알림 */
+.toast{
+  position:fixed;z-index:80;left:50%;bottom:24px;transform:translateX(-50%);
+  margin:0;padding:.55rem 1rem;max-width:min(38rem,90vw);
+  background:var(--alu-900);color:var(--white);
+  border-radius:var(--r);font-size:var(--t-sm);
+  box-shadow:var(--lift);white-space:pre-line;
+}
+.toast[hidden]{display:none}
