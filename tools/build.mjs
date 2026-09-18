@@ -8,7 +8,7 @@
 import sharp from 'sharp';
 import fs from 'node:fs';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { writeZip } from './zip.mjs';
 
 const ROOT = path.resolve('..');
 const P = (...a) => path.join(ROOT, ...a);
@@ -21,11 +21,6 @@ const THUMB_Q = 76;
 const IMG = /\.(jpe?g|png|webp|gif|bmp)$/i;
 const VID = /\.(mp4|mov|avi|mkv|webm)$/i;
 
-/* PowerShell 7 이 있으면 쓰고, 없으면 Windows 기본 PowerShell 로 떨어진다 */
-const PS = (() => {
-  try { execFileSync('pwsh', ['-NoProfile', '-Command', '$PSVersionTable.PSVersion.Major'], { stdio: 'pipe' }); return 'pwsh'; }
-  catch { return 'powershell'; }
-})();
 
 const data = JSON.parse(fs.readFileSync(P('data', 'events.json'), 'utf8'));
 const log = (...a) => console.log(...a);
@@ -75,39 +70,7 @@ async function derive(srcFile, outWeb, outThumb) {
   return { w: w.width, h: w.height, taken: takenOf(meta.exif) };
 }
 
-/**
- * 파일 목록을 zip 으로 묶는다.
- * ZipFile.CreateFromDirectory 는 Windows PowerShell 에서 폴더 구분자를 역슬래시로 넣어
- * ZIP 규격을 어기므로(다른 압축 프로그램에서 폴더가 풀리지 않음) 항목을 직접 만든다.
- * 이름은 UTF-8 로 넣어 한글 파일명을 유지한다.
- *
- * @param {{from:string,name:string}[]} entries  name 은 zip 안에서의 경로(슬래시 구분)
- */
-function zipFiles(entries, outZip) {
-  const manifest = path.join(stage, 'manifest.tsv');
-  fs.mkdirSync(path.dirname(manifest), { recursive: true });
-  fs.writeFileSync(manifest, entries.map((e) => `${e.from}\t${e.name}`).join('\n'), 'utf8');
-
-  const q = (s) => `'${s.replace(/'/g, "''")}'`;
-  const ps = `
-$ErrorActionPreference='Stop'
-Add-Type -AssemblyName System.IO.Compression
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-$out=${q(outZip)}
-if(Test-Path -LiteralPath $out){Remove-Item -LiteralPath $out -Force}
-$fs=[System.IO.File]::Open($out,[System.IO.FileMode]::Create)
-$zip=New-Object System.IO.Compression.ZipArchive($fs,[System.IO.Compression.ZipArchiveMode]::Create,$false,[System.Text.Encoding]::UTF8)
-try{
-  foreach($line in [System.IO.File]::ReadAllLines(${q(manifest)},[System.Text.Encoding]::UTF8)){
-    if([string]::IsNullOrWhiteSpace($line)){continue}
-    $p=$line.Split(@([char]9),2)
-    [void][System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip,$p[0],$p[1],[System.IO.Compression.CompressionLevel]::Optimal)
-  }
-} finally { $zip.Dispose();$fs.Dispose() }`;
-
-  execFileSync(PS, ['-NoProfile', '-NonInteractive', '-Command', ps], { stdio: 'pipe' });
-  fs.rmSync(manifest, { force: true });
-}
+/* ZIP 은 tools/zip.mjs 가 직접 만든다 — OS 에 상관없이 같은 결과가 나온다 */
 
 /* ── 이벤트 처리 ──────────────────────────────────────────── */
 const out = [];
@@ -194,14 +157,16 @@ for (const ev of data.events) {
   const artFiles = fs.readdirSync(P('articles', ev.id)).filter((f) => !f.endsWith('_thumb.jpg'));
   const zipEntries = [
     { from: info, name: '행사정보.txt' },
-    ...imgFiles.map((f) => ({ from: path.join(srcDir, f), name: `사진(원본)/${f}` })),
+    // 촬영 원본이 아니라 웹용(긴 변 1920px) 사진을 넣는다. 원본 그대로면 패키지가
+    // 590MB 라 저장소·배포 용량 한도를 넘는다. 원본은 source/ 와 공유드라이브에 남아 있다.
+    ...photos.map((p) => ({ from: P(p.src), name: `사진/${p.name}` })),
     ...vidFiles.map((f) => ({ from: path.join(srcDir, f), name: `영상/${f}` })),
     ...artFiles.map((f) => ({ from: P('articles', ev.id, f), name: `언론기사/${f}` })),
   ];
 
   const zipPath = P('downloads', `${packName}.zip`);
-  zipFiles(zipEntries, zipPath);
-  const bundle = { src: `downloads/${packName}.zip`, name: `${packName}.zip`, size: fs.statSync(zipPath).size };
+  const zipSize = writeZip(zipEntries, zipPath);
+  const bundle = { src: `downloads/${packName}.zip`, name: `${packName}.zip`, size: zipSize };
 
   out.push({
     id: ev.id, category: ev.category, type: ev.type, date: ev.date,
@@ -247,8 +212,9 @@ function infoText(ev, photos, articles) {
     });
     L.push('');
   }
-  L.push(`[사진] 총 ${photos.length}장 (원본 해상도, '사진(원본)' 폴더)`);
-  photos.forEach((p) => L.push(` - ${p.orig}${p.caption ? `  (${p.caption})` : ''}${p.taken ? `  촬영 ${p.taken}` : ''}`));
+  L.push(`[사진] 총 ${photos.length}장  ('사진' 폴더, 긴 변 최대 ${WEB_MAX}px)`);
+  L.push(`   인쇄·제출용으로 충분한 크기입니다. 촬영 원본이 필요하면 공유드라이브의 행사 사진 폴더를 쓰세요.`);
+  photos.forEach((p) => L.push(` - ${p.name}${p.caption ? `  (${p.caption})` : ''}${p.taken ? `  촬영 ${p.taken}` : ''}`));
   L.push('');
   L.push(`생성 ${new Date().toLocaleString('ko-KR')} · ${data.회사명} 행사 아카이브`);
   return L.join('\r\n');

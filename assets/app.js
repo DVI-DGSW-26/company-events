@@ -499,6 +499,19 @@ document.addEventListener('keydown', (ev) => {
   else if (ev.key === 'ArrowRight') stepPhoto(1);
 });
 
+/* ── 로그인 계정 표시 (배포본 전용) ───────────────────────── */
+/* 사내망 서버나 파일로 열 때는 인증이 없으므로 조용히 넘어간다 */
+if (!LOCAL_FILE) {
+  fetch('/api/auth/me', { headers: { accept: 'application/json' } })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((me) => {
+      if (!me?.signedIn) return;
+      $('accountWho').textContent = me.name ? `${me.name} · ${me.email}` : me.email;
+      $('account').hidden = false;
+    })
+    .catch(() => {});
+}
+
 /* ── 시작 — 홈 화면 없이 최신 행사를 바로 펼친다 ──────────── */
 renderList();
 const wanted = EVENTS.some((e) => e.id === location.hash.slice(1)) ? location.hash.slice(1) : null;

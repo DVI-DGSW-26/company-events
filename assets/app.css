@@ -120,6 +120,22 @@ a{color:inherit}
 }
 .tally b{color:var(--alu-700);font-weight:600}
 
+/* 로그인 계정 — 배포본에서만 보인다 */
+.account{
+  flex:none;display:flex;align-items:center;gap:.625rem;
+  padding-left:.875rem;border-left:1px solid var(--alu-200);
+  font-size:var(--t-sm);
+}
+.account[hidden]{display:none}
+.account__who{
+  color:var(--alu-700);max-width:16rem;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.account__out{
+  color:var(--alu-500);text-decoration:underline;text-underline-offset:3px;
+}
+.account__out:hover{color:var(--mark-deep)}
+
 /* ─────────────────────────── 레이아웃 ────────────────────── */
 .shell{
   display:flex;

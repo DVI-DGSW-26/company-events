@@ -2,7 +2,8 @@
   "name": "company-events",
   "version": "1.0.0",
   "private": true,
-  "description": "행사 자료 아카이브 — 사진·언론기사·영상을 한 화면에서 확인하고 내려받는 정적 페이지",
+  "type": "module",
+  "description": "행사 자료 아카이브 — 사진·언론기사·영상을 한 화면에서 확인하고 내려받는 사이트",
   "scripts": {
     "dev": "node tools/serve.mjs",
     "start": "node tools/serve.mjs",
@@ -10,5 +11,8 @@
     "setup": "npm --prefix tools install",
     "articles": "cd tools && node make-articles.mjs",
     "build": "cd tools && node build.mjs"
+  },
+  "dependencies": {
+    "@vercel/edge": "^1.2.2"
   }
 }

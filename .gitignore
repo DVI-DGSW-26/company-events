@@ -1,18 +1,18 @@
-# 원본 사진 (용량이 커서 저장소에 올리지 않습니다 — 회사 공유드라이브에 보관)
+# 사진 원본 (547MB, 빌드 입력). 공유드라이브에 보관하고 저장소에는 올리지 않습니다.
 /source/
 
-# 빌드 산출물 (tools 폴더에서 npm run build 로 다시 만들 수 있습니다)
-/photos/
-/thumbs/
-/articles/
-/videos/
-/downloads/
-/assets/data.js
-
-# 기사 PDF 중간 산출물 (npm run articles 로 다시 만들 수 있습니다)
+# 기사 PDF 중간 산출물 (npm run articles 로 다시 만듭니다)
 /articles-pdf/
 
 # 작업 임시 파일
 /.build-tmp/
 /.chrome-profile/
 node_modules/
+.vercel/
+
+# ────────────────────────────────────────────────────────────────
+# photos/ thumbs/ articles/ videos/ downloads/ assets/data.js 는
+# 일부러 저장소에 올립니다. Vercel 빌드 서버에는 source/ 가 없어서
+# 사진을 다시 만들 수 없기 때문에, 만들어 둔 결과물을 그대로 배포합니다.
+# (`npm run build` 를 돌린 뒤에는 이 폴더들의 변경도 함께 커밋하세요)
+# ────────────────────────────────────────────────────────────────
