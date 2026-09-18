@@ -13,8 +13,8 @@ const $ = (id) => document.getElementById(id);
 const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
 
 const state = {
-  head: null,        // 편집 시작 시점의 커밋. 저장할 때 충돌 확인에 쓴다
-  doc: null,         // data/events.json 전체
+  rev: null,         // 편집 시작 시점의 판번호. 저장할 때 충돌 확인에 쓴다
+  doc: null,         // 행사 목록
   id: null,          // 지금 편집 중인 행사
   photos: [],        // { name, caption, w, h, taken, orig, url, file? }  file 이 있으면 새로 올릴 사진
   removed: [],       // 지울 기존 사진 이름
@@ -34,8 +34,8 @@ async function loadState(id) {
 async function boot() {
   try {
     const s = await loadState();
-    state.head = s.head;
-    state.doc = s.data;
+    state.rev = s.rev;
+    state.doc = { events: s.events ?? [] };
     $('who').textContent = s.user?.name ? `${s.user.name} 님` : '';
     renderPicks();
 
@@ -60,19 +60,19 @@ function showBootError(e) {
 
   if (missing) {
     box.append(el('p', null,
-      '행사 등록·수정은 저장소에 기록하는 방식이라 접근 토큰이 필요합니다. ' +
-      'Vercel 환경변수에 아래 값을 넣고 Redeploy 하면 바로 됩니다.'));
-    const WHAT = {
-      GH_REPO: 'GH_REPO              DVI-DGSW-26/company-events',
-      GH_APP_ID: 'GH_APP_ID            GitHub App 설정 화면의 App ID (숫자)',
-      GH_APP_PRIVATE_KEY: 'GH_APP_PRIVATE_KEY   App 에서 내려받은 .pem 내용 전체',
-    };
-    const pre = el('pre');
-    pre.textContent = missing[1].split(/,\s*/).map((k) => WHAT[k] ?? k).join('\n');
-    box.append(pre);
+      '고친 내용을 담아 둘 저장 공간이 아직 없습니다. ' +
+      'Vercel 화면에서 한 번 만들면 설정값이 자동으로 들어가고, 그 뒤에는 손댈 것이 없습니다.'));
+    const steps = el('pre');
+    steps.textContent = [
+      'Vercel → 프로젝트 → Storage 탭',
+      '  → Create Database → Blob 선택 → Create',
+      '  → 이 프로젝트에 연결(Connect)',
+      '  → Deployments 탭에서 Redeploy',
+    ].join('\n');
+    box.append(steps);
     box.append(el('p', 'fine',
-      'GitHub App 을 쓰는 이유는 개인 토큰이면 그 사람이 조직에서 빠질 때 저장 기능이 멈추기 때문입니다. ' +
-      '만드는 곳: 조직 Settings → Developer settings → GitHub Apps. 자세한 절차는 README 를 보세요.'));
+      `만들면 ${missing[1]} 값이 프로젝트에 자동으로 추가됩니다. 따로 복사해 넣을 것은 없습니다. ` +
+      '보기와 내려받기는 지금도 정상 동작합니다 — 등록·수정만 이 단계가 필요합니다.'));
   } else {
     box.append(el('p', null, e.message));
     box.append(el('p', 'fine', '잠시 뒤 새로 고쳐 보고, 계속 같으면 담당자에게 이 메시지를 알려주세요.'));
@@ -109,11 +109,11 @@ async function open(id) {
   let media = { photos: [] };
   try {
     const s = await loadState(id);
-    state.head = s.head; state.doc = s.data;
+    state.rev = s.rev; state.doc = { events: s.events ?? [] };
     media = s.media ?? { photos: [] };
   } catch (e) { say(e.message, 'bad'); }
 
-  state.photos = (media.photos ?? []).map((p) => ({ ...p, url: `photos/${id}/${encodeURIComponent(p.name)}` }));
+  state.photos = (media.photos ?? []).map((p) => ({ ...p }));
 
   $('editTitle').textContent = '행사 수정';
   $('editId').textContent = id;
@@ -362,7 +362,11 @@ $('save').addEventListener('click', async () => {
       const flush = async () => {
         if (!batch.length) return;
         const r = await post('/api/admin/photos', { id: state.id, photos: batch });
-        state.head = r.sha;              // 커밋이 늘었으니 기준을 갱신한다
+        // 올린 사진의 저장 경로를 받아 둔다. 행사 정보를 저장할 때 그대로 돌려보낸다.
+        for (const up of r.saved ?? []) {
+          const target = state.photos.find((x) => x.name === up.name);
+          if (target) { target.src = up.src; target.thumb = up.thumb; }
+        }
         done += batch.length;
         say(`사진 올리는 중… ${done}/${fresh.length}`);
         batch = []; bytes = 0;
@@ -376,18 +380,21 @@ $('save').addEventListener('click', async () => {
       await flush();
     }
 
-    /* 2) 행사 정보와 사진 목록을 한 커밋으로 저장 */
+    /* 2) 행사 정보와 사진 목록을 저장 */
     say('행사 정보 저장 중…');
-    const media = { photos: state.photos.map(({ name, caption, w, h, taken, orig }) => ({ name, caption, w, h, taken, orig })) };
-    const r = await post('/api/admin/event', { event: ev, media, removePhotos: state.removed, head: state.head });
+    const media = {
+      photos: state.photos.map(({ name, caption, w, h, taken, orig, src, thumb }) =>
+        ({ name, caption, w, h, taken, orig, src, thumb })),
+    };
+    const r = await post('/api/admin/event', { event: ev, media, removePhotos: state.removed, rev: state.rev });
 
-    state.head = r.sha;
+    state.rev = r.rev;
     state.removed = [];
-    state.photos = state.photos.map(({ file, ...p }) => ({ ...p, url: `photos/${state.id}/${encodeURIComponent(p.name)}` }));
+    state.photos = state.photos.map(({ file, ...p }) => p);
     renderPhotos();
 
     const s = await loadState();
-    state.doc = s.data; state.head = s.head;
+    state.doc = { events: s.events ?? [] }; state.rev = s.rev;
     renderPicks();
     $('editTitle').textContent = '행사 수정';
     $('del').hidden = false;
@@ -425,9 +432,9 @@ $('del').addEventListener('click', () => {
     async () => {
       $('save').disabled = true; $('del').disabled = true;
       try {
-        await post('/api/admin/delete', { id: state.id, title: ev.title, head: state.head });
+        await post('/api/admin/delete', { id: state.id, title: ev.title, rev: state.rev });
         const s = await loadState();
-        state.doc = s.data; state.head = s.head; state.id = null;
+        state.doc = { events: s.events ?? [] }; state.rev = s.rev; state.id = null;
         renderPicks();
         $('edit').hidden = true; $('blank').hidden = false;
         say('');

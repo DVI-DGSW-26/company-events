@@ -2,17 +2,19 @@
  * POST /api/admin/photos — 사진 올리기
  *
  * 사진은 브라우저에서 긴 변 1920px 로 줄이고 썸네일까지 만들어 보낸다.
- * 서버에서 변환하지 않는 이유는 두 가지다.
- *   · 요청 본문 크기 한도(수 MB)에 촬영 원본이 바로 걸린다
- *   · 화면에 쓰는 크기는 어차피 1920px 이라 원본을 올릴 실익이 없다
- * 촬영 원본은 지금처럼 공유드라이브에 보관한다.
+ * 요청 본문 한도(수 MB)가 있어 화면이 알아서 나눠 보내고, 여기서는 받은 만큼만 넣는다.
  *
  * 본문: { id, photos: [{ name, image, thumb }] }   image·thumb 은 data:image/jpeg;base64,...
  */
 import { requireAdmin, readJsonBody, json, safePhotoName, jpegBase64 } from '../../lib/admin.js';
-import { commitFiles } from '../../lib/github.js';
+import { blobRef, paths, putFile } from '../../lib/store.js';
 
-export const config = { runtime: 'edge' };
+const bytesOf = (b64) => {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+};
 
 export default async function handler(req) {
   if (req.method !== 'POST') return json({ error: 'POST 로 요청해 주세요.' }, 405);
@@ -30,29 +32,25 @@ export default async function handler(req) {
   if (!list.length) return json({ error: '올릴 사진이 없습니다.' }, 400);
   if (list.length > 40) return json({ error: '한 번에 40장까지 올릴 수 있습니다.' }, 400);
 
-  const files = [];
-  const added = [];
-  for (const p of list) {
-    const name = safePhotoName(p?.name);
-    if (!name) return json({ error: `사진 이름을 쓸 수 없습니다: ${String(p?.name).slice(0, 60)}` }, 400);
-
-    const image = jpegBase64(p?.image);
-    const thumb = jpegBase64(p?.thumb);
-    if (!image || !thumb) return json({ error: `사진 형식이 올바르지 않습니다: ${name}` }, 400);
-
-    files.push({ path: `photos/${id}/${name}`, base64: image });
-    files.push({ path: `thumbs/${id}/${name}`, base64: thumb });
-    added.push(name);
-  }
-
+  const saved = [];
   try {
-    const { sha } = await commitFiles(
-      files,
-      `${id} 사진 ${added.length}장 추가\n\n행사 아카이브 화면에서 올림`,
-      { name: auth.user.name, email: auth.user.email },
-    );
-    return json({ ok: true, sha, added });
+    for (const p of list) {
+      const name = safePhotoName(p?.name);
+      if (!name) return json({ error: `사진 이름을 쓸 수 없습니다: ${String(p?.name).slice(0, 60)}` }, 400);
+
+      const image = jpegBase64(p?.image);
+      const thumb = jpegBase64(p?.thumb);
+      if (!image || !thumb) return json({ error: `사진 형식이 올바르지 않습니다: ${name}` }, 400);
+
+      const photoPath = paths.photo(id, name);
+      const thumbPath = paths.thumb(id, name);
+      const { size } = await putFile(photoPath, bytesOf(image), 'image/jpeg');
+      await putFile(thumbPath, bytesOf(thumb), 'image/jpeg');
+
+      saved.push({ name, src: blobRef(photoPath), thumb: blobRef(thumbPath), size });
+    }
+    return json({ ok: true, saved });
   } catch (e) {
-    return json({ error: e.message }, e.conflict ? 409 : 502);
+    return json({ error: `사진을 저장하지 못했습니다: ${e.message}` }, 502);
   }
 }

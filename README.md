@@ -106,11 +106,7 @@ Vercel 프로젝트 → **Settings → Environment Variables**
 | `OIDC_CLIENT_SECRET` | Confidential 클라이언트일 때만 | 선택 |
 | `SESSION_SECRET` | 임의의 긴 문자열 (아래 명령으로 생성) | 필수 |
 | `REQUIRED_REALM_ROLE` | 기본값 `employee` — 재직자 판별에 쓰는 realm 역할 | 선택 |
-| `GH_REPO` | `DVI-DGSW-26/company-events` | 등록·수정 기능에 필요 |
-| `GH_APP_ID` | GitHub App 의 App ID (숫자) | 등록·수정 기능에 필요 |
-| `GH_APP_PRIVATE_KEY` | App 에서 내려받은 `.pem` 내용 전체 | 등록·수정 기능에 필요 |
-| `GH_APP_INSTALLATION_ID` | 비워 두면 저장소를 보고 알아서 찾습니다 | 선택 |
-| `GH_BRANCH` | 기본값 `main` | 선택 |
+| `BLOB_READ_WRITE_TOKEN` | Blob 저장소를 만들면 **자동으로 추가됩니다** | 등록·수정 기능에 필요 |
 | `OIDC_SCOPE` | 기본값 `openid profile email` | 선택 |
 
 ```bash
@@ -184,64 +180,42 @@ SSO 에 로그인하기 때문입니다. 대신 Keycloak realm 역할 `employee`
 
 ### 저장되는 곳
 
-별도 데이터베이스가 없습니다. 화면에서 고친 내용은 이 저장소에 **커밋으로 남습니다.**
+행사 정보와 화면에서 올린 사진은 **Vercel Blob** 에 보관합니다.
+저장하면 **바로 반영**되고, 별도 빌드나 배포를 기다리지 않습니다.
 
 ```
 화면에서 저장
-   └─ data/events.json · data/media/<행사ID>.json · photos/<행사ID>/  커밋
-        └─ GitHub Actions 가 기사 PDF·썸네일·ZIP·목록을 다시 만들어 되커밋
-             └─ Vercel 이 배포
+ └─ 사진      → Blob  photos/<행사ID>/ · thumbs/<행사ID>/
+ └─ 행사 정보 → Blob  archive.json
+      └─ 화면이 /api/archive 로 읽어 바로 표시
 ```
 
-누가 언제 무엇을 고쳤는지 이력이 남고, 잘못 지웠으면 저장소 이력에서 되살릴 수 있습니다.
-두 사람이 동시에 고치면 나중에 저장한 쪽이 거절되고 `다른 사람이 먼저 저장했습니다` 가 뜹니다.
+전부 **비공개(private)** 로 넣습니다. 공개로 두면 주소를 아는 사람이 로그인 없이
+사진을 받을 수 있어 붙여 둔 로그인이 의미가 없어집니다.
+브라우저에는 `/api/media` 를 거쳐 내보내고, 그 앞을 미들웨어가 막습니다.
+
+두 사람이 같은 행사를 동시에 고치면, 나중에 저장한 쪽이 거절되고
+`다른 사람이 먼저 저장했습니다` 가 뜹니다.
 
 > **올린 사진은 긴 변 1920px 로 줄여 저장합니다.** 브라우저에서 줄여 보내기 때문에
 > 촬영 원본은 올라가지 않습니다. 원본은 지금처럼 공유드라이브에 보관하세요.
 
-### GitHub App 만들기 (최초 1회)
+### 저장 공간 만들기 (최초 1회)
 
-등록·수정 기능은 저장소에 커밋해야 하므로 쓰기 권한이 필요합니다.
-**개인 토큰은 쓰지 않습니다.** 발급한 사람이 조직에서 빠지는 순간 저장 기능이 멈추고,
-어제까지 되던 게 갑자기 안 되는 종류의 고장이라 원인을 찾기 어렵습니다.
-대신 **조직이 소유하는 GitHub App** 을 씁니다. 담당자가 바뀌어도 그대로 살아 있습니다.
-
-**1. App 만들기** — 조직 소유자 권한이 필요합니다
+Vercel 화면에서 한 번 만들면 끝입니다. **복사해 넣을 값은 없습니다.**
 
 ```
-https://github.com/organizations/DVI-DGSW-26/settings/apps/new
+Vercel → 프로젝트 → Storage 탭
+  → Create Database → Blob 선택 → Create
+  → 이 프로젝트에 Connect
+  → Deployments 탭 → Redeploy
 ```
 
-| 항목 | 값 |
-|---|---|
-| GitHub App name | `디비전 행사 아카이브` (아무 이름) |
-| Homepage URL | `https://company-events-theta.vercel.app` |
-| Webhook | **Active 체크를 끕니다** (쓰지 않습니다) |
-| Repository permissions → **Contents** | **Read and write** |
-| Where can this GitHub App be installed? | `Only on this account` |
+만들면 `BLOB_READ_WRITE_TOKEN` 이 프로젝트에 자동으로 추가됩니다.
+GitHub 토큰이나 조직 소유자 권한은 필요하지 않습니다 —
+Vercel 프로젝트 권한만 있으면 됩니다.
 
-`Contents` 하나만 바꾸면 됩니다. 나머지는 손대지 않습니다.
-
-**2. App ID 확인** — 만들어진 설정 화면 위쪽의 `App ID` (숫자) 를 적어 둡니다
-
-**3. 비밀키 내려받기** — 같은 화면 아래 `Private keys` → **Generate a private key**
-→ `.pem` 파일이 내려옵니다. 메모장으로 열어 **`-----BEGIN` 줄부터 `-----END` 줄까지 전체** 복사합니다
-
-**4. 저장소에 설치** — 왼쪽 `Install App` → `Install`
-→ `Only select repositories` → **`company-events`** 선택
-
-**5. Vercel 환경변수 3개**
-
-```
-GH_REPO              DVI-DGSW-26/company-events
-GH_APP_ID            2단계의 숫자
-GH_APP_PRIVATE_KEY   3단계에서 복사한 .pem 전체 (여러 줄 그대로 붙여넣기)
-```
-
-넣고 **Redeploy** 하면 됩니다. 설치 번호는 저장소를 보고 알아서 찾으므로 넣지 않아도 됩니다.
-
-> 봇 계정 토큰을 쓰는 방식으로 되돌리려면 위 3개 대신 `GH_TOKEN` 과 `GH_REPO` 만 넣으면
-> 코드 수정 없이 그대로 동작합니다. 다만 그 계정 관리를 계속 해야 합니다.
+처음 열 때 지금까지의 행사 12건이 자동으로 옮겨 담깁니다. 따로 할 일은 없습니다.
 
 ### 잘 들어갔는지 확인
 
@@ -250,11 +224,18 @@ GH_APP_PRIVATE_KEY   3단계에서 복사한 .pem 전체 (여러 줄 그대로 �
 | 증상 | 원인 |
 |---|---|
 | 행사 목록과 사진이 나옴 | 정상입니다 |
-| `설정이 한 단계 남았습니다` | 환경변수 누락 또는 Redeploy 안 함. 화면에 빠진 변수 이름이 나옵니다 |
-| `GitHub App 이 … 설치되지 않았습니다` | 4번 설치 단계를 빠뜨림 |
-| `GitHub App 토큰을 받지 못했습니다 (401)` | `GH_APP_ID` 가 틀렸거나 비밀키가 중간에 잘림 |
-| `GitHub 요청 실패 (403)` | App 권한에 `Contents: Read and write` 가 안 걸림 |
-| `형식을 알 수 없습니다` | `.pem` 을 `BEGIN`/`END` 줄까지 통째로 넣지 않음 |
+| `설정이 한 단계 남았습니다` | Blob 저장소 미생성 또는 Redeploy 안 함 |
+| 사진이 깨져 보임 | `/api/media` 가 막혔는지 확인 (로그인 세션 만료일 수 있음) |
+| 저장은 되는데 목록이 그대로 | 새로 고침. 계속 같으면 Vercel 함수 로그 확인 |
+
+### 아직 안 된 것
+
+**화면에서 등록한 행사는 `전체 내려받기` 묶음 파일이 만들어지지 않습니다.**
+목록에 `사진 개별 저장` 으로 표시되고, 사진은 미리보기에서 한 장씩 저장하면 됩니다.
+기존 12건의 묶음 파일은 그대로 있습니다.
+
+묶음 파일까지 자동으로 만들려면 서버에서 사진을 모아 압축하는 단계가 필요한데,
+사진이 많은 행사에서 시간이 오래 걸려 따로 붙일 예정입니다.
 
 ---
 
@@ -368,9 +349,10 @@ npm run build      # 사진 변환 · ZIP 묶기 · 목록 갱신
 | `assets/data.js` | 화면이 읽는 목록 데이터 | 아니오 — 빌드가 생성 |
 | `tools/` | 빌드 스크립트 | 예 |
 | `middleware.js`, `api/auth/`, `lib/`, `login.html` | 배포본 사내 통합 로그인(Keycloak) | 예 |
+| `api/archive.js`, `api/media.js`, `lib/store.js` | 저장된 행사 자료 읽기·내보내기 | 예 |
+| `data/baseline.js` | 저장소를 처음 만들 때 세울 기준 자료 | 아니오 — 빌드가 생성 |
 | `admin.html`, `assets/admin.*`, `api/admin/` | 행사 등록·수정 화면과 API | 예 |
 | `data/media/` | 사진 설명·촬영일 목록 | 아니오 — 빌드와 관리 화면이 생성 |
-| `.github/workflows/` | 저장 후 자료를 다시 만드는 자동 작업 | 예 |
 | `vercel.json` | Vercel 배포 설정 | 예 |
 
 `source/` (촬영 원본 547MB) 만 `.gitignore` 로 빼고, 나머지 생성 폴더는 **일부러 저장소에 올립니다**.

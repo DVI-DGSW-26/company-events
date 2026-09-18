@@ -303,9 +303,16 @@ const payload = {
   generatedAt: new Date().toISOString(),
   events: out.sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id)),
 };
+const generated = '/* 자동 생성 파일 — 직접 수정하지 마세요. data/events.json 을 고치고 npm run build 를 실행하세요. */';
+
 fs.writeFileSync(P('assets', 'data.js'),
-  `/* 자동 생성 파일 — 직접 수정하지 마세요. data/events.json 을 고치고 npm run build 를 실행하세요. */\nwindow.ARCHIVE = ${JSON.stringify(payload, null, 1)};\n`,
-  'utf8');
+  `${generated}\nwindow.ARCHIVE = ${JSON.stringify(payload, null, 1)};\n`, 'utf8');
+
+/* 배포된 서버가 읽는 기준 자료.
+   Blob 저장소를 처음 만들었을 때 이 값으로 행사 문서를 한 번 세워 준다.
+   사내망·파일로 열 때는 위의 data.js 가 그대로 쓰인다. */
+fs.writeFileSync(P('data', 'baseline.js'),
+  `${generated}\nexport default ${JSON.stringify(payload, null, 1)};\n`, 'utf8');
 
 const tot = (f) => out.reduce((s, e) => s + f(e), 0);
 log('\n─────────────────────────────────────────────');

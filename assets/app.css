@@ -664,3 +664,7 @@ body[data-admin="1"] .grid tbody td.t-admin{display:table-cell}
   box-shadow:var(--lift);white-space:pre-line;
 }
 .toast[hidden]{display:none}
+
+/* 묶음 파일이 없는 행사 */
+.nodl{font-size:var(--t-sm);color:var(--alu-500);white-space:nowrap}
+.btn[hidden]{display:none}

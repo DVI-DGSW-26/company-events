@@ -6,7 +6,8 @@
 'use strict';
 
 const DATA = window.ARCHIVE ?? { company: '', events: [] };
-const EVENTS = DATA.events ?? [];
+// 사본을 쓴다. applyData 가 이 배열을 비우고 다시 채우므로, 원본과 같은 배열이면 비워진다.
+const EVENTS = [...(DATA.events ?? [])];
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => {
@@ -34,24 +35,35 @@ const state = {
   visible: [],
 };
 
-/* ── 초기 렌더 ────────────────────────────────────────────── */
-$('orgName').textContent = DATA.company ?? '';
+/* ── 자료 반영 ─────────────────────────────────────────────── */
+/* 배포본에서는 /api/archive 를 읽는다. 화면에서 등록·수정한 내용이 바로 보이게 하기
+   위해서다. 파일로 열거나 사내망 서버로 열 때는 빌드가 만든 data.js 를 그대로 쓴다. */
+function applyData(data) {
+  $('orgName').textContent = data?.company ?? '';
+  EVENTS.length = 0;
+  EVENTS.push(...(data?.events ?? []));
 
-const totalPhotos = EVENTS.reduce((s, e) => s + e.photos.length, 0);
-const totalPress = EVENTS.reduce((s, e) => s + e.articles.length, 0);
-const totalVideo = EVENTS.reduce((s, e) => s + e.videos.length + e.videoFiles.length, 0);
-$('tally').innerHTML = `사진 <b>${totalPhotos}</b>장 · 언론기사 <b>${totalPress}</b>건 · 영상 <b>${totalVideo}</b>건`;
+  const n = (f) => EVENTS.reduce((s, e) => s + f(e), 0);
+  $('tally').innerHTML =
+    `사진 <b>${n((e) => e.photos.length)}</b>장 · ` +
+    `언론기사 <b>${n((e) => e.articles.length)}</b>건 · ` +
+    `영상 <b>${n((e) => e.videos.length + e.videoFiles.length)}</b>건`;
 
-fillSelect($('fYear'), [...new Set(EVENTS.map((e) => e.date.slice(0, 4)))].sort().reverse(), (v) => `${v}년`);
-fillSelect($('fCat'), [...new Set(EVENTS.map((e) => e.category))]);
-fillSelect($('fType'), [...new Set(EVENTS.map((e) => e.type))].sort((a, b) => a.localeCompare(b, 'ko')));
+  fillSelect($('fYear'), [...new Set(EVENTS.map((e) => e.date.slice(0, 4)))].sort().reverse(), (v) => `${v}년`);
+  fillSelect($('fCat'), [...new Set(EVENTS.map((e) => e.category))]);
+  fillSelect($('fType'), [...new Set(EVENTS.map((e) => e.type))].sort((a, b) => a.localeCompare(b, 'ko')));
+}
 
+/** 목록을 다시 채운다. 고르고 있던 값은 남아 있으면 지킨다. */
 function fillSelect(sel, values, label = (v) => v) {
+  const had = sel.value;
+  sel.replaceChildren(el('option', null, '전체'));
   for (const v of values) {
     const o = el('option', null, label(v));
     o.value = v;
     sel.append(o);
   }
+  if (had && values.includes(had)) sel.value = had;
 }
 
 /* ── 목록 ─────────────────────────────────────────────────── */
@@ -171,6 +183,12 @@ function materials(e) {
 }
 
 function rowDownload(e) {
+  // 화면에서 새로 등록한 행사는 아직 묶음 파일이 없다. 그때는 사진으로 안내한다.
+  if (!e.bundle?.src) {
+    const s = el('span', 'nodl', '사진 개별 저장');
+    s.title = '묶음 파일이 아직 없습니다. 미리보기에서 사진을 한 장씩 저장하세요.';
+    return s;
+  }
   const a = el('a', 'rowdl');
   a.href = e.bundle.src;
   a.download = e.bundle.name;
@@ -278,11 +296,14 @@ function renderPreview() {
   ul.replaceChildren();
   notes.forEach((n) => ul.append(el('li', null, n)));
 
-  /* 전체 내려받기 */
+  /* 전체 내려받기 — 묶음 파일이 있는 행사만 */
   const b = $('pvBundle');
-  b.href = e.bundle.src;
-  b.download = e.bundle.name;
-  $('pvBundleSize').textContent = fmtSize(e.bundle.size);
+  b.hidden = !e.bundle?.src;
+  if (e.bundle?.src) {
+    b.href = e.bundle.src;
+    b.download = e.bundle.name;
+    $('pvBundleSize').textContent = fmtSize(e.bundle.size);
+  }
 
   renderTabs(e);
   renderItems(e);
@@ -403,7 +424,7 @@ function videoFileItem(v) {
 }
 
 function photoSummaryItem(e) {
-  const { row, acts } = itemShell('사진', null, `행사 사진 ${e.photos.length}장`, '원본은 전체 내려받기에 포함됩니다');
+  const { row, acts } = itemShell('사진', null, `행사 사진 ${e.photos.length}장`, e.bundle?.src ? '전체 내려받기에 함께 들어 있습니다' : '묶음 파일은 아직 없습니다. 크게 보기에서 한 장씩 저장하세요');
   const b = el('button', 'mini');
   b.type = 'button';
   b.textContent = '사진 전체 보기';
@@ -577,14 +598,14 @@ $('sheetYes').addEventListener('click', async () => {
   const yes = $('sheetYes');
   yes.disabled = true;
   try {
-    // 편집 도중 다른 사람이 저장했는지 보려면 기준 커밋이 필요하다
+    // 그 사이 다른 사람이 저장했는지 보려면 판번호가 필요하다
     const s = await fetch('/api/admin/state', { headers: { accept: 'application/json' } });
-    const head = s.ok ? (await s.json()).head : undefined;
+    const rev = s.ok ? (await s.json()).rev : undefined;
 
     const res = await fetch('/api/admin/delete', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ id: e.id, title: e.title, head }),
+      body: JSON.stringify({ id: e.id, title: e.title, rev }),
     });
     const out = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(out.error || `삭제하지 못했습니다 (${res.status})`);
@@ -606,10 +627,28 @@ $('sheetYes').addEventListener('click', async () => {
 });
 
 /* ── 시작 — 홈 화면 없이 최신 행사를 바로 펼친다 ──────────── */
-renderList();
-const wanted = EVENTS.some((e) => e.id === location.hash.slice(1)) ? location.hash.slice(1) : null;
-if (wanted) select(wanted);
-else if (state.visible.length) select(state.visible[0].id);
+function start() {
+  renderList();
+  const wanted = EVENTS.some((e) => e.id === location.hash.slice(1)) ? location.hash.slice(1) : null;
+  if (wanted) select(wanted);
+  else if (state.visible.length) select(state.visible[0].id);
+  else { state.id = null; $('preview').hidden = true; }
+}
+
+applyData(DATA);
+start();
+
+/* 저장된 최신 목록으로 갈아 끼운다. 실패하면 배포된 자료로 그대로 쓴다. */
+if (!LOCAL_FILE) {
+  fetch('/api/archive', { headers: { accept: 'application/json' } })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((live) => {
+      if (!live?.events?.length) return;
+      applyData(live);
+      start();
+    })
+    .catch(() => {});
+}
 
 window.addEventListener('hashchange', () => {
   const id = location.hash.slice(1);

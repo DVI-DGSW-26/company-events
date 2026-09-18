@@ -1,7 +1,7 @@
 /* 자동 생성 파일 — 직접 수정하지 마세요. data/events.json 을 고치고 npm run build 를 실행하세요. */
 window.ARCHIVE = {
  "company": "주식회사 디비전",
- "generatedAt": "2026-09-18T03:00:03.279Z",
+ "generatedAt": "2026-09-18T06:07:34.256Z",
  "events": [
   {
    "id": "e12",
@@ -69,7 +69,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260708_특허 출원 회의.zip",
     "name": "20260708_특허 출원 회의.zip",
-    "size": 780778
+    "size": 780777
    }
   },
   {
@@ -125,7 +125,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260629_해외 출장자 출장내용 공유회.zip",
     "name": "20260629_해외 출장자 출장내용 공유회.zip",
-    "size": 1328926
+    "size": 1328925
    }
   },
   {
@@ -225,7 +225,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260629_사내 문제점 공유행사 (신입사원).zip",
     "name": "20260629_사내 문제점 공유행사 (신입사원).zip",
-    "size": 2655618
+    "size": 2655619
    }
   },
   {
@@ -472,7 +472,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260622_사내 진급자 행사.zip",
     "name": "20260622_사내 진급자 행사.zip",
-    "size": 6459600
+    "size": 6459599
    }
   },
   {
@@ -759,7 +759,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260609_대구하이텍고등학교 방문.zip",
     "name": "20260609_대구하이텍고등학교 방문.zip",
-    "size": 11550015
+    "size": 11550016
    }
   },
   {
@@ -901,7 +901,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260521_2026년 제2차 일터혁신 상생컨설팅 사례공유 포럼.zip",
     "name": "20260521_2026년 제2차 일터혁신 상생컨설팅 사례공유 포럼.zip",
-    "size": 5861824
+    "size": 5861826
    }
   },
   {
@@ -1153,7 +1153,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260318_2026 산업통상부–포스코그룹 기술나눔 행사.zip",
     "name": "20260318_2026 산업통상부–포스코그룹 기술나눔 행사.zip",
-    "size": 21234118
+    "size": 21234120
    }
   },
   {
@@ -1286,7 +1286,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260121_산업안전보건 교육.zip",
     "name": "20260121_산업안전보건 교육.zip",
-    "size": 3748455
+    "size": 3748456
    }
   },
   {
@@ -2530,7 +2530,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20251209_2025 일터혁신 컨퍼런스 — 일터혁신 우수기업 선정.zip",
     "name": "20251209_2025 일터혁신 컨퍼런스 — 일터혁신 우수기업 선정.zip",
-    "size": 80642158
+    "size": 80642160
    }
   },
   {
@@ -2698,7 +2698,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20250403_중소벤처기업부·관세청 공동 「수출 중소기업 현장 간담회」.zip",
     "name": "20250403_중소벤처기업부·관세청 공동 「수출 중소기업 현장 간담회」.zip",
-    "size": 2592640
+    "size": 2592642
    }
   },
   {
@@ -2855,7 +2855,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20241120_제8회 대구 스타트업 어워즈 — 대상 수상.zip",
     "name": "20241120_제8회 대구 스타트업 어워즈 — 대상 수상.zip",
-    "size": 27187405
+    "size": 27187406
    }
   }
  ]

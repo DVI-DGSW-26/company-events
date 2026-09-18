@@ -61,14 +61,23 @@ function devApi(req, res, rel) {
     send(200, { signedIn: true, name: '로컬 미리보기', email: '', admin: true });
     return true;
   }
-  if (rel === '/api/admin/state') {
+  if (rel === '/api/archive' || rel === '/api/admin/state') {
     try {
-      const doc = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'events.json'), 'utf8'));
+      // 빌드가 만든 목록을 그대로 쓴다 (배포본은 Blob 에 둔 문서를 읽는다)
+      const js = fs.readFileSync(path.join(ROOT, 'assets', 'data.js'), 'utf8');
+      const doc = JSON.parse(js.slice(js.indexOf('{'), js.lastIndexOf('}') + 1));
+
+      if (rel === '/api/archive') { send(200, { ...doc, rev: 0 }); return true; }
+
       const id = new URL(req.url, 'http://x').searchParams.get('id');
-      const out = { head: 'local', data: doc, user: { name: '로컬 미리보기' } };
+      const out = {
+        rev: 0,
+        user: { name: '로컬 미리보기' },
+        events: doc.events.map(({ photos, videoFiles, bundle, ...e }) => e),
+      };
       if (id) {
-        const f = path.join(ROOT, 'data', 'media', `${id}.json`);
-        out.media = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : { photos: [] };
+        const ev = doc.events.find((e) => e.id === id);
+        out.media = { photos: (ev?.photos ?? []).map((p) => ({ ...p, url: p.src })) };
       }
       send(200, out);
     } catch (e) { send(500, { error: e.message }); }
