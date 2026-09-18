@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>행사 아카이브</title>
+<meta name="description" content="회사 행사 사진·언론기사·영상을 한곳에서 확인하고 내려받는 자료 보관소">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%231B2428'/%3E%3Crect x='7' y='9' width='18' height='3' fill='%23E0530D'/%3E%3Crect x='7' y='15' width='18' height='2' fill='%238A949A'/%3E%3Crect x='7' y='20' width='12' height='2' fill='%238A949A'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<a class="skip" href="#list">본문으로 건너뛰기</a>
+
+<header class="top">
+  <div class="brand">
+    <span class="brand__mark" aria-hidden="true"></span>
+    <span class="brand__name">행사 아카이브</span>
+    <span class="brand__org" id="orgName"></span>
+  </div>
+
+  <div class="search">
+    <svg class="search__icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.4 10.4 14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <input id="q" type="search" placeholder="행사명, 주관사, 언론사, 장소로 검색" autocomplete="off" spellcheck="false" aria-label="행사 검색">
+    <button id="qClear" class="search__clear" type="button" aria-label="검색어 지우기" hidden>&times;</button>
+  </div>
+
+  <p class="tally" id="tally"></p>
+</header>
+
+<main class="shell">
+
+  <!-- ───────────────── 행사 목록 ───────────────── -->
+  <section class="list" id="list" aria-label="행사 목록">
+
+    <div class="filters">
+      <label class="sel">
+        <span>연도</span>
+        <select id="fYear" aria-label="연도 필터"><option value="">전체</option></select>
+      </label>
+      <label class="sel">
+        <span>구분</span>
+        <select id="fCat" aria-label="구분 필터"><option value="">전체</option></select>
+      </label>
+      <label class="sel">
+        <span>행사구분</span>
+        <select id="fType" aria-label="행사구분 필터"><option value="">전체</option></select>
+      </label>
+
+      <button id="fPress" class="toggle" type="button" aria-pressed="false">
+        언론기사 있는 행사만
+      </button>
+
+      <button id="fReset" class="linkbtn" type="button" hidden>초기화</button>
+    </div>
+
+    <div class="count"><strong id="countNum">0</strong>건</div>
+
+    <div class="tablewrap">
+      <table class="grid">
+        <caption class="sr">행사 목록. 행을 선택하면 오른쪽에 미리보기가 표시됩니다.</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="c-no">No.</th>
+            <th scope="col" class="c-cat">구분</th>
+            <th scope="col" class="c-type">행사구분</th>
+            <th scope="col" class="c-date"><button class="sortbtn" id="sortDate" type="button">일시<span class="caret" aria-hidden="true"></span></button></th>
+            <th scope="col" class="c-title">행사명</th>
+            <th scope="col" class="c-host">주관</th>
+            <th scope="col" class="c-mat">보유 자료</th>
+            <th scope="col" class="c-act">내려받기</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p class="empty" id="empty" hidden>조건에 맞는 행사가 없습니다. 검색어나 필터를 바꿔 보세요.</p>
+    </div>
+  </section>
+
+  <!-- ───────────────── 미리보기 ───────────────── -->
+  <aside class="preview" id="preview" aria-label="행사 미리보기">
+    <header class="preview__bar">
+      <h2>미리보기</h2>
+      <button id="pvClose" class="iconbtn" type="button" aria-label="미리보기 닫기">&times;</button>
+    </header>
+
+    <div class="preview__scroll" id="pvScroll">
+
+      <figure class="stage" id="stage">
+        <button class="stage__nav stage__nav--prev" id="navPrev" type="button" aria-label="이전 사진">&#8249;</button>
+        <button class="stage__img" id="stageBtn" type="button" aria-label="사진 크게 보기">
+          <img id="stageImg" alt="">
+        </button>
+        <button class="stage__nav stage__nav--next" id="navNext" type="button" aria-label="다음 사진">&#8250;</button>
+        <figcaption class="stage__meta">
+          <span id="stageCaption"></span>
+          <span class="stage__count" id="stageCount"></span>
+        </figcaption>
+      </figure>
+
+      <div class="strip" id="strip" role="tablist" aria-label="사진 목록"></div>
+
+      <div class="head">
+        <p class="head__chips"><span class="chip" id="pvCat"></span><span class="chip chip--ghost" id="pvType"></span></p>
+        <p class="head__date" id="pvDate"></p>
+        <h3 class="head__title" id="pvTitle"></h3>
+        <p class="head__sub" id="pvSub"></p>
+        <p class="head__summary" id="pvSummary"></p>
+      </div>
+
+      <dl class="facts" id="pvFacts"></dl>
+
+      <div class="notes" id="pvNotes" hidden>
+        <h4>참고 사항</h4>
+        <ul id="pvNotesList"></ul>
+      </div>
+
+      <section class="assets">
+        <header class="assets__bar">
+          <h4>관련 자료</h4>
+          <a class="btn btn--mark" id="pvBundle" href="#" download>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m0 0 3.2-3.2M8 10 4.8 6.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 11.5v1.2a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-1.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span>전체 내려받기</span><em id="pvBundleSize"></em>
+          </a>
+        </header>
+
+        <div class="tabs" id="tabs" role="tablist"></div>
+        <div class="items" id="items"></div>
+      </section>
+
+    </div>
+  </aside>
+</main>
+
+<!-- ───────────────── 사진 확대 ───────────────── -->
+<div class="lightbox" id="lightbox" hidden>
+  <div class="lightbox__bar">
+    <p class="lightbox__title"><span id="lbEvent"></span><span class="lightbox__count" id="lbCount"></span></p>
+    <div class="lightbox__acts">
+      <a class="btn btn--mark btn--sm" id="lbDownload" href="#" download>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m0 0 3.2-3.2M8 10 4.8 6.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 11.5v1.2a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-1.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>이 사진 저장</span>
+      </a>
+      <button class="iconbtn iconbtn--dark" id="lbClose" type="button" aria-label="닫기">&times;</button>
+    </div>
+  </div>
+  <button class="lightbox__nav lightbox__nav--prev" id="lbPrev" type="button" aria-label="이전 사진">&#8249;</button>
+  <img id="lbImg" alt="">
+  <button class="lightbox__nav lightbox__nav--next" id="lbNext" type="button" aria-label="다음 사진">&#8250;</button>
+  <p class="lightbox__cap" id="lbCap"></p>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

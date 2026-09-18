@@ -1,0 +1,15 @@
+{
+  "name": "company-events-tools",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "행사 아카이브 정적 사이트 빌드 도구",
+  "scripts": {
+    "build": "node build.mjs",
+    "articles": "node make-articles.mjs",
+    "serve": "node serve.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.34.4"
+  }
+}
