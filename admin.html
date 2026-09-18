@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>행사 관리</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%231B2428'/%3E%3Crect x='7' y='9' width='18' height='3' fill='%23E0530D'/%3E%3Crect x='7' y='15' width='18' height='2' fill='%238A949A'/%3E%3Crect x='7' y='20' width='12' height='2' fill='%238A949A'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/admin.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <span class="brand__mark" aria-hidden="true"></span>
+    <span class="brand__name">행사 관리</span>
+  </div>
+  <a class="back" href="/">목록으로</a>
+  <p class="who" id="who"></p>
+</header>
+
+<main class="shell">
+
+  <!-- 행사 목록 -->
+  <nav class="side" aria-label="행사 선택">
+    <button class="newbtn" id="newEvent" type="button">+ 새 행사 등록</button>
+    <ul class="picks" id="picks"></ul>
+  </nav>
+
+  <!-- 편집 폼 -->
+  <section class="edit" id="edit" hidden>
+    <div class="edit__head">
+      <h1 id="editTitle">행사 수정</h1>
+      <span class="idtag" id="editId"></span>
+    </div>
+
+    <div class="grid2">
+      <label class="f f--wide"><span>행사명 <b>*</b></span>
+        <input id="fTitle" maxlength="200" placeholder="예: 제9회 대구 스타트업 어워즈 — 대상 수상"></label>
+      <label class="f f--wide"><span>한 줄 부제</span>
+        <input id="fSubtitle" maxlength="200" placeholder="예: 우수 스타트업부문 대상"></label>
+
+      <label class="f"><span>구분 <b>*</b></span>
+        <select id="fCategory"><option value="사외">사외</option><option value="사내">사내</option></select></label>
+      <label class="f"><span>행사구분 <b>*</b></span>
+        <input id="fType" maxlength="30" list="typeList" placeholder="예: 수상">
+        <datalist id="typeList"></datalist></label>
+      <label class="f"><span>일시 <b>*</b></span>
+        <input id="fDate" type="date"></label>
+      <label class="f"><span>장소</span>
+        <input id="fPlace" maxlength="200" placeholder="예: 대구창조경제혁신센터"></label>
+      <label class="f"><span>주관</span>
+        <input id="fHost" maxlength="200" placeholder="예: 대구광역시"></label>
+      <label class="f"><span>참석</span>
+        <input id="fAttendees" maxlength="300" placeholder="예: 류영균 대표이사"></label>
+
+      <label class="f f--wide"><span>행사 개요</span>
+        <textarea id="fSummary" rows="3" maxlength="2000" placeholder="어떤 행사였는지 한두 문장"></textarea></label>
+      <label class="f f--wide"><span>참고 사항 <em>한 줄에 하나씩</em></span>
+        <textarea id="fNotes" rows="3" placeholder="단체사진: 앞줄 좌측 세번째 ○○○ 상무"></textarea></label>
+    </div>
+
+    <!-- 사진 -->
+    <section class="block">
+      <div class="block__bar">
+        <h2>사진 <span class="cnt" id="photoCount">0</span></h2>
+        <div>
+          <label class="btn btn--ghost" for="pick">사진 추가</label>
+          <input id="pick" type="file" accept="image/*" multiple hidden>
+        </div>
+      </div>
+      <p class="hint">올린 사진은 긴 변 1920px 로 줄여 저장합니다. 촬영 원본은 공유드라이브에 그대로 두세요.</p>
+      <div class="photos" id="photos"></div>
+      <p class="empty" id="photoEmpty">아직 사진이 없습니다.</p>
+    </section>
+
+    <!-- 언론기사 -->
+    <section class="block">
+      <div class="block__bar">
+        <h2>언론기사 · 보도자료 <span class="cnt" id="articleCount">0</span></h2>
+        <button class="btn btn--ghost" id="addArticle" type="button">기사 추가</button>
+      </div>
+      <p class="hint">저장하면 기사 원문을 PDF 로 떠서 함께 보관합니다. 기사가 내려가도 자료가 남습니다.</p>
+      <div class="rows" id="articles"></div>
+    </section>
+
+    <!-- 영상 -->
+    <section class="block">
+      <div class="block__bar">
+        <h2>영상 <span class="cnt" id="videoCount">0</span></h2>
+        <button class="btn btn--ghost" id="addVideo" type="button">영상 추가</button>
+      </div>
+      <div class="rows" id="videos"></div>
+    </section>
+
+    <!-- 저장 -->
+    <div class="actions">
+      <button class="btn btn--mark" id="save" type="button">저장</button>
+      <button class="btn btn--danger" id="del" type="button">이 행사 삭제</button>
+      <span class="status" id="status"></span>
+    </div>
+    <p class="hint hint--foot">
+      저장하면 자료를 정리하고 사이트에 반영하기까지 <b>1~2분</b>쯤 걸립니다.
+      저장 직후 목록에 바로 안 보여도 잠시 뒤 새로 고치면 나옵니다.
+    </p>
+  </section>
+
+  <section class="edit edit--blank" id="blank">
+    <p>왼쪽에서 행사를 고르거나 <b>새 행사 등록</b>을 눌러 시작하세요.</p>
+  </section>
+</main>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet__box" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <h3 id="sheetTitle"></h3>
+    <p id="sheetBody"></p>
+    <div class="sheet__acts">
+      <button class="btn btn--ghost" id="sheetNo" type="button">취소</button>
+      <button class="btn btn--danger" id="sheetYes" type="button">삭제</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/admin.js"></script>
+</body>
+</html>

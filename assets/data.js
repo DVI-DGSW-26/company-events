@@ -1,7 +1,7 @@
 /* 자동 생성 파일 — 직접 수정하지 마세요. data/events.json 을 고치고 npm run build 를 실행하세요. */
 window.ARCHIVE = {
  "company": "주식회사 디비전",
- "generatedAt": "2026-09-18T00:45:04.392Z",
+ "generatedAt": "2026-09-18T02:48:49.814Z",
  "events": [
   {
    "id": "e12",
@@ -27,8 +27,7 @@ window.ARCHIVE = {
      "name": "001_20260515_나래_디비전_회의사진.jpg",
      "caption": "20260515_나래_디비전_회의사진",
      "orig": "20260515_나래_디비전_회의사진.jpg",
-     "size": 197681,
-     "origSize": 484007
+     "size": 197681
     },
     {
      "src": "photos/e12/002_20260601_나래_회의사진_디비전.jpg",
@@ -39,8 +38,7 @@ window.ARCHIVE = {
      "name": "002_20260601_나래_회의사진_디비전.jpg",
      "caption": "20260601_나래_회의사진_디비전",
      "orig": "20260601_나래_회의사진_디비전.jpg",
-     "size": 204046,
-     "origSize": 478194
+     "size": 204046
     },
     {
      "src": "photos/e12/003_20260701_나래_디비전(회의사진).jpg",
@@ -51,8 +49,7 @@ window.ARCHIVE = {
      "name": "003_20260701_나래_디비전(회의사진).jpg",
      "caption": "20260701_나래_디비전(회의사진)",
      "orig": "20260701_나래_디비전(회의사진).jpg",
-     "size": 195391,
-     "origSize": 472273
+     "size": 195391
     },
     {
      "src": "photos/e12/004_20260707_나래_디비전_회의사진.jpg",
@@ -63,8 +60,7 @@ window.ARCHIVE = {
      "name": "004_20260707_나래_디비전_회의사진.jpg",
      "caption": "20260707_나래_디비전_회의사진",
      "orig": "20260707_나래_디비전_회의사진.jpg",
-     "size": 182241,
-     "origSize": 470038
+     "size": 182241
     }
    ],
    "videoFiles": [],
@@ -73,7 +69,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260708_특허 출원 회의.zip",
     "name": "20260708_특허 출원 회의.zip",
-    "size": 780777
+    "size": 780778
    }
   },
   {
@@ -98,8 +94,7 @@ window.ARCHIVE = {
      "name": "001_20260629_104925.jpg",
      "caption": "",
      "orig": "20260629_104925.jpg",
-     "size": 419266,
-     "origSize": 3212685
+     "size": 419266
     },
     {
      "src": "photos/e11/002_20260629_104931.jpg",
@@ -110,8 +105,7 @@ window.ARCHIVE = {
      "name": "002_20260629_104931.jpg",
      "caption": "",
      "orig": "20260629_104931.jpg",
-     "size": 436036,
-     "origSize": 3368913
+     "size": 436036
     },
     {
      "src": "photos/e11/003_20260629_105133.jpg",
@@ -122,8 +116,7 @@ window.ARCHIVE = {
      "name": "003_20260629_105133.jpg",
      "caption": "",
      "orig": "20260629_105133.jpg",
-     "size": 472626,
-     "origSize": 3595872
+     "size": 472626
     }
    ],
    "videoFiles": [],
@@ -132,7 +125,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260629_해외 출장자 출장내용 공유회.zip",
     "name": "20260629_해외 출장자 출장내용 공유회.zip",
-    "size": 1328924
+    "size": 1328925
    }
   },
   {
@@ -157,8 +150,7 @@ window.ARCHIVE = {
      "name": "001_KakaoTalk_20260629_151034832_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260629_151034832_01.jpg",
-     "size": 448794,
-     "origSize": 3004604
+     "size": 448794
     },
     {
      "src": "photos/e10/002_KakaoTalk_20260629_151034832_02.jpg",
@@ -169,8 +161,7 @@ window.ARCHIVE = {
      "name": "002_KakaoTalk_20260629_151034832_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260629_151034832_02.jpg",
-     "size": 299851,
-     "origSize": 2579734
+     "size": 299851
     },
     {
      "src": "photos/e10/003_KakaoTalk_20260629_151034832_03.jpg",
@@ -181,8 +172,7 @@ window.ARCHIVE = {
      "name": "003_KakaoTalk_20260629_151034832_03.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260629_151034832_03.jpg",
-     "size": 395968,
-     "origSize": 2849811
+     "size": 395968
     },
     {
      "src": "photos/e10/004_KakaoTalk_20260629_151034832_04.jpg",
@@ -193,8 +183,7 @@ window.ARCHIVE = {
      "name": "004_KakaoTalk_20260629_151034832_04.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260629_151034832_04.jpg",
-     "size": 362338,
-     "origSize": 2957764
+     "size": 362338
     },
     {
      "src": "photos/e10/005_KakaoTalk_20260629_151034832_05.jpg",
@@ -205,8 +194,7 @@ window.ARCHIVE = {
      "name": "005_KakaoTalk_20260629_151034832_05.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260629_151034832_05.jpg",
-     "size": 380734,
-     "origSize": 3626542
+     "size": 380734
     },
     {
      "src": "photos/e10/006_KakaoTalk_20260629_151034832_06.jpg",
@@ -217,8 +205,7 @@ window.ARCHIVE = {
      "name": "006_KakaoTalk_20260629_151034832_06.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260629_151034832_06.jpg",
-     "size": 394776,
-     "origSize": 3428173
+     "size": 394776
     },
     {
      "src": "photos/e10/007_KakaoTalk_20260629_151034832.jpg",
@@ -229,8 +216,7 @@ window.ARCHIVE = {
      "name": "007_KakaoTalk_20260629_151034832.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260629_151034832.jpg",
-     "size": 371329,
-     "origSize": 2774569
+     "size": 371329
     }
    ],
    "videoFiles": [],
@@ -239,7 +225,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260629_사내 문제점 공유행사 (신입사원).zip",
     "name": "20260629_사내 문제점 공유행사 (신입사원).zip",
-    "size": 2655618
+    "size": 2655619
    }
   },
   {
@@ -268,8 +254,7 @@ window.ARCHIVE = {
      "name": "001_20260622_090032.jpg",
      "caption": "",
      "orig": "20260622_090032.jpg",
-     "size": 377096,
-     "origSize": 2974448
+     "size": 377096
     },
     {
      "src": "photos/e09/002_20260622_090041.jpg",
@@ -280,8 +265,7 @@ window.ARCHIVE = {
      "name": "002_20260622_090041.jpg",
      "caption": "",
      "orig": "20260622_090041.jpg",
-     "size": 400065,
-     "origSize": 3226131
+     "size": 400065
     },
     {
      "src": "photos/e09/003_20260622_090138.jpg",
@@ -292,8 +276,7 @@ window.ARCHIVE = {
      "name": "003_20260622_090138.jpg",
      "caption": "",
      "orig": "20260622_090138.jpg",
-     "size": 383990,
-     "origSize": 3123420
+     "size": 383990
     },
     {
      "src": "photos/e09/004_20260622_090146.jpg",
@@ -304,8 +287,7 @@ window.ARCHIVE = {
      "name": "004_20260622_090146.jpg",
      "caption": "",
      "orig": "20260622_090146.jpg",
-     "size": 318822,
-     "origSize": 2897655
+     "size": 318822
     },
     {
      "src": "photos/e09/005_20260622_090201.jpg",
@@ -316,8 +298,7 @@ window.ARCHIVE = {
      "name": "005_20260622_090201.jpg",
      "caption": "",
      "orig": "20260622_090201.jpg",
-     "size": 318675,
-     "origSize": 3082552
+     "size": 318675
     },
     {
      "src": "photos/e09/006_20260622_090201(0).jpg",
@@ -328,8 +309,7 @@ window.ARCHIVE = {
      "name": "006_20260622_090201(0).jpg",
      "caption": "",
      "orig": "20260622_090201(0).jpg",
-     "size": 308579,
-     "origSize": 3054585
+     "size": 308579
     },
     {
      "src": "photos/e09/007_20260622_090201(1).jpg",
@@ -340,8 +320,7 @@ window.ARCHIVE = {
      "name": "007_20260622_090201(1).jpg",
      "caption": "",
      "orig": "20260622_090201(1).jpg",
-     "size": 273324,
-     "origSize": 2963440
+     "size": 273324
     },
     {
      "src": "photos/e09/008_20260622_090202.jpg",
@@ -352,8 +331,7 @@ window.ARCHIVE = {
      "name": "008_20260622_090202.jpg",
      "caption": "",
      "orig": "20260622_090202.jpg",
-     "size": 266272,
-     "origSize": 2772052
+     "size": 266272
     },
     {
      "src": "photos/e09/009_20260622_090203.jpg",
@@ -364,8 +342,7 @@ window.ARCHIVE = {
      "name": "009_20260622_090203.jpg",
      "caption": "",
      "orig": "20260622_090203.jpg",
-     "size": 398567,
-     "origSize": 3096919
+     "size": 398567
     },
     {
      "src": "photos/e09/010_20260622_090204.jpg",
@@ -376,8 +353,7 @@ window.ARCHIVE = {
      "name": "010_20260622_090204.jpg",
      "caption": "",
      "orig": "20260622_090204.jpg",
-     "size": 389762,
-     "origSize": 2914293
+     "size": 389762
     },
     {
      "src": "photos/e09/011_20260622_090205.jpg",
@@ -388,8 +364,7 @@ window.ARCHIVE = {
      "name": "011_20260622_090205.jpg",
      "caption": "",
      "orig": "20260622_090205.jpg",
-     "size": 406840,
-     "origSize": 3113053
+     "size": 406840
     },
     {
      "src": "photos/e09/012_20260622_090207.jpg",
@@ -400,8 +375,7 @@ window.ARCHIVE = {
      "name": "012_20260622_090207.jpg",
      "caption": "",
      "orig": "20260622_090207.jpg",
-     "size": 392951,
-     "origSize": 3114935
+     "size": 392951
     },
     {
      "src": "photos/e09/013_20260622_090224.jpg",
@@ -412,8 +386,7 @@ window.ARCHIVE = {
      "name": "013_20260622_090224.jpg",
      "caption": "",
      "orig": "20260622_090224.jpg",
-     "size": 321207,
-     "origSize": 2930975
+     "size": 321207
     },
     {
      "src": "photos/e09/014_20260622_090238.jpg",
@@ -424,8 +397,7 @@ window.ARCHIVE = {
      "name": "014_20260622_090238.jpg",
      "caption": "",
      "orig": "20260622_090238.jpg",
-     "size": 266276,
-     "origSize": 2157472
+     "size": 266276
     },
     {
      "src": "photos/e09/015_20260622_090239.jpg",
@@ -436,8 +408,7 @@ window.ARCHIVE = {
      "name": "015_20260622_090239.jpg",
      "caption": "",
      "orig": "20260622_090239.jpg",
-     "size": 264272,
-     "origSize": 2110312
+     "size": 264272
     },
     {
      "src": "photos/e09/016_20260622_090240.jpg",
@@ -448,8 +419,7 @@ window.ARCHIVE = {
      "name": "016_20260622_090240.jpg",
      "caption": "",
      "orig": "20260622_090240.jpg",
-     "size": 260123,
-     "origSize": 2096119
+     "size": 260123
     },
     {
      "src": "photos/e09/017_20260622_090241.jpg",
@@ -460,8 +430,7 @@ window.ARCHIVE = {
      "name": "017_20260622_090241.jpg",
      "caption": "",
      "orig": "20260622_090241.jpg",
-     "size": 267724,
-     "origSize": 2138048
+     "size": 267724
     },
     {
      "src": "photos/e09/018_20260622_090241(0).jpg",
@@ -472,8 +441,7 @@ window.ARCHIVE = {
      "name": "018_20260622_090241(0).jpg",
      "caption": "",
      "orig": "20260622_090241(0).jpg",
-     "size": 286492,
-     "origSize": 2297975
+     "size": 286492
     },
     {
      "src": "photos/e09/019_20260622_090242.jpg",
@@ -484,8 +452,7 @@ window.ARCHIVE = {
      "name": "019_20260622_090242.jpg",
      "caption": "",
      "orig": "20260622_090242.jpg",
-     "size": 288577,
-     "origSize": 2337313
+     "size": 288577
     },
     {
      "src": "photos/e09/020_20260622_090242(0).jpg",
@@ -496,8 +463,7 @@ window.ARCHIVE = {
      "name": "020_20260622_090242(0).jpg",
      "caption": "",
      "orig": "20260622_090242(0).jpg",
-     "size": 266494,
-     "origSize": 2250438
+     "size": 266494
     }
    ],
    "videoFiles": [],
@@ -531,8 +497,7 @@ window.ARCHIVE = {
      "name": "001_20260609_103431.jpg",
      "caption": "",
      "orig": "20260609_103431.jpg",
-     "size": 461601,
-     "origSize": 3308639
+     "size": 461601
     },
     {
      "src": "photos/e08/002_20260609_103522.jpg",
@@ -543,8 +508,7 @@ window.ARCHIVE = {
      "name": "002_20260609_103522.jpg",
      "caption": "",
      "orig": "20260609_103522.jpg",
-     "size": 452161,
-     "origSize": 3335597
+     "size": 452161
     },
     {
      "src": "photos/e08/003_20260609_103822.jpg",
@@ -555,8 +519,7 @@ window.ARCHIVE = {
      "name": "003_20260609_103822.jpg",
      "caption": "",
      "orig": "20260609_103822.jpg",
-     "size": 430797,
-     "origSize": 3178547
+     "size": 430797
     },
     {
      "src": "photos/e08/004_20260609_103829.jpg",
@@ -567,8 +530,7 @@ window.ARCHIVE = {
      "name": "004_20260609_103829.jpg",
      "caption": "",
      "orig": "20260609_103829.jpg",
-     "size": 406592,
-     "origSize": 2941436
+     "size": 406592
     },
     {
      "src": "photos/e08/005_20260609_104125.jpg",
@@ -579,8 +541,7 @@ window.ARCHIVE = {
      "name": "005_20260609_104125.jpg",
      "caption": "",
      "orig": "20260609_104125.jpg",
-     "size": 478064,
-     "origSize": 4833519
+     "size": 478064
     },
     {
      "src": "photos/e08/006_20260609_104131.jpg",
@@ -591,8 +552,7 @@ window.ARCHIVE = {
      "name": "006_20260609_104131.jpg",
      "caption": "",
      "orig": "20260609_104131.jpg",
-     "size": 479255,
-     "origSize": 4811475
+     "size": 479255
     },
     {
      "src": "photos/e08/007_20260609_105400.jpg",
@@ -603,8 +563,7 @@ window.ARCHIVE = {
      "name": "007_20260609_105400.jpg",
      "caption": "",
      "orig": "20260609_105400.jpg",
-     "size": 415415,
-     "origSize": 3133478
+     "size": 415415
     },
     {
      "src": "photos/e08/008_20260609_110359.jpg",
@@ -615,8 +574,7 @@ window.ARCHIVE = {
      "name": "008_20260609_110359.jpg",
      "caption": "",
      "orig": "20260609_110359.jpg",
-     "size": 473994,
-     "origSize": 2688710
+     "size": 473994
     },
     {
      "src": "photos/e08/009_20260609_110445.jpg",
@@ -627,8 +585,7 @@ window.ARCHIVE = {
      "name": "009_20260609_110445.jpg",
      "caption": "",
      "orig": "20260609_110445.jpg",
-     "size": 515535,
-     "origSize": 2749071
+     "size": 515535
     },
     {
      "src": "photos/e08/010_20260609_110510.jpg",
@@ -639,8 +596,7 @@ window.ARCHIVE = {
      "name": "010_20260609_110510.jpg",
      "caption": "",
      "orig": "20260609_110510.jpg",
-     "size": 611118,
-     "origSize": 3268241
+     "size": 611118
     },
     {
      "src": "photos/e08/011_20260609_110610.jpg",
@@ -651,8 +607,7 @@ window.ARCHIVE = {
      "name": "011_20260609_110610.jpg",
      "caption": "",
      "orig": "20260609_110610.jpg",
-     "size": 486724,
-     "origSize": 3096918
+     "size": 486724
     },
     {
      "src": "photos/e08/012_20260609_110641.jpg",
@@ -663,8 +618,7 @@ window.ARCHIVE = {
      "name": "012_20260609_110641.jpg",
      "caption": "",
      "orig": "20260609_110641.jpg",
-     "size": 531908,
-     "origSize": 3179083
+     "size": 531908
     },
     {
      "src": "photos/e08/013_20260609_110726.jpg",
@@ -675,8 +629,7 @@ window.ARCHIVE = {
      "name": "013_20260609_110726.jpg",
      "caption": "",
      "orig": "20260609_110726.jpg",
-     "size": 476032,
-     "origSize": 3207647
+     "size": 476032
     },
     {
      "src": "photos/e08/014_20260609_110905.jpg",
@@ -687,8 +640,7 @@ window.ARCHIVE = {
      "name": "014_20260609_110905.jpg",
      "caption": "",
      "orig": "20260609_110905.jpg",
-     "size": 438459,
-     "origSize": 2764451
+     "size": 438459
     },
     {
      "src": "photos/e08/015_20260609_110942.jpg",
@@ -699,8 +651,7 @@ window.ARCHIVE = {
      "name": "015_20260609_110942.jpg",
      "caption": "",
      "orig": "20260609_110942.jpg",
-     "size": 355178,
-     "origSize": 2724883
+     "size": 355178
     },
     {
      "src": "photos/e08/016_20260609_111017.jpg",
@@ -711,8 +662,7 @@ window.ARCHIVE = {
      "name": "016_20260609_111017.jpg",
      "caption": "",
      "orig": "20260609_111017.jpg",
-     "size": 358030,
-     "origSize": 2825153
+     "size": 358030
     },
     {
      "src": "photos/e08/017_20260609_111102.jpg",
@@ -723,8 +673,7 @@ window.ARCHIVE = {
      "name": "017_20260609_111102.jpg",
      "caption": "",
      "orig": "20260609_111102.jpg",
-     "size": 571966,
-     "origSize": 3504910
+     "size": 571966
     },
     {
      "src": "photos/e08/018_20260609_111111.jpg",
@@ -735,8 +684,7 @@ window.ARCHIVE = {
      "name": "018_20260609_111111.jpg",
      "caption": "",
      "orig": "20260609_111111.jpg",
-     "size": 391518,
-     "origSize": 2860244
+     "size": 391518
     },
     {
      "src": "photos/e08/019_20260609_111239.jpg",
@@ -747,8 +695,7 @@ window.ARCHIVE = {
      "name": "019_20260609_111239.jpg",
      "caption": "",
      "orig": "20260609_111239.jpg",
-     "size": 414493,
-     "origSize": 3153263
+     "size": 414493
     },
     {
      "src": "photos/e08/020_20260609_111330.jpg",
@@ -759,8 +706,7 @@ window.ARCHIVE = {
      "name": "020_20260609_111330.jpg",
      "caption": "",
      "orig": "20260609_111330.jpg",
-     "size": 563562,
-     "origSize": 3733125
+     "size": 563562
     },
     {
      "src": "photos/e08/021_KakaoTalk_20260609_135225341_01.jpg",
@@ -771,8 +717,7 @@ window.ARCHIVE = {
      "name": "021_KakaoTalk_20260609_135225341_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260609_135225341_01.jpg",
-     "size": 416667,
-     "origSize": 698630
+     "size": 416667
     },
     {
      "src": "photos/e08/022_KakaoTalk_20260609_135225341_02.jpg",
@@ -783,8 +728,7 @@ window.ARCHIVE = {
      "name": "022_KakaoTalk_20260609_135225341_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260609_135225341_02.jpg",
-     "size": 586441,
-     "origSize": 3677100
+     "size": 586441
     },
     {
      "src": "photos/e08/023_KakaoTalk_20260609_135225341_03.jpg",
@@ -795,8 +739,7 @@ window.ARCHIVE = {
      "name": "023_KakaoTalk_20260609_135225341_03.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260609_135225341_03.jpg",
-     "size": 579773,
-     "origSize": 3641282
+     "size": 579773
     },
     {
      "src": "photos/e08/024_KakaoTalk_20260609_135225341.jpg",
@@ -807,8 +750,7 @@ window.ARCHIVE = {
      "name": "024_KakaoTalk_20260609_135225341.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260609_135225341.jpg",
-     "size": 650559,
-     "origSize": 3327937
+     "size": 650559
     }
    ],
    "videoFiles": [],
@@ -817,7 +759,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260609_대구하이텍고등학교 방문.zip",
     "name": "20260609_대구하이텍고등학교 방문.zip",
-    "size": 11550015
+    "size": 11550016
    }
   },
   {
@@ -844,8 +786,7 @@ window.ARCHIVE = {
      "name": "001_엑셀45_포럼 패널 토론.jpg",
      "caption": "포럼 패널 토론",
      "orig": "엑셀45_포럼 패널 토론.jpeg",
-     "size": 117726,
-     "origSize": 132802
+     "size": 117726
     },
     {
      "src": "photos/e07/002_KakaoTalk_20260526_083250883_01.jpg",
@@ -856,8 +797,7 @@ window.ARCHIVE = {
      "name": "002_KakaoTalk_20260526_083250883_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260526_083250883_01.jpg",
-     "size": 458012,
-     "origSize": 5074165
+     "size": 458012
     },
     {
      "src": "photos/e07/003_KakaoTalk_20260526_083250883_02.jpg",
@@ -868,8 +808,7 @@ window.ARCHIVE = {
      "name": "003_KakaoTalk_20260526_083250883_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260526_083250883_02.jpg",
-     "size": 531829,
-     "origSize": 6076441
+     "size": 531829
     },
     {
      "src": "photos/e07/004_KakaoTalk_20260526_083250883_03.jpg",
@@ -880,8 +819,7 @@ window.ARCHIVE = {
      "name": "004_KakaoTalk_20260526_083250883_03.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260526_083250883_03.jpg",
-     "size": 383832,
-     "origSize": 5543322
+     "size": 383832
     },
     {
      "src": "photos/e07/005_KakaoTalk_20260526_083250883_04.jpg",
@@ -892,8 +830,7 @@ window.ARCHIVE = {
      "name": "005_KakaoTalk_20260526_083250883_04.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260526_083250883_04.jpg",
-     "size": 357529,
-     "origSize": 4016659
+     "size": 357529
     },
     {
      "src": "photos/e07/006_KakaoTalk_20260526_083250883_05.jpg",
@@ -904,8 +841,7 @@ window.ARCHIVE = {
      "name": "006_KakaoTalk_20260526_083250883_05.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260526_083250883_05.jpg",
-     "size": 512235,
-     "origSize": 5696457
+     "size": 512235
     },
     {
      "src": "photos/e07/007_KakaoTalk_20260526_083250883_06.jpg",
@@ -916,8 +852,7 @@ window.ARCHIVE = {
      "name": "007_KakaoTalk_20260526_083250883_06.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260526_083250883_06.jpg",
-     "size": 339532,
-     "origSize": 4957121
+     "size": 339532
     },
     {
      "src": "photos/e07/008_KakaoTalk_20260526_083250883.jpg",
@@ -928,8 +863,7 @@ window.ARCHIVE = {
      "name": "008_KakaoTalk_20260526_083250883.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260526_083250883.jpg",
-     "size": 539815,
-     "origSize": 6378849
+     "size": 539815
     }
    ],
    "videoFiles": [],
@@ -967,7 +901,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260521_2026년 제2차 일터혁신 상생컨설팅 사례공유 포럼.zip",
     "name": "20260521_2026년 제2차 일터혁신 상생컨설팅 사례공유 포럼.zip",
-    "size": 5861825
+    "size": 5861826
    }
   },
   {
@@ -995,8 +929,7 @@ window.ARCHIVE = {
      "name": "001_20260318_132540.jpg",
      "caption": "",
      "orig": "20260318_132540.jpg",
-     "size": 363894,
-     "origSize": 1181028
+     "size": 363894
     },
     {
      "src": "photos/e06/002_20260318_132552.jpg",
@@ -1007,8 +940,7 @@ window.ARCHIVE = {
      "name": "002_20260318_132552.jpg",
      "caption": "",
      "orig": "20260318_132552.jpg",
-     "size": 230290,
-     "origSize": 937773
+     "size": 230290
     },
     {
      "src": "photos/e06/003_20260318_141913.jpg",
@@ -1019,8 +951,7 @@ window.ARCHIVE = {
      "name": "003_20260318_141913.jpg",
      "caption": "",
      "orig": "20260318_141913.jpg",
-     "size": 319483,
-     "origSize": 1061877
+     "size": 319483
     },
     {
      "src": "photos/e06/004_20260318_142142.jpg",
@@ -1031,8 +962,7 @@ window.ARCHIVE = {
      "name": "004_20260318_142142.jpg",
      "caption": "",
      "orig": "20260318_142142.jpg",
-     "size": 255438,
-     "origSize": 912587
+     "size": 255438
     },
     {
      "src": "photos/e06/005_20260318_142144.jpg",
@@ -1043,8 +973,7 @@ window.ARCHIVE = {
      "name": "005_20260318_142144.jpg",
      "caption": "",
      "orig": "20260318_142144.jpg",
-     "size": 270444,
-     "origSize": 1006361
+     "size": 270444
     },
     {
      "src": "photos/e06/006_20260318_142145(0).jpg",
@@ -1055,8 +984,7 @@ window.ARCHIVE = {
      "name": "006_20260318_142145(0).jpg",
      "caption": "",
      "orig": "20260318_142145(0).jpg",
-     "size": 274613,
-     "origSize": 1001198
+     "size": 274613
     },
     {
      "src": "photos/e06/007_20260318_143501.jpg",
@@ -1067,8 +995,7 @@ window.ARCHIVE = {
      "name": "007_20260318_143501.jpg",
      "caption": "",
      "orig": "20260318_143501.jpg",
-     "size": 160898,
-     "origSize": 752686
+     "size": 160898
     },
     {
      "src": "photos/e06/008_엑셀19_영상캡처_행사장 전경.jpg",
@@ -1079,8 +1006,7 @@ window.ARCHIVE = {
      "name": "008_엑셀19_영상캡처_행사장 전경.jpg",
      "caption": "영상캡처_행사장 전경",
      "orig": "엑셀19_영상캡처_행사장 전경.png",
-     "size": 260681,
-     "origSize": 2045969
+     "size": 260681
     },
     {
      "src": "photos/e06/009_엑셀20_영상캡처_기술나눔 수여.jpg",
@@ -1091,8 +1017,7 @@ window.ARCHIVE = {
      "name": "009_엑셀20_영상캡처_기술나눔 수여.jpg",
      "caption": "영상캡처_기술나눔 수여",
      "orig": "엑셀20_영상캡처_기술나눔 수여.png",
-     "size": 149297,
-     "origSize": 1362202
+     "size": 149297
     },
     {
      "src": "photos/e06/010_엑셀21_영상캡처_객석.jpg",
@@ -1103,8 +1028,7 @@ window.ARCHIVE = {
      "name": "010_엑셀21_영상캡처_객석.jpg",
      "caption": "영상캡처_객석",
      "orig": "엑셀21_영상캡처_객석.png",
-     "size": 312908,
-     "origSize": 2365393
+     "size": 312908
     },
     {
      "src": "photos/e06/011_엑셀22_영상캡처_업무협약 체결.jpg",
@@ -1115,8 +1039,7 @@ window.ARCHIVE = {
      "name": "011_엑셀22_영상캡처_업무협약 체결.jpg",
      "caption": "영상캡처_업무협약 체결",
      "orig": "엑셀22_영상캡처_업무협약 체결.png",
-     "size": 160787,
-     "origSize": 1450513
+     "size": 160787
     },
     {
      "src": "photos/e06/012_Screenshot_20260318_143546_YouTube.jpg",
@@ -1127,8 +1050,7 @@ window.ARCHIVE = {
      "name": "012_Screenshot_20260318_143546_YouTube.jpg",
      "caption": "143546_YouTube 영상 화면",
      "orig": "Screenshot_20260318_143546_YouTube.png",
-     "size": 89444,
-     "origSize": 314021
+     "size": 89444
     },
     {
      "src": "photos/e06/013_Screenshot_20260318_143555_YouTube.jpg",
@@ -1139,8 +1061,7 @@ window.ARCHIVE = {
      "name": "013_Screenshot_20260318_143555_YouTube.jpg",
      "caption": "143555_YouTube 영상 화면",
      "orig": "Screenshot_20260318_143555_YouTube.png",
-     "size": 90011,
-     "origSize": 315390
+     "size": 90011
     },
     {
      "src": "photos/e06/014_Screenshot_20260318_143617_YouTube.jpg",
@@ -1151,8 +1072,7 @@ window.ARCHIVE = {
      "name": "014_Screenshot_20260318_143617_YouTube.jpg",
      "caption": "143617_YouTube 영상 화면",
      "orig": "Screenshot_20260318_143617_YouTube.png",
-     "size": 99535,
-     "origSize": 325155
+     "size": 99535
     },
     {
      "src": "photos/e06/015_Screenshot_20260318_143625_YouTube.jpg",
@@ -1163,8 +1083,7 @@ window.ARCHIVE = {
      "name": "015_Screenshot_20260318_143625_YouTube.jpg",
      "caption": "143625_YouTube 영상 화면",
      "orig": "Screenshot_20260318_143625_YouTube.png",
-     "size": 178554,
-     "origSize": 504570
+     "size": 178554
     },
     {
      "src": "photos/e06/016_Screenshot_20260318_143639_YouTube.jpg",
@@ -1175,8 +1094,7 @@ window.ARCHIVE = {
      "name": "016_Screenshot_20260318_143639_YouTube.jpg",
      "caption": "143639_YouTube 영상 화면",
      "orig": "Screenshot_20260318_143639_YouTube.png",
-     "size": 123563,
-     "origSize": 387852
+     "size": 123563
     }
    ],
    "videoFiles": [],
@@ -1235,7 +1153,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20260318_2026 산업통상부–포스코그룹 기술나눔 행사.zip",
     "name": "20260318_2026 산업통상부–포스코그룹 기술나눔 행사.zip",
-    "size": 21234119
+    "size": 21234120
    }
   },
   {
@@ -1260,8 +1178,7 @@ window.ARCHIVE = {
      "name": "001_KakaoTalk_20260121_082313662_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_01.jpg",
-     "size": 378989,
-     "origSize": 3841220
+     "size": 378989
     },
     {
      "src": "photos/e05/002_KakaoTalk_20260121_082313662_02.jpg",
@@ -1272,8 +1189,7 @@ window.ARCHIVE = {
      "name": "002_KakaoTalk_20260121_082313662_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_02.jpg",
-     "size": 373688,
-     "origSize": 3453180
+     "size": 373688
     },
     {
      "src": "photos/e05/003_KakaoTalk_20260121_082313662_03.jpg",
@@ -1284,8 +1200,7 @@ window.ARCHIVE = {
      "name": "003_KakaoTalk_20260121_082313662_03.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_03.jpg",
-     "size": 378260,
-     "origSize": 3270819
+     "size": 378260
     },
     {
      "src": "photos/e05/004_KakaoTalk_20260121_082313662_04.jpg",
@@ -1296,8 +1211,7 @@ window.ARCHIVE = {
      "name": "004_KakaoTalk_20260121_082313662_04.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_04.jpg",
-     "size": 359641,
-     "origSize": 3771226
+     "size": 359641
     },
     {
      "src": "photos/e05/005_KakaoTalk_20260121_082313662_05.jpg",
@@ -1308,8 +1222,7 @@ window.ARCHIVE = {
      "name": "005_KakaoTalk_20260121_082313662_05.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_05.jpg",
-     "size": 396499,
-     "origSize": 3737023
+     "size": 396499
     },
     {
      "src": "photos/e05/006_KakaoTalk_20260121_082313662_06.jpg",
@@ -1320,8 +1233,7 @@ window.ARCHIVE = {
      "name": "006_KakaoTalk_20260121_082313662_06.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_06.jpg",
-     "size": 388416,
-     "origSize": 3639816
+     "size": 388416
     },
     {
      "src": "photos/e05/007_KakaoTalk_20260121_082313662_07.jpg",
@@ -1332,8 +1244,7 @@ window.ARCHIVE = {
      "name": "007_KakaoTalk_20260121_082313662_07.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_07.jpg",
-     "size": 366738,
-     "origSize": 3193570
+     "size": 366738
     },
     {
      "src": "photos/e05/008_KakaoTalk_20260121_082313662_08.jpg",
@@ -1344,8 +1255,7 @@ window.ARCHIVE = {
      "name": "008_KakaoTalk_20260121_082313662_08.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_08.jpg",
-     "size": 353838,
-     "origSize": 3191948
+     "size": 353838
     },
     {
      "src": "photos/e05/009_KakaoTalk_20260121_082313662_09.jpg",
@@ -1356,8 +1266,7 @@ window.ARCHIVE = {
      "name": "009_KakaoTalk_20260121_082313662_09.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662_09.jpg",
-     "size": 391443,
-     "origSize": 3602105
+     "size": 391443
     },
     {
      "src": "photos/e05/010_KakaoTalk_20260121_082313662.jpg",
@@ -1368,8 +1277,7 @@ window.ARCHIVE = {
      "name": "010_KakaoTalk_20260121_082313662.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260121_082313662.jpg",
-     "size": 358648,
-     "origSize": 3279872
+     "size": 358648
     }
    ],
    "videoFiles": [],
@@ -1407,8 +1315,7 @@ window.ARCHIVE = {
      "name": "001_엑셀16_우수기업 선정 단체사진.jpg",
      "caption": "우수기업 선정 단체사진",
      "orig": "엑셀16_우수기업 선정 단체사진.jpeg",
-     "size": 272271,
-     "origSize": 306770
+     "size": 272271
     },
     {
      "src": "photos/e04/002_KakaoTalk_20260323_104512832_01.jpg",
@@ -1419,8 +1326,7 @@ window.ARCHIVE = {
      "name": "002_KakaoTalk_20260323_104512832_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_01.jpg",
-     "size": 567816,
-     "origSize": 2013142
+     "size": 567816
     },
     {
      "src": "photos/e04/003_KakaoTalk_20260323_104512832_02.jpg",
@@ -1431,8 +1337,7 @@ window.ARCHIVE = {
      "name": "003_KakaoTalk_20260323_104512832_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_02.jpg",
-     "size": 627415,
-     "origSize": 2983387
+     "size": 627415
     },
     {
      "src": "photos/e04/004_KakaoTalk_20260323_104512832_03.jpg",
@@ -1443,8 +1348,7 @@ window.ARCHIVE = {
      "name": "004_KakaoTalk_20260323_104512832_03.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_03.jpg",
-     "size": 653989,
-     "origSize": 3344852
+     "size": 653989
     },
     {
      "src": "photos/e04/005_KakaoTalk_20260323_104512832_04.jpg",
@@ -1455,8 +1359,7 @@ window.ARCHIVE = {
      "name": "005_KakaoTalk_20260323_104512832_04.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_04.jpg",
-     "size": 631874,
-     "origSize": 3013034
+     "size": 631874
     },
     {
      "src": "photos/e04/006_KakaoTalk_20260323_104512832_05.jpg",
@@ -1467,8 +1370,7 @@ window.ARCHIVE = {
      "name": "006_KakaoTalk_20260323_104512832_05.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_05.jpg",
-     "size": 589273,
-     "origSize": 2933890
+     "size": 589273
     },
     {
      "src": "photos/e04/007_KakaoTalk_20260323_104512832_06.jpg",
@@ -1479,8 +1381,7 @@ window.ARCHIVE = {
      "name": "007_KakaoTalk_20260323_104512832_06.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_06.jpg",
-     "size": 505148,
-     "origSize": 2340394
+     "size": 505148
     },
     {
      "src": "photos/e04/008_KakaoTalk_20260323_104512832_07.jpg",
@@ -1491,8 +1392,7 @@ window.ARCHIVE = {
      "name": "008_KakaoTalk_20260323_104512832_07.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_07.jpg",
-     "size": 462893,
-     "origSize": 2225545
+     "size": 462893
     },
     {
      "src": "photos/e04/009_KakaoTalk_20260323_104512832_08.jpg",
@@ -1503,8 +1403,7 @@ window.ARCHIVE = {
      "name": "009_KakaoTalk_20260323_104512832_08.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_08.jpg",
-     "size": 480569,
-     "origSize": 2190235
+     "size": 480569
     },
     {
      "src": "photos/e04/010_KakaoTalk_20260323_104512832_09.jpg",
@@ -1515,8 +1414,7 @@ window.ARCHIVE = {
      "name": "010_KakaoTalk_20260323_104512832_09.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_09.jpg",
-     "size": 411959,
-     "origSize": 2075685
+     "size": 411959
     },
     {
      "src": "photos/e04/011_KakaoTalk_20260323_104512832_10.jpg",
@@ -1527,8 +1425,7 @@ window.ARCHIVE = {
      "name": "011_KakaoTalk_20260323_104512832_10.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_10.jpg",
-     "size": 428011,
-     "origSize": 2158511
+     "size": 428011
     },
     {
      "src": "photos/e04/012_KakaoTalk_20260323_104512832_11.jpg",
@@ -1539,8 +1436,7 @@ window.ARCHIVE = {
      "name": "012_KakaoTalk_20260323_104512832_11.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_11.jpg",
-     "size": 451164,
-     "origSize": 2030265
+     "size": 451164
     },
     {
      "src": "photos/e04/013_KakaoTalk_20260323_104512832_12.jpg",
@@ -1551,8 +1447,7 @@ window.ARCHIVE = {
      "name": "013_KakaoTalk_20260323_104512832_12.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_12.jpg",
-     "size": 530922,
-     "origSize": 3309621
+     "size": 530922
     },
     {
      "src": "photos/e04/014_KakaoTalk_20260323_104512832_13.jpg",
@@ -1563,8 +1458,7 @@ window.ARCHIVE = {
      "name": "014_KakaoTalk_20260323_104512832_13.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_13.jpg",
-     "size": 532339,
-     "origSize": 3353973
+     "size": 532339
     },
     {
      "src": "photos/e04/015_KakaoTalk_20260323_104512832_14.jpg",
@@ -1575,8 +1469,7 @@ window.ARCHIVE = {
      "name": "015_KakaoTalk_20260323_104512832_14.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_14.jpg",
-     "size": 498547,
-     "origSize": 3244644
+     "size": 498547
     },
     {
      "src": "photos/e04/016_KakaoTalk_20260323_104512832_15.jpg",
@@ -1587,8 +1480,7 @@ window.ARCHIVE = {
      "name": "016_KakaoTalk_20260323_104512832_15.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_15.jpg",
-     "size": 498074,
-     "origSize": 3439953
+     "size": 498074
     },
     {
      "src": "photos/e04/017_KakaoTalk_20260323_104512832_16.jpg",
@@ -1599,8 +1491,7 @@ window.ARCHIVE = {
      "name": "017_KakaoTalk_20260323_104512832_16.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_16.jpg",
-     "size": 509282,
-     "origSize": 3340378
+     "size": 509282
     },
     {
      "src": "photos/e04/018_KakaoTalk_20260323_104512832_17.jpg",
@@ -1611,8 +1502,7 @@ window.ARCHIVE = {
      "name": "018_KakaoTalk_20260323_104512832_17.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_17.jpg",
-     "size": 502227,
-     "origSize": 3335972
+     "size": 502227
     },
     {
      "src": "photos/e04/019_KakaoTalk_20260323_104512832_18.jpg",
@@ -1623,8 +1513,7 @@ window.ARCHIVE = {
      "name": "019_KakaoTalk_20260323_104512832_18.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_18.jpg",
-     "size": 498460,
-     "origSize": 3264225
+     "size": 498460
     },
     {
      "src": "photos/e04/020_KakaoTalk_20260323_104512832_19.jpg",
@@ -1635,8 +1524,7 @@ window.ARCHIVE = {
      "name": "020_KakaoTalk_20260323_104512832_19.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_19.jpg",
-     "size": 532746,
-     "origSize": 3495469
+     "size": 532746
     },
     {
      "src": "photos/e04/021_KakaoTalk_20260323_104512832_20.jpg",
@@ -1647,8 +1535,7 @@ window.ARCHIVE = {
      "name": "021_KakaoTalk_20260323_104512832_20.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_20.jpg",
-     "size": 486779,
-     "origSize": 3393123
+     "size": 486779
     },
     {
      "src": "photos/e04/022_KakaoTalk_20260323_104512832_21.jpg",
@@ -1659,8 +1546,7 @@ window.ARCHIVE = {
      "name": "022_KakaoTalk_20260323_104512832_21.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_21.jpg",
-     "size": 514693,
-     "origSize": 3454940
+     "size": 514693
     },
     {
      "src": "photos/e04/023_KakaoTalk_20260323_104512832_22.jpg",
@@ -1671,8 +1557,7 @@ window.ARCHIVE = {
      "name": "023_KakaoTalk_20260323_104512832_22.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_22.jpg",
-     "size": 517065,
-     "origSize": 3526555
+     "size": 517065
     },
     {
      "src": "photos/e04/024_KakaoTalk_20260323_104512832_23.jpg",
@@ -1683,8 +1568,7 @@ window.ARCHIVE = {
      "name": "024_KakaoTalk_20260323_104512832_23.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_23.jpg",
-     "size": 533402,
-     "origSize": 2297516
+     "size": 533402
     },
     {
      "src": "photos/e04/025_KakaoTalk_20260323_104512832_24.jpg",
@@ -1695,8 +1579,7 @@ window.ARCHIVE = {
      "name": "025_KakaoTalk_20260323_104512832_24.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_24.jpg",
-     "size": 521816,
-     "origSize": 2243426
+     "size": 521816
     },
     {
      "src": "photos/e04/026_KakaoTalk_20260323_104512832_25.jpg",
@@ -1707,8 +1590,7 @@ window.ARCHIVE = {
      "name": "026_KakaoTalk_20260323_104512832_25.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_25.jpg",
-     "size": 477167,
-     "origSize": 2162144
+     "size": 477167
     },
     {
      "src": "photos/e04/027_KakaoTalk_20260323_104512832_26.jpg",
@@ -1719,8 +1601,7 @@ window.ARCHIVE = {
      "name": "027_KakaoTalk_20260323_104512832_26.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_26.jpg",
-     "size": 498522,
-     "origSize": 2107452
+     "size": 498522
     },
     {
      "src": "photos/e04/028_KakaoTalk_20260323_104512832_27.jpg",
@@ -1731,8 +1612,7 @@ window.ARCHIVE = {
      "name": "028_KakaoTalk_20260323_104512832_27.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_27.jpg",
-     "size": 471689,
-     "origSize": 2893943
+     "size": 471689
     },
     {
      "src": "photos/e04/029_KakaoTalk_20260323_104512832_28.jpg",
@@ -1743,8 +1623,7 @@ window.ARCHIVE = {
      "name": "029_KakaoTalk_20260323_104512832_28.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_28.jpg",
-     "size": 476127,
-     "origSize": 2909928
+     "size": 476127
     },
     {
      "src": "photos/e04/030_KakaoTalk_20260323_104512832_29.jpg",
@@ -1755,8 +1634,7 @@ window.ARCHIVE = {
      "name": "030_KakaoTalk_20260323_104512832_29.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832_29.jpg",
-     "size": 527148,
-     "origSize": 3155643
+     "size": 527148
     },
     {
      "src": "photos/e04/031_KakaoTalk_20260323_104512832.jpg",
@@ -1767,8 +1645,7 @@ window.ARCHIVE = {
      "name": "031_KakaoTalk_20260323_104512832.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104512832.jpg",
-     "size": 564359,
-     "origSize": 2337781
+     "size": 564359
     },
     {
      "src": "photos/e04/032_KakaoTalk_20260323_104553047_01.jpg",
@@ -1779,8 +1656,7 @@ window.ARCHIVE = {
      "name": "032_KakaoTalk_20260323_104553047_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_01.jpg",
-     "size": 400976,
-     "origSize": 2653063
+     "size": 400976
     },
     {
      "src": "photos/e04/033_KakaoTalk_20260323_104553047_02.jpg",
@@ -1791,8 +1667,7 @@ window.ARCHIVE = {
      "name": "033_KakaoTalk_20260323_104553047_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_02.jpg",
-     "size": 447795,
-     "origSize": 2799137
+     "size": 447795
     },
     {
      "src": "photos/e04/034_KakaoTalk_20260323_104553047_03.jpg",
@@ -1803,8 +1678,7 @@ window.ARCHIVE = {
      "name": "034_KakaoTalk_20260323_104553047_03.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_03.jpg",
-     "size": 473622,
-     "origSize": 2842366
+     "size": 473622
     },
     {
      "src": "photos/e04/035_KakaoTalk_20260323_104553047_04.jpg",
@@ -1815,8 +1689,7 @@ window.ARCHIVE = {
      "name": "035_KakaoTalk_20260323_104553047_04.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_04.jpg",
-     "size": 467542,
-     "origSize": 2700046
+     "size": 467542
     },
     {
      "src": "photos/e04/036_KakaoTalk_20260323_104553047_05.jpg",
@@ -1827,8 +1700,7 @@ window.ARCHIVE = {
      "name": "036_KakaoTalk_20260323_104553047_05.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_05.jpg",
-     "size": 468683,
-     "origSize": 2748125
+     "size": 468683
     },
     {
      "src": "photos/e04/037_KakaoTalk_20260323_104553047_07.jpg",
@@ -1839,8 +1711,7 @@ window.ARCHIVE = {
      "name": "037_KakaoTalk_20260323_104553047_07.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_07.jpg",
-     "size": 495654,
-     "origSize": 3017453
+     "size": 495654
     },
     {
      "src": "photos/e04/038_KakaoTalk_20260323_104553047_08.jpg",
@@ -1851,8 +1722,7 @@ window.ARCHIVE = {
      "name": "038_KakaoTalk_20260323_104553047_08.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_08.jpg",
-     "size": 546450,
-     "origSize": 2039026
+     "size": 546450
     },
     {
      "src": "photos/e04/039_KakaoTalk_20260323_104553047_09.jpg",
@@ -1863,8 +1733,7 @@ window.ARCHIVE = {
      "name": "039_KakaoTalk_20260323_104553047_09.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_09.jpg",
-     "size": 559285,
-     "origSize": 2281726
+     "size": 559285
     },
     {
      "src": "photos/e04/040_KakaoTalk_20260323_104553047_10.jpg",
@@ -1875,8 +1744,7 @@ window.ARCHIVE = {
      "name": "040_KakaoTalk_20260323_104553047_10.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_10.jpg",
-     "size": 575641,
-     "origSize": 2336382
+     "size": 575641
     },
     {
      "src": "photos/e04/041_KakaoTalk_20260323_104553047_12.jpg",
@@ -1887,8 +1755,7 @@ window.ARCHIVE = {
      "name": "041_KakaoTalk_20260323_104553047_12.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_12.jpg",
-     "size": 562791,
-     "origSize": 2327793
+     "size": 562791
     },
     {
      "src": "photos/e04/042_KakaoTalk_20260323_104553047_13.jpg",
@@ -1899,8 +1766,7 @@ window.ARCHIVE = {
      "name": "042_KakaoTalk_20260323_104553047_13.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_13.jpg",
-     "size": 568934,
-     "origSize": 2239935
+     "size": 568934
     },
     {
      "src": "photos/e04/043_KakaoTalk_20260323_104553047_14.jpg",
@@ -1911,8 +1777,7 @@ window.ARCHIVE = {
      "name": "043_KakaoTalk_20260323_104553047_14.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_14.jpg",
-     "size": 584813,
-     "origSize": 2614883
+     "size": 584813
     },
     {
      "src": "photos/e04/044_KakaoTalk_20260323_104553047_15.jpg",
@@ -1923,8 +1788,7 @@ window.ARCHIVE = {
      "name": "044_KakaoTalk_20260323_104553047_15.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047_15.jpg",
-     "size": 562245,
-     "origSize": 2329554
+     "size": 562245
     },
     {
      "src": "photos/e04/045_KakaoTalk_20260323_104553047.jpg",
@@ -1935,8 +1799,7 @@ window.ARCHIVE = {
      "name": "045_KakaoTalk_20260323_104553047.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104553047.jpg",
-     "size": 522147,
-     "origSize": 3133076
+     "size": 522147
     },
     {
      "src": "photos/e04/046_KakaoTalk_20260323_104622412_01.jpg",
@@ -1947,8 +1810,7 @@ window.ARCHIVE = {
      "name": "046_KakaoTalk_20260323_104622412_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_01.jpg",
-     "size": 393825,
-     "origSize": 1940277
+     "size": 393825
     },
     {
      "src": "photos/e04/047_KakaoTalk_20260323_104622412_02.jpg",
@@ -1959,8 +1821,7 @@ window.ARCHIVE = {
      "name": "047_KakaoTalk_20260323_104622412_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_02.jpg",
-     "size": 399045,
-     "origSize": 1974027
+     "size": 399045
     },
     {
      "src": "photos/e04/048_KakaoTalk_20260323_104622412_04.jpg",
@@ -1971,8 +1832,7 @@ window.ARCHIVE = {
      "name": "048_KakaoTalk_20260323_104622412_04.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_04.jpg",
-     "size": 424128,
-     "origSize": 1965016
+     "size": 424128
     },
     {
      "src": "photos/e04/049_KakaoTalk_20260323_104622412_05.jpg",
@@ -1983,8 +1843,7 @@ window.ARCHIVE = {
      "name": "049_KakaoTalk_20260323_104622412_05.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_05.jpg",
-     "size": 424572,
-     "origSize": 1963230
+     "size": 424572
     },
     {
      "src": "photos/e04/050_KakaoTalk_20260323_104622412_06.jpg",
@@ -1995,8 +1854,7 @@ window.ARCHIVE = {
      "name": "050_KakaoTalk_20260323_104622412_06.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_06.jpg",
-     "size": 386554,
-     "origSize": 1802038
+     "size": 386554
     },
     {
      "src": "photos/e04/051_KakaoTalk_20260323_104622412_07.jpg",
@@ -2007,8 +1865,7 @@ window.ARCHIVE = {
      "name": "051_KakaoTalk_20260323_104622412_07.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_07.jpg",
-     "size": 406004,
-     "origSize": 1884424
+     "size": 406004
     },
     {
      "src": "photos/e04/052_KakaoTalk_20260323_104622412_08.jpg",
@@ -2019,8 +1876,7 @@ window.ARCHIVE = {
      "name": "052_KakaoTalk_20260323_104622412_08.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_08.jpg",
-     "size": 521404,
-     "origSize": 2772008
+     "size": 521404
     },
     {
      "src": "photos/e04/053_KakaoTalk_20260323_104622412_09.jpg",
@@ -2031,8 +1887,7 @@ window.ARCHIVE = {
      "name": "053_KakaoTalk_20260323_104622412_09.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_09.jpg",
-     "size": 471845,
-     "origSize": 2161562
+     "size": 471845
     },
     {
      "src": "photos/e04/054_KakaoTalk_20260323_104622412_10.jpg",
@@ -2043,8 +1898,7 @@ window.ARCHIVE = {
      "name": "054_KakaoTalk_20260323_104622412_10.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_10.jpg",
-     "size": 523610,
-     "origSize": 2447005
+     "size": 523610
     },
     {
      "src": "photos/e04/055_KakaoTalk_20260323_104622412_11.jpg",
@@ -2055,8 +1909,7 @@ window.ARCHIVE = {
      "name": "055_KakaoTalk_20260323_104622412_11.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_11.jpg",
-     "size": 436475,
-     "origSize": 1883547
+     "size": 436475
     },
     {
      "src": "photos/e04/056_KakaoTalk_20260323_104622412_12.jpg",
@@ -2067,8 +1920,7 @@ window.ARCHIVE = {
      "name": "056_KakaoTalk_20260323_104622412_12.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_12.jpg",
-     "size": 421048,
-     "origSize": 1841247
+     "size": 421048
     },
     {
      "src": "photos/e04/057_KakaoTalk_20260323_104622412_13.jpg",
@@ -2079,8 +1931,7 @@ window.ARCHIVE = {
      "name": "057_KakaoTalk_20260323_104622412_13.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_13.jpg",
-     "size": 444552,
-     "origSize": 2560852
+     "size": 444552
     },
     {
      "src": "photos/e04/058_KakaoTalk_20260323_104622412_14.jpg",
@@ -2091,8 +1942,7 @@ window.ARCHIVE = {
      "name": "058_KakaoTalk_20260323_104622412_14.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_14.jpg",
-     "size": 443476,
-     "origSize": 2571845
+     "size": 443476
     },
     {
      "src": "photos/e04/059_KakaoTalk_20260323_104622412_15.jpg",
@@ -2103,8 +1953,7 @@ window.ARCHIVE = {
      "name": "059_KakaoTalk_20260323_104622412_15.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_15.jpg",
-     "size": 458635,
-     "origSize": 2834705
+     "size": 458635
     },
     {
      "src": "photos/e04/060_KakaoTalk_20260323_104622412_16.jpg",
@@ -2115,8 +1964,7 @@ window.ARCHIVE = {
      "name": "060_KakaoTalk_20260323_104622412_16.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_16.jpg",
-     "size": 479023,
-     "origSize": 2727609
+     "size": 479023
     },
     {
      "src": "photos/e04/061_KakaoTalk_20260323_104622412_17.jpg",
@@ -2127,8 +1975,7 @@ window.ARCHIVE = {
      "name": "061_KakaoTalk_20260323_104622412_17.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_17.jpg",
-     "size": 399229,
-     "origSize": 2404371
+     "size": 399229
     },
     {
      "src": "photos/e04/062_KakaoTalk_20260323_104622412_18.jpg",
@@ -2139,8 +1986,7 @@ window.ARCHIVE = {
      "name": "062_KakaoTalk_20260323_104622412_18.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_18.jpg",
-     "size": 397997,
-     "origSize": 2234901
+     "size": 397997
     },
     {
      "src": "photos/e04/063_KakaoTalk_20260323_104622412_19.jpg",
@@ -2151,8 +1997,7 @@ window.ARCHIVE = {
      "name": "063_KakaoTalk_20260323_104622412_19.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_19.jpg",
-     "size": 363759,
-     "origSize": 2169762
+     "size": 363759
     },
     {
      "src": "photos/e04/064_KakaoTalk_20260323_104622412_20.jpg",
@@ -2163,8 +2008,7 @@ window.ARCHIVE = {
      "name": "064_KakaoTalk_20260323_104622412_20.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_20.jpg",
-     "size": 459777,
-     "origSize": 2750526
+     "size": 459777
     },
     {
      "src": "photos/e04/065_KakaoTalk_20260323_104622412_21.jpg",
@@ -2175,8 +2019,7 @@ window.ARCHIVE = {
      "name": "065_KakaoTalk_20260323_104622412_21.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_21.jpg",
-     "size": 443270,
-     "origSize": 2739609
+     "size": 443270
     },
     {
      "src": "photos/e04/066_KakaoTalk_20260323_104622412_22.jpg",
@@ -2187,8 +2030,7 @@ window.ARCHIVE = {
      "name": "066_KakaoTalk_20260323_104622412_22.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_22.jpg",
-     "size": 469700,
-     "origSize": 2271247
+     "size": 469700
     },
     {
      "src": "photos/e04/067_KakaoTalk_20260323_104622412_23.jpg",
@@ -2199,8 +2041,7 @@ window.ARCHIVE = {
      "name": "067_KakaoTalk_20260323_104622412_23.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_23.jpg",
-     "size": 402396,
-     "origSize": 2055425
+     "size": 402396
     },
     {
      "src": "photos/e04/068_KakaoTalk_20260323_104622412_24.jpg",
@@ -2211,8 +2052,7 @@ window.ARCHIVE = {
      "name": "068_KakaoTalk_20260323_104622412_24.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_24.jpg",
-     "size": 528399,
-     "origSize": 1959048
+     "size": 528399
     },
     {
      "src": "photos/e04/069_KakaoTalk_20260323_104622412_25.jpg",
@@ -2223,8 +2063,7 @@ window.ARCHIVE = {
      "name": "069_KakaoTalk_20260323_104622412_25.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_25.jpg",
-     "size": 515729,
-     "origSize": 1926209
+     "size": 515729
     },
     {
      "src": "photos/e04/070_KakaoTalk_20260323_104622412_26.jpg",
@@ -2235,8 +2074,7 @@ window.ARCHIVE = {
      "name": "070_KakaoTalk_20260323_104622412_26.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_26.jpg",
-     "size": 456526,
-     "origSize": 3220773
+     "size": 456526
     },
     {
      "src": "photos/e04/071_KakaoTalk_20260323_104622412_27.jpg",
@@ -2247,8 +2085,7 @@ window.ARCHIVE = {
      "name": "071_KakaoTalk_20260323_104622412_27.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412_27.jpg",
-     "size": 474718,
-     "origSize": 3389783
+     "size": 474718
     },
     {
      "src": "photos/e04/072_KakaoTalk_20260323_104622412.jpg",
@@ -2259,8 +2096,7 @@ window.ARCHIVE = {
      "name": "072_KakaoTalk_20260323_104622412.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104622412.jpg",
-     "size": 516501,
-     "origSize": 7117887
+     "size": 516501
     },
     {
      "src": "photos/e04/073_KakaoTalk_20260323_104700244_01.jpg",
@@ -2271,8 +2107,7 @@ window.ARCHIVE = {
      "name": "073_KakaoTalk_20260323_104700244_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_01.jpg",
-     "size": 377750,
-     "origSize": 2584203
+     "size": 377750
     },
     {
      "src": "photos/e04/074_KakaoTalk_20260323_104700244_02.jpg",
@@ -2283,8 +2118,7 @@ window.ARCHIVE = {
      "name": "074_KakaoTalk_20260323_104700244_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_02.jpg",
-     "size": 388134,
-     "origSize": 2614654
+     "size": 388134
     },
     {
      "src": "photos/e04/075_KakaoTalk_20260323_104700244_03.jpg",
@@ -2295,8 +2129,7 @@ window.ARCHIVE = {
      "name": "075_KakaoTalk_20260323_104700244_03.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_03.jpg",
-     "size": 499373,
-     "origSize": 3515261
+     "size": 499373
     },
     {
      "src": "photos/e04/076_KakaoTalk_20260323_104700244_04.jpg",
@@ -2307,8 +2140,7 @@ window.ARCHIVE = {
      "name": "076_KakaoTalk_20260323_104700244_04.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_04.jpg",
-     "size": 441179,
-     "origSize": 3177640
+     "size": 441179
     },
     {
      "src": "photos/e04/077_KakaoTalk_20260323_104700244_05.jpg",
@@ -2319,8 +2151,7 @@ window.ARCHIVE = {
      "name": "077_KakaoTalk_20260323_104700244_05.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_05.jpg",
-     "size": 598309,
-     "origSize": 3803778
+     "size": 598309
     },
     {
      "src": "photos/e04/078_KakaoTalk_20260323_104700244_06.jpg",
@@ -2331,8 +2162,7 @@ window.ARCHIVE = {
      "name": "078_KakaoTalk_20260323_104700244_06.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_06.jpg",
-     "size": 544517,
-     "origSize": 4050282
+     "size": 544517
     },
     {
      "src": "photos/e04/079_KakaoTalk_20260323_104700244_07.jpg",
@@ -2343,8 +2173,7 @@ window.ARCHIVE = {
      "name": "079_KakaoTalk_20260323_104700244_07.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_07.jpg",
-     "size": 427258,
-     "origSize": 4025574
+     "size": 427258
     },
     {
      "src": "photos/e04/080_KakaoTalk_20260323_104700244_08.jpg",
@@ -2355,8 +2184,7 @@ window.ARCHIVE = {
      "name": "080_KakaoTalk_20260323_104700244_08.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_08.jpg",
-     "size": 590911,
-     "origSize": 3788900
+     "size": 590911
     },
     {
      "src": "photos/e04/081_KakaoTalk_20260323_104700244_09.jpg",
@@ -2367,8 +2195,7 @@ window.ARCHIVE = {
      "name": "081_KakaoTalk_20260323_104700244_09.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_09.jpg",
-     "size": 620199,
-     "origSize": 3266023
+     "size": 620199
     },
     {
      "src": "photos/e04/082_KakaoTalk_20260323_104700244_10.jpg",
@@ -2379,8 +2206,7 @@ window.ARCHIVE = {
      "name": "082_KakaoTalk_20260323_104700244_10.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_10.jpg",
-     "size": 613811,
-     "origSize": 3283441
+     "size": 613811
     },
     {
      "src": "photos/e04/083_KakaoTalk_20260323_104700244_11.jpg",
@@ -2391,8 +2217,7 @@ window.ARCHIVE = {
      "name": "083_KakaoTalk_20260323_104700244_11.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_11.jpg",
-     "size": 593253,
-     "origSize": 3694271
+     "size": 593253
     },
     {
      "src": "photos/e04/084_KakaoTalk_20260323_104700244_12.jpg",
@@ -2403,8 +2228,7 @@ window.ARCHIVE = {
      "name": "084_KakaoTalk_20260323_104700244_12.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_12.jpg",
-     "size": 716391,
-     "origSize": 4092480
+     "size": 716391
     },
     {
      "src": "photos/e04/085_KakaoTalk_20260323_104700244_13.jpg",
@@ -2415,8 +2239,7 @@ window.ARCHIVE = {
      "name": "085_KakaoTalk_20260323_104700244_13.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_13.jpg",
-     "size": 741500,
-     "origSize": 4191671
+     "size": 741500
     },
     {
      "src": "photos/e04/086_KakaoTalk_20260323_104700244_14.jpg",
@@ -2427,8 +2250,7 @@ window.ARCHIVE = {
      "name": "086_KakaoTalk_20260323_104700244_14.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_14.jpg",
-     "size": 602645,
-     "origSize": 4388039
+     "size": 602645
     },
     {
      "src": "photos/e04/087_KakaoTalk_20260323_104700244_15.jpg",
@@ -2439,8 +2261,7 @@ window.ARCHIVE = {
      "name": "087_KakaoTalk_20260323_104700244_15.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_15.jpg",
-     "size": 409730,
-     "origSize": 3388620
+     "size": 409730
     },
     {
      "src": "photos/e04/088_KakaoTalk_20260323_104700244_16.jpg",
@@ -2451,8 +2272,7 @@ window.ARCHIVE = {
      "name": "088_KakaoTalk_20260323_104700244_16.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_16.jpg",
-     "size": 444104,
-     "origSize": 3843803
+     "size": 444104
     },
     {
      "src": "photos/e04/089_KakaoTalk_20260323_104700244_17.jpg",
@@ -2463,8 +2283,7 @@ window.ARCHIVE = {
      "name": "089_KakaoTalk_20260323_104700244_17.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_17.jpg",
-     "size": 408014,
-     "origSize": 3305414
+     "size": 408014
     },
     {
      "src": "photos/e04/090_KakaoTalk_20260323_104700244_18.jpg",
@@ -2475,8 +2294,7 @@ window.ARCHIVE = {
      "name": "090_KakaoTalk_20260323_104700244_18.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_18.jpg",
-     "size": 419274,
-     "origSize": 3822452
+     "size": 419274
     },
     {
      "src": "photos/e04/091_KakaoTalk_20260323_104700244_19.jpg",
@@ -2487,8 +2305,7 @@ window.ARCHIVE = {
      "name": "091_KakaoTalk_20260323_104700244_19.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_19.jpg",
-     "size": 418053,
-     "origSize": 3840140
+     "size": 418053
     },
     {
      "src": "photos/e04/092_KakaoTalk_20260323_104700244_20.jpg",
@@ -2499,8 +2316,7 @@ window.ARCHIVE = {
      "name": "092_KakaoTalk_20260323_104700244_20.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_20.jpg",
-     "size": 381831,
-     "origSize": 3276326
+     "size": 381831
     },
     {
      "src": "photos/e04/093_KakaoTalk_20260323_104700244_21.jpg",
@@ -2511,8 +2327,7 @@ window.ARCHIVE = {
      "name": "093_KakaoTalk_20260323_104700244_21.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_21.jpg",
-     "size": 146750,
-     "origSize": 151381
+     "size": 146750
     },
     {
      "src": "photos/e04/094_KakaoTalk_20260323_104700244_22.jpg",
@@ -2523,8 +2338,7 @@ window.ARCHIVE = {
      "name": "094_KakaoTalk_20260323_104700244_22.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_22.jpg",
-     "size": 137275,
-     "origSize": 147868
+     "size": 137275
     },
     {
      "src": "photos/e04/095_KakaoTalk_20260323_104700244_23.jpg",
@@ -2535,8 +2349,7 @@ window.ARCHIVE = {
      "name": "095_KakaoTalk_20260323_104700244_23.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_23.jpg",
-     "size": 198346,
-     "origSize": 222457
+     "size": 198346
     },
     {
      "src": "photos/e04/096_KakaoTalk_20260323_104700244_24.jpg",
@@ -2547,8 +2360,7 @@ window.ARCHIVE = {
      "name": "096_KakaoTalk_20260323_104700244_24.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244_24.jpg",
-     "size": 103144,
-     "origSize": 112037
+     "size": 103144
     },
     {
      "src": "photos/e04/097_KakaoTalk_20260323_104700244.jpg",
@@ -2559,8 +2371,7 @@ window.ARCHIVE = {
      "name": "097_KakaoTalk_20260323_104700244.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104700244.jpg",
-     "size": 553484,
-     "origSize": 3664009
+     "size": 553484
     },
     {
      "src": "photos/e04/098_KakaoTalk_20260323_104711642_01.jpg",
@@ -2571,8 +2382,7 @@ window.ARCHIVE = {
      "name": "098_KakaoTalk_20260323_104711642_01.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642_01.jpg",
-     "size": 156106,
-     "origSize": 150644
+     "size": 156106
     },
     {
      "src": "photos/e04/099_KakaoTalk_20260323_104711642_02.jpg",
@@ -2583,8 +2393,7 @@ window.ARCHIVE = {
      "name": "099_KakaoTalk_20260323_104711642_02.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642_02.jpg",
-     "size": 522911,
-     "origSize": 3238656
+     "size": 522911
     },
     {
      "src": "photos/e04/100_KakaoTalk_20260323_104711642_03.jpg",
@@ -2595,8 +2404,7 @@ window.ARCHIVE = {
      "name": "100_KakaoTalk_20260323_104711642_03.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642_03.jpg",
-     "size": 559326,
-     "origSize": 3104725
+     "size": 559326
     },
     {
      "src": "photos/e04/101_KakaoTalk_20260323_104711642_04.jpg",
@@ -2607,8 +2415,7 @@ window.ARCHIVE = {
      "name": "101_KakaoTalk_20260323_104711642_04.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642_04.jpg",
-     "size": 356011,
-     "origSize": 3610546
+     "size": 356011
     },
     {
      "src": "photos/e04/102_KakaoTalk_20260323_104711642_05.jpg",
@@ -2619,8 +2426,7 @@ window.ARCHIVE = {
      "name": "102_KakaoTalk_20260323_104711642_05.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642_05.jpg",
-     "size": 641670,
-     "origSize": 4174055
+     "size": 641670
     },
     {
      "src": "photos/e04/103_KakaoTalk_20260323_104711642_06.jpg",
@@ -2631,8 +2437,7 @@ window.ARCHIVE = {
      "name": "103_KakaoTalk_20260323_104711642_06.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642_06.jpg",
-     "size": 634820,
-     "origSize": 3877976
+     "size": 634820
     },
     {
      "src": "photos/e04/104_KakaoTalk_20260323_104711642_07.jpg",
@@ -2643,8 +2448,7 @@ window.ARCHIVE = {
      "name": "104_KakaoTalk_20260323_104711642_07.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642_07.jpg",
-     "size": 480228,
-     "origSize": 3417734
+     "size": 480228
     },
     {
      "src": "photos/e04/105_KakaoTalk_20260323_104711642_08.jpg",
@@ -2655,8 +2459,7 @@ window.ARCHIVE = {
      "name": "105_KakaoTalk_20260323_104711642_08.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642_08.jpg",
-     "size": 582584,
-     "origSize": 3288397
+     "size": 582584
     },
     {
      "src": "photos/e04/106_KakaoTalk_20260323_104711642.jpg",
@@ -2667,8 +2470,7 @@ window.ARCHIVE = {
      "name": "106_KakaoTalk_20260323_104711642.jpg",
      "caption": "",
      "orig": "KakaoTalk_20260323_104711642.jpg",
-     "size": 110119,
-     "origSize": 114327
+     "size": 110119
     }
    ],
    "videoFiles": [
@@ -2756,8 +2558,7 @@ window.ARCHIVE = {
      "name": "001_엑셀08_행사장 전경.jpg",
      "caption": "행사장 전경",
      "orig": "엑셀08_행사장 전경.jpeg",
-     "size": 262759,
-     "origSize": 215036
+     "size": 262759
     },
     {
      "src": "photos/e03/002_엑셀09_무대 전경.jpg",
@@ -2768,8 +2569,7 @@ window.ARCHIVE = {
      "name": "002_엑셀09_무대 전경.jpg",
      "caption": "무대 전경",
      "orig": "엑셀09_무대 전경.jpeg",
-     "size": 369733,
-     "origSize": 291404
+     "size": 369733
     },
     {
      "src": "photos/e03/003_엑셀10_행사장 객석.jpg",
@@ -2780,8 +2580,7 @@ window.ARCHIVE = {
      "name": "003_엑셀10_행사장 객석.jpg",
      "caption": "행사장 객석",
      "orig": "엑셀10_행사장 객석.png",
-     "size": 361378,
-     "origSize": 2449501
+     "size": 361378
     },
     {
      "src": "photos/e03/004_엑셀11_대구지역본부장상 수상_고윤호 상무 대리수상.jpg",
@@ -2792,8 +2591,7 @@ window.ARCHIVE = {
      "name": "004_엑셀11_대구지역본부장상 수상_고윤호 상무 대리수상.jpg",
      "caption": "대구지역본부장상 수상_고윤호 상무 대리수상",
      "orig": "엑셀11_대구지역본부장상 수상_고윤호 상무 대리수상.png",
-     "size": 221851,
-     "origSize": 1762547
+     "size": 221851
     }
    ],
    "videoFiles": [],
@@ -2802,7 +2600,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20251118_벤처기업인의 밤 — 벤처기업협회 대구지역본부장상 수상.zip",
     "name": "20251118_벤처기업인의 밤 — 벤처기업협회 대구지역본부장상 수상.zip",
-    "size": 1217162
+    "size": 1217163
    }
   },
   {
@@ -2827,8 +2625,7 @@ window.ARCHIVE = {
      "name": "001_엑셀04_연합뉴스TV 보도화면_대표이사 인터뷰.jpg",
      "caption": "연합뉴스TV 보도화면_대표이사 인터뷰",
      "orig": "엑셀04_연합뉴스TV 보도화면_대표이사 인터뷰.png",
-     "size": 96787,
-     "origSize": 888861
+     "size": 96787
     },
     {
      "src": "photos/e02/002_엑셀05_참석자 단체사진.jpg",
@@ -2839,8 +2636,7 @@ window.ARCHIVE = {
      "name": "002_엑셀05_참석자 단체사진.jpg",
      "caption": "참석자 단체사진",
      "orig": "엑셀05_참석자 단체사진.jpeg",
-     "size": 62091,
-     "origSize": 182270
+     "size": 62091
     },
     {
      "src": "photos/e02/003_엑셀06_간담회장 전경.jpg",
@@ -2851,8 +2647,7 @@ window.ARCHIVE = {
      "name": "003_엑셀06_간담회장 전경.jpg",
      "caption": "간담회장 전경",
      "orig": "엑셀06_간담회장 전경.png",
-     "size": 254930,
-     "origSize": 2258293
+     "size": 254930
     },
     {
      "src": "photos/e02/004_엑셀07_간담회 진행.jpg",
@@ -2863,8 +2658,7 @@ window.ARCHIVE = {
      "name": "004_엑셀07_간담회 진행.jpg",
      "caption": "간담회 진행",
      "orig": "엑셀07_간담회 진행.jpeg",
-     "size": 84834,
-     "origSize": 385313
+     "size": 84834
     }
    ],
    "videoFiles": [],
@@ -2904,7 +2698,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20250403_중소벤처기업부·관세청 공동 「수출 중소기업 현장 간담회」.zip",
     "name": "20250403_중소벤처기업부·관세청 공동 「수출 중소기업 현장 간담회」.zip",
-    "size": 2592641
+    "size": 2592642
    }
   },
   {
@@ -2931,8 +2725,7 @@ window.ARCHIVE = {
      "name": "001_엑셀01_시상식_단체사진.jpg",
      "caption": "시상식_단체사진",
      "orig": "엑셀01_시상식_단체사진.jpeg",
-     "size": 132370,
-     "origSize": 142955
+     "size": 132370
     },
     {
      "src": "photos/e01/002_엑셀02_제품설명_정장수 대구시 경제부시장.jpg",
@@ -2943,8 +2736,7 @@ window.ARCHIVE = {
      "name": "002_엑셀02_제품설명_정장수 대구시 경제부시장.jpg",
      "caption": "제품설명_정장수 대구시 경제부시장",
      "orig": "엑셀02_제품설명_정장수 대구시 경제부시장.jpeg",
-     "size": 104024,
-     "origSize": 96661
+     "size": 104024
     },
     {
      "src": "photos/e01/003_엑셀03_대상 수상.jpg",
@@ -2955,8 +2747,7 @@ window.ARCHIVE = {
      "name": "003_엑셀03_대상 수상.jpg",
      "caption": "대상 수상",
      "orig": "엑셀03_대상 수상.png",
-     "size": 114715,
-     "origSize": 1198020
+     "size": 114715
     }
    ],
    "videoFiles": [],
@@ -3064,7 +2855,7 @@ window.ARCHIVE = {
    "bundle": {
     "src": "downloads/20241120_제8회 대구 스타트업 어워즈 — 대상 수상.zip",
     "name": "20241120_제8회 대구 스타트업 어워즈 — 대상 수상.zip",
-    "size": 27187406
+    "size": 27187407
    }
   }
  ]

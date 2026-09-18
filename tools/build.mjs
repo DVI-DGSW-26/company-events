@@ -3,7 +3,15 @@
  *
  *   data/events.json  +  source/**  ──▶  photos/ thumbs/ articles/ videos/ downloads/ assets/data.js
  *
- * 실행:  cd tools && npm run build
+ * 행사마다 사진의 출처가 둘 중 하나다.
+ *   · source/ 에 촬영 원본이 있는 행사  → 원본에서 웹용·썸네일을 다시 만든다
+ *   · 화면에서 등록한 행사             → photos/ 가 곧 원본이다. 그대로 두고 목록만 다시 만든다
+ * 그래서 산출물 폴더를 통째로 지우지 않고 행사 단위로만 다시 만든다.
+ *
+ * 사진 설명·촬영일 같은 정보는 data/media/<행사ID>.json 에 남겨 둔다.
+ * 원본이 없는 환경(GitHub Actions 등)에서 다시 빌드해도 설명이 사라지지 않게 하기 위해서다.
+ *
+ * 실행:  npm run build
  */
 import sharp from 'sharp';
 import fs from 'node:fs';
@@ -21,20 +29,20 @@ const THUMB_Q = 76;
 const IMG = /\.(jpe?g|png|webp|gif|bmp)$/i;
 const VID = /\.(mp4|mov|avi|mkv|webm)$/i;
 
-
 const data = JSON.parse(fs.readFileSync(P('data', 'events.json'), 'utf8'));
 const log = (...a) => console.log(...a);
 const kb = (n) => (n < 1024 * 1024 ? `${Math.round(n / 1024)} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`);
 
-/* 산출물 폴더 초기화 (source/ 와 data/ 는 건드리지 않는다) */
-for (const d of ['photos', 'thumbs', 'articles', 'videos', 'downloads']) {
-  fs.rmSync(P(d), { recursive: true, force: true });
+for (const d of ['photos', 'thumbs', 'articles', 'videos', 'assets', path.join('data', 'media')]) {
   fs.mkdirSync(P(d), { recursive: true });
 }
-fs.mkdirSync(P('assets'), { recursive: true });
+// 패키지는 항상 다시 만든다 (행사명이 바뀌면 파일명도 바뀌므로 묵은 파일이 남지 않게)
+fs.rmSync(P('downloads'), { recursive: true, force: true });
+fs.mkdirSync(P('downloads'), { recursive: true });
 
 /* ── 유틸 ─────────────────────────────────────────────────── */
-const slug = (s) => s.replace(/[\\/:*?"<>|]/g, '_').trim();
+const slug = (s) => String(s).replace(/[\\/:*?"<>|]/g, '_').trim();
+const readJson = (f, fallback) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : fallback);
 
 /** 파일명에서 사람이 읽을 캡션을 만든다. `엑셀12_설명.png` → `설명` */
 function captionOf(file) {
@@ -76,107 +84,176 @@ async function derive(srcFile, outWeb, outThumb) {
 const out = [];
 const stage = P('.build-tmp');
 fs.rmSync(stage, { recursive: true, force: true });
+fs.mkdirSync(stage, { recursive: true });
 
 for (const ev of data.events) {
-  const srcDir = P('source', ev.folder);
-  if (!fs.existsSync(srcDir)) { console.warn(`!! source 없음: ${ev.folder}`); continue; }
+  const srcDir = ev.folder ? P('source', ev.folder) : null;
+  const hasSource = Boolean(srcDir && fs.existsSync(srcDir));
+  const manifestFile = P('data', 'media', `${ev.id}.json`);
 
   for (const d of ['photos', 'thumbs', 'articles', 'videos']) fs.mkdirSync(P(d, ev.id), { recursive: true });
 
-  const entries = fs.readdirSync(srcDir).filter((f) => fs.statSync(path.join(srcDir, f)).isFile());
-  const imgFiles = entries.filter((f) => IMG.test(f)).sort((a, b) => a.localeCompare(b, 'ko'));
-  const vidFiles = entries.filter((f) => VID.test(f)).sort((a, b) => a.localeCompare(b, 'ko'));
+  let photos = [];
+  let videoFiles = [];
 
-  /* 사진 */
-  const photos = [];
-  let i = 0;
-  for (const f of imgFiles) {
-    i++;
-    const n = String(i).padStart(3, '0');
-    const name = `${n}_${slug(f.replace(/\.[^.]+$/, ''))}.jpg`;
-    const { w, h, taken } = await derive(path.join(srcDir, f), P('photos', ev.id, name), P('thumbs', ev.id, name));
-    photos.push({
-      src: `photos/${ev.id}/${name}`,
-      thumb: `thumbs/${ev.id}/${name}`,
-      w, h, taken,
-      name,
-      caption: captionOf(f),
-      orig: f,
-      size: fs.statSync(P('photos', ev.id, name)).size,
-      origSize: fs.statSync(path.join(srcDir, f)).size,
+  if (hasSource) {
+    /* 촬영 원본이 있는 행사 — 웹용·썸네일을 다시 만든다 */
+    for (const d of ['photos', 'thumbs', 'videos']) {
+      fs.rmSync(P(d, ev.id), { recursive: true, force: true });
+      fs.mkdirSync(P(d, ev.id), { recursive: true });
+    }
+
+    const entries = fs.readdirSync(srcDir).filter((f) => fs.statSync(path.join(srcDir, f)).isFile());
+    const imgFiles = entries.filter((f) => IMG.test(f)).sort((a, b) => a.localeCompare(b, 'ko'));
+    const vidFiles = entries.filter((f) => VID.test(f)).sort((a, b) => a.localeCompare(b, 'ko'));
+
+    let i = 0;
+    for (const f of imgFiles) {
+      i++;
+      const name = `${String(i).padStart(3, '0')}_${slug(f.replace(/\.[^.]+$/, ''))}.jpg`;
+      const { w, h, taken } = await derive(path.join(srcDir, f), P('photos', ev.id, name), P('thumbs', ev.id, name));
+      photos.push({ name, caption: captionOf(f), orig: f, w, h, taken });
+    }
+
+    for (const f of vidFiles) {
+      const name = slug(f);
+      fs.copyFileSync(path.join(srcDir, f), P('videos', ev.id, name));
+      videoFiles.push({ name, size: fs.statSync(path.join(srcDir, f)).size });
+    }
+
+    // 화면에서 붙인 설명이 있으면 살린다 (원본 파일명으로 맞춘다)
+    const prev = readJson(manifestFile, { photos: [] });
+    const byOrig = new Map((prev.photos ?? []).map((p) => [p.orig ?? p.name, p]));
+    photos = photos.map((p) => {
+      const old = byOrig.get(p.orig);
+      return old?.captionEdited ? { ...p, caption: old.caption, captionEdited: true } : p;
     });
+
+    fs.writeFileSync(manifestFile, JSON.stringify({ photos, videos: videoFiles }, null, 1), 'utf8');
+  } else {
+    /* 화면에서 등록한 행사 — photos/ 가 곧 원본이다 */
+    const manifest = readJson(manifestFile, { photos: [], videos: [] });
+    const onDisk = new Set(fs.readdirSync(P('photos', ev.id)).filter((f) => IMG.test(f)));
+
+    // 목록에 있는 것 중 실제로 파일이 있는 것만 남긴다 (삭제된 사진 정리)
+    photos = (manifest.photos ?? []).filter((p) => onDisk.has(p.name));
+    for (const p of photos) onDisk.delete(p.name);
+    // 목록에 없는데 파일만 있으면 뒤에 붙인다
+    for (const name of [...onDisk].sort((a, b) => a.localeCompare(b, 'ko'))) {
+      photos.push({ name, caption: '', orig: name, w: 0, h: 0, taken: null });
+    }
+    // 치수가 비어 있으면 읽어서 채운다
+    for (const p of photos) {
+      if (p.w && p.h) continue;
+      try {
+        const md = await sharp(P('photos', ev.id, p.name)).metadata();
+        p.w = md.width; p.h = md.height;
+      } catch { p.w ||= 0; p.h ||= 0; }
+    }
+
+    const vidOnDisk = fs.readdirSync(P('videos', ev.id)).filter((f) => VID.test(f));
+    videoFiles = vidOnDisk.map((name) => ({ name, size: fs.statSync(P('videos', ev.id, name)).size }));
+
+    fs.writeFileSync(manifestFile, JSON.stringify({ photos, videos: videoFiles }, null, 1), 'utf8');
   }
 
-  /* 영상 파일 */
-  const videoFiles = [];
-  for (const f of vidFiles) {
-    const name = slug(f);
-    fs.copyFileSync(path.join(srcDir, f), P('videos', ev.id, name));
-    videoFiles.push({ src: `videos/${ev.id}/${name}`, name, size: fs.statSync(path.join(srcDir, f)).size });
-  }
+  /* 화면이 쓸 형태로 부풀린다 */
+  const photoRecords = photos.map((p) => ({
+    src: `photos/${ev.id}/${p.name}`,
+    thumb: `thumbs/${ev.id}/${p.name}`,
+    w: p.w, h: p.h, taken: p.taken ?? null,
+    name: p.name,
+    caption: p.caption ?? '',
+    orig: p.orig ?? p.name,
+    size: fs.existsSync(P('photos', ev.id, p.name)) ? fs.statSync(P('photos', ev.id, p.name)).size : 0,
+  }));
+  const videoRecords = videoFiles.map((v) => ({ src: `videos/${ev.id}/${v.name}`, name: v.name, size: v.size }));
 
-  /* 기사: 캡처 이미지 + (미리 생성된) PDF 연결 */
+  /* 기사: 캡처 이미지 + PDF 연결 */
   const capDir = P('source', '_기사캡처', ev.id);
   const pdfDir = P('articles-pdf', ev.id);
   const articles = [];
+  const keepArticleFiles = new Set();
+
   for (const a of ev.articles ?? []) {
     const rec = { ...a };
 
-    if (a.capture && fs.existsSync(path.join(capDir, a.capture))) {
+    if (a.capture) {
       const name = slug(a.capture);
-      const from = path.join(capDir, a.capture);
-      fs.copyFileSync(from, P('articles', ev.id, name));
-      const tName = name.replace(/\.[^.]+$/, '') + '_thumb.jpg';
-      const md = await sharp(from).metadata();
-      await sharp(from).resize({ width: THUMB, height: THUMB, fit: 'inside', withoutEnlargement: true })
-        .jpeg({ quality: THUMB_Q, mozjpeg: true }).toFile(P('articles', ev.id, tName));
-      rec.capture = {
-        src: `articles/${ev.id}/${name}`,
-        thumb: `articles/${ev.id}/${tName}`,
-        w: md.width, h: md.height,
-        size: fs.statSync(from).size,
-      };
+      const inSource = path.join(capDir, a.capture);
+      const already = P('articles', ev.id, name);
+      const from = fs.existsSync(inSource) ? inSource : (fs.existsSync(already) ? already : null);
+      if (from) {
+        if (from !== already) fs.copyFileSync(from, already);
+        const tName = `${name.replace(/\.[^.]+$/, '')}_thumb.jpg`;
+        if (!fs.existsSync(P('articles', ev.id, tName))) {
+          await sharp(already).resize({ width: THUMB, height: THUMB, fit: 'inside', withoutEnlargement: true })
+            .jpeg({ quality: THUMB_Q, mozjpeg: true }).toFile(P('articles', ev.id, tName));
+        }
+        const md = await sharp(already).metadata();
+        rec.capture = {
+          src: `articles/${ev.id}/${name}`, thumb: `articles/${ev.id}/${tName}`,
+          w: md.width, h: md.height, size: fs.statSync(already).size,
+        };
+        keepArticleFiles.add(name); keepArticleFiles.add(tName);
+      } else delete rec.capture;
     } else delete rec.capture;
 
-    // make-articles.mjs 가 만들어 둔 PDF 가 있으면 연결
     const pdfName = `${slug(a.press)}_${slug(a.title ?? a.press)}.pdf`;
-    if (fs.existsSync(path.join(pdfDir, pdfName))) {
-      fs.copyFileSync(path.join(pdfDir, pdfName), P('articles', ev.id, pdfName));
-      rec.pdf = { src: `articles/${ev.id}/${pdfName}`, size: fs.statSync(path.join(pdfDir, pdfName)).size };
+    const pdfStaged = path.join(pdfDir, pdfName);
+    const pdfHere = P('articles', ev.id, pdfName);
+    if (fs.existsSync(pdfStaged)) fs.copyFileSync(pdfStaged, pdfHere);
+    if (fs.existsSync(pdfHere)) {
+      rec.pdf = { src: `articles/${ev.id}/${pdfName}`, size: fs.statSync(pdfHere).size };
+      keepArticleFiles.add(pdfName);
     }
     articles.push(rec);
   }
 
-  /* 행사별 전체 패키지 ZIP (원본사진 + 기사PDF/캡처 + 영상 + 행사정보.txt) */
+  // 목록에서 빠진 기사의 파일은 정리한다
+  for (const f of fs.readdirSync(P('articles', ev.id))) {
+    if (!keepArticleFiles.has(f)) fs.rmSync(P('articles', ev.id, f), { force: true });
+  }
+
+  /* 행사별 전체 패키지 ZIP */
   const packName = `${ev.date.replace(/-/g, '')}_${slug(ev.title)}`;
-
   const info = path.join(stage, `${ev.id}_행사정보.txt`);
-  fs.mkdirSync(stage, { recursive: true });
-  fs.writeFileSync(info, infoText(ev, photos, articles), 'utf8');
+  fs.writeFileSync(info, infoText(ev, photoRecords, articles), 'utf8');
 
-  const artFiles = fs.readdirSync(P('articles', ev.id)).filter((f) => !f.endsWith('_thumb.jpg'));
   const zipEntries = [
     { from: info, name: '행사정보.txt' },
     // 촬영 원본이 아니라 웹용(긴 변 1920px) 사진을 넣는다. 원본 그대로면 패키지가
-    // 590MB 라 저장소·배포 용량 한도를 넘는다. 원본은 source/ 와 공유드라이브에 남아 있다.
-    ...photos.map((p) => ({ from: P(p.src), name: `사진/${p.name}` })),
-    ...vidFiles.map((f) => ({ from: path.join(srcDir, f), name: `영상/${f}` })),
-    ...artFiles.map((f) => ({ from: P('articles', ev.id, f), name: `언론기사/${f}` })),
-  ];
+    // 590MB 라 저장소·배포 용량 한도를 넘는다.
+    ...photoRecords.map((p) => ({ from: P(p.src), name: `사진/${p.name}` })),
+    ...videoRecords.map((v) => ({ from: P(v.src), name: `영상/${v.name}` })),
+    ...[...keepArticleFiles].filter((f) => !f.endsWith('_thumb.jpg'))
+      .map((f) => ({ from: P('articles', ev.id, f), name: `언론기사/${f}` })),
+  ].filter((e) => fs.existsSync(e.from));
 
   const zipPath = P('downloads', `${packName}.zip`);
   const zipSize = writeZip(zipEntries, zipPath);
-  const bundle = { src: `downloads/${packName}.zip`, name: `${packName}.zip`, size: zipSize };
 
   out.push({
     id: ev.id, category: ev.category, type: ev.type, date: ev.date,
     title: ev.title, subtitle: ev.subtitle, place: ev.place, host: ev.host,
     attendees: ev.attendees, summary: ev.summary, notes: ev.notes ?? [],
-    photos, videoFiles, articles, videos: ev.videos ?? [], bundle,
+    photos: photoRecords, videoFiles: videoRecords, articles, videos: ev.videos ?? [],
+    bundle: { src: `downloads/${packName}.zip`, name: `${packName}.zip`, size: zipSize },
   });
 
-  log(`${ev.id}  ${ev.date}  ${ev.title}`);
-  log(`      사진 ${photos.length}  기사 ${articles.length}  영상링크 ${(ev.videos ?? []).length}  영상파일 ${videoFiles.length}  패키지 ${kb(bundle.size)}`);
+  log(`${ev.id}  ${ev.date}  ${ev.title}${hasSource ? '' : '   (화면 등록)'}`);
+  log(`      사진 ${photoRecords.length}  기사 ${articles.length}  영상링크 ${(ev.videos ?? []).length}  영상파일 ${videoRecords.length}  패키지 ${kb(zipSize)}`);
+}
+
+/* 목록에서 사라진 행사의 산출물 정리 */
+const liveIds = new Set(data.events.map((e) => e.id));
+for (const d of ['photos', 'thumbs', 'articles', 'videos']) {
+  for (const dir of fs.readdirSync(P(d))) {
+    if (!liveIds.has(dir)) fs.rmSync(P(d, dir), { recursive: true, force: true });
+  }
+}
+for (const f of fs.readdirSync(P('data', 'media'))) {
+  if (!liveIds.has(f.replace(/\.json$/, ''))) fs.rmSync(P('data', 'media', f), { force: true });
 }
 
 fs.rmSync(stage, { recursive: true, force: true });

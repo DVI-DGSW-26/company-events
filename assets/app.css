@@ -120,6 +120,18 @@ a{color:inherit}
 }
 .tally b{color:var(--alu-700);font-weight:600}
 
+/* 행사 관리 링크 — 권한 있는 사람에게만 보인다 */
+.adminlink{
+  flex:none;margin-left:auto;
+  padding:.28rem .625rem;border-radius:var(--r);
+  border:1px solid var(--mark);background:var(--mark-wash);
+  color:var(--mark-deep);font-size:var(--t-sm);font-weight:600;
+  text-decoration:none;white-space:nowrap;
+}
+.adminlink[hidden]{display:none}
+.adminlink:hover{background:var(--mark);color:var(--white)}
+.adminlink:not([hidden]) ~ .tally{margin-left:.875rem}
+
 /* 로그인 계정 — 배포본에서만 보인다 */
 .account{
   flex:none;display:flex;align-items:center;gap:.625rem;

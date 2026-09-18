@@ -42,12 +42,49 @@ const TYPES = {
   '.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm',
 };
 
+/**
+ * 로컬 미리보기용 최소 응답.
+ * 배포본에서는 Vercel 함수가 처리하지만, 여기서는 관리 화면의 생김새만 확인할 수 있게
+ * 읽기 요청만 흉내 낸다. 저장·삭제는 받지 않는다. (사내망에 열려 있는 서버이므로)
+ */
+function devApi(req, res, rel) {
+  const send = (code, body) => {
+    res.writeHead(code, { 'content-type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify(body));
+  };
+
+  if (req.method !== 'GET') {
+    send(405, { error: '로컬 미리보기에서는 저장할 수 없습니다. 배포된 사이트에서 사용하세요.' });
+    return true;
+  }
+  if (rel === '/api/auth/me') {
+    send(200, { signedIn: true, name: '로컬 미리보기', email: '', admin: true });
+    return true;
+  }
+  if (rel === '/api/admin/state') {
+    try {
+      const doc = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'events.json'), 'utf8'));
+      const id = new URL(req.url, 'http://x').searchParams.get('id');
+      const out = { head: 'local', data: doc, user: { name: '로컬 미리보기' } };
+      if (id) {
+        const f = path.join(ROOT, 'data', 'media', `${id}.json`);
+        out.media = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : { photos: [] };
+      }
+      send(200, out);
+    } catch (e) { send(500, { error: e.message }); }
+    return true;
+  }
+  send(404, { error: '로컬 미리보기에서는 제공하지 않는 기능입니다.' });
+  return true;
+}
+
 const server = http.createServer((req, res) => {
   let rel;
   try { rel = decodeURIComponent(new URL(req.url, 'http://x').pathname); }
   catch { res.writeHead(400).end('잘못된 주소'); return; }
 
   if (rel === '/' || rel === '') rel = '/index.html';
+  if (rel.startsWith('/api/')) { devApi(req, res, rel); return; }
 
   // 상위 폴더 탈출 차단
   const file = path.join(ROOT, rel);

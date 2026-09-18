@@ -16,9 +16,17 @@ export const config = {
 
 export default async function middleware(req) {
   const session = await verifySession(readCookie(req, SESSION_COOKIE), process.env.SESSION_SECRET);
-  if (session) return next();
-
   const url = new URL(req.url);
+
+  if (session) {
+    // 편집 화면은 권한 있는 사람만 연다. (API 쪽에서도 다시 확인한다 —
+    // 화면을 막는 것만으로는 주소를 직접 부르는 것을 못 막기 때문이다)
+    if (url.pathname === '/admin.html' && session.admin !== true) {
+      return new Response(null, { status: 302, headers: { Location: '/?권한없음=1' } });
+    }
+    return next();
+  }
+
   const login = new URL('/login.html', url.origin);
   login.searchParams.set('next', url.pathname + url.search);
 

@@ -106,6 +106,9 @@ Vercel 프로젝트 → **Settings → Environment Variables**
 | `OIDC_CLIENT_SECRET` | Confidential 클라이언트일 때만 | 선택 |
 | `SESSION_SECRET` | 임의의 긴 문자열 (아래 명령으로 생성) | 필수 |
 | `REQUIRED_REALM_ROLE` | 기본값 `employee` — 재직자 판별에 쓰는 realm 역할 | 선택 |
+| `GH_TOKEN` | 저장소에 쓸 수 있는 GitHub 토큰 (contents:write) | 등록·수정 기능에 필요 |
+| `GH_REPO` | `DVI-DGSW-26/company-events` | 등록·수정 기능에 필요 |
+| `GH_BRANCH` | 기본값 `main` | 선택 |
 | `OIDC_SCOPE` | 기본값 `openid profile email` | 선택 |
 
 ```bash
@@ -149,6 +152,62 @@ SSO 에 로그인하기 때문입니다. 대신 Keycloak realm 역할 `employee`
 
 ---
 
+## 행사 등록 · 수정 · 삭제
+
+권한이 있는 사람에게만 화면 오른쪽 위에 **행사 관리** 단추가 보입니다.
+누르면 `/admin.html` 로 들어가 행사를 추가하거나 고칠 수 있습니다.
+
+### 권한
+
+| 무엇 | 어떻게 정해지나 |
+|---|---|
+| 사이트를 볼 수 있는 사람 | Keycloak realm 역할 `employee` (부서가 배정된 재직자) |
+| 행사를 고칠 수 있는 사람 | `company-events` 클라이언트 역할 `admin` |
+
+담당자가 바뀌면 **Keycloak 에서 역할만 옮기면 됩니다.** 코드를 고치거나 다시 배포할 필요가 없습니다.
+화면에서 단추를 숨기는 것에 그치지 않고 `/api/admin/*` 에서도 매번 확인하므로,
+주소를 직접 호출해도 권한 없이는 바뀌지 않습니다.
+
+### 쓰는 법
+
+1. **행사 관리** → 왼쪽에서 행사를 고르거나 `+ 새 행사 등록`
+2. 행사명·일시·장소·주관 등을 채웁니다 (별표 표시가 필수)
+3. `사진 추가` 로 사진을 끌어다 놓습니다. 사진마다 설명을 달 수 있습니다
+4. 기사는 **주소만 넣으면 제목은 저장할 때 자동으로 채워집니다**
+5. `저장`
+
+> 저장하면 사이트에 반영되기까지 **1~2분**쯤 걸립니다.
+> 그 사이에 기사 원문을 PDF 로 뜨고, 썸네일과 내려받기 ZIP 을 다시 만들기 때문입니다.
+> 저장 직후 목록에 바로 안 보여도 잠시 뒤 새로 고치면 나옵니다.
+
+### 저장되는 곳
+
+별도 데이터베이스가 없습니다. 화면에서 고친 내용은 이 저장소에 **커밋으로 남습니다.**
+
+```
+화면에서 저장
+   └─ data/events.json · data/media/<행사ID>.json · photos/<행사ID>/  커밋
+        └─ GitHub Actions 가 기사 PDF·썸네일·ZIP·목록을 다시 만들어 되커밋
+             └─ Vercel 이 배포
+```
+
+누가 언제 무엇을 고쳤는지 이력이 남고, 잘못 지웠으면 저장소 이력에서 되살릴 수 있습니다.
+두 사람이 동시에 고치면 나중에 저장한 쪽이 거절되고 `다른 사람이 먼저 저장했습니다` 가 뜹니다.
+
+> **올린 사진은 긴 변 1920px 로 줄여 저장합니다.** 브라우저에서 줄여 보내기 때문에
+> 촬영 원본은 올라가지 않습니다. 원본은 지금처럼 공유드라이브에 보관하세요.
+
+### GitHub 토큰 만들기
+
+등록·수정 기능은 저장소에 커밋해야 해서 토큰이 필요합니다.
+
+1. GitHub → Settings → Developer settings → **Fine-grained personal access tokens**
+2. Repository access: `DVI-DGSW-26/company-events` 만 선택
+3. Permissions → Repository permissions → **Contents: Read and write**
+4. 만들어진 토큰을 Vercel 환경변수 `GH_TOKEN` 에 넣고 Redeploy
+
+---
+
 ## 사내 서버에 상시 띄우기
 
 담당자 PC 를 켜 둘 필요 없이 항상 접속되게 하려면, 상시 켜져 있는 사내 PC 나 서버에 올립니다.
@@ -169,7 +228,10 @@ Win+R  →  shell:startup  →  여기에 "열기.cmd" 바로가기 붙여넣기
 
 ---
 
-## 새 행사 추가하기
+## 새 행사 추가하기 (사진 원본까지 넣을 때)
+
+평소에는 위의 **행사 관리** 화면을 쓰면 됩니다.
+아래는 촬영 원본을 `source/` 에 두고 한 번에 처리할 때의 방법입니다.
 
 ### 1. 사진 넣기
 
@@ -241,6 +303,9 @@ npm run build      # 사진 변환 · ZIP 묶기 · 목록 갱신
 | `assets/data.js` | 화면이 읽는 목록 데이터 | 아니오 — 빌드가 생성 |
 | `tools/` | 빌드 스크립트 | 예 |
 | `middleware.js`, `api/auth/`, `lib/`, `login.html` | 배포본 사내 통합 로그인(Keycloak) | 예 |
+| `admin.html`, `assets/admin.*`, `api/admin/` | 행사 등록·수정 화면과 API | 예 |
+| `data/media/` | 사진 설명·촬영일 목록 | 아니오 — 빌드와 관리 화면이 생성 |
+| `.github/workflows/` | 저장 후 자료를 다시 만드는 자동 작업 | 예 |
 | `vercel.json` | Vercel 배포 설정 | 예 |
 
 `source/` (촬영 원본 547MB) 만 `.gitignore` 로 빼고, 나머지 생성 폴더는 **일부러 저장소에 올립니다**.
