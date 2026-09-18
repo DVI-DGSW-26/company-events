@@ -45,17 +45,90 @@
 
 ```
 20251209_2025 일터혁신 컨퍼런스 — 일터혁신 우수기업 선정.zip
-├─ 사진(원본)/      촬영 원본 해상도 그대로
+├─ 사진/            긴 변 1920px (인쇄·제출용으로 충분)
 ├─ 언론기사/        기사 원문 PDF + 지면 캡처 이미지
 ├─ 영상/            행사 영상 파일 (있는 경우)
 └─ 행사정보.txt     일시·장소·주관·참석자·기사 링크·사진 목록
 ```
+
+> **촬영 원본이 필요할 때** — ZIP 에는 웹용으로 줄인 사진이 들어갑니다.
+> 저장소·배포 용량 한도(GitHub 는 100MB 넘는 파일을 거부) 때문이고, 원본 그대로면 591MB 입니다.
+> 촬영 원본은 `source/` 와 공유드라이브의 행사 사진 폴더에 그대로 남아 있습니다.
 
 ### 서버 없이 파일로 열 때
 
 `index.html` 을 직접 더블클릭해도 열립니다. 다만 브라우저 정책 때문에
 **사진과 PDF 가 저장되지 않고 새 탭에서 열립니다**(ZIP 은 그대로 저장).
 혼자 잠깐 확인할 때만 쓰고, 평소에는 `열기.cmd` 로 여세요.
+
+---
+
+## 인터넷 배포 (Vercel + 회사 Google 계정 로그인)
+
+사내망 밖에서도 쓰려고 Vercel 에 배포합니다. **로그인하지 않으면 사진 한 장도 열리지 않습니다.**
+화면만 가리는 게 아니라 `middleware.js` 가 `/photos`, `/downloads`, `/articles` 를 포함한
+모든 경로를 검사하므로, 파일 주소를 직접 쳐도 막힙니다.
+
+### 1. Google OAuth 키 발급 (최초 1회)
+
+[Google Cloud Console](https://console.cloud.google.com/apis/credentials) 에 **회사 계정으로** 접속합니다.
+
+1. 프로젝트를 하나 만듭니다 (이름 예: `행사 아카이브`)
+2. **OAuth 동의 화면** → User Type **내부(Internal)** 선택
+   → 앱 이름 `행사 아카이브`, 지원 이메일은 담당자 주소
+   *내부로 만들면 `dvi-ind.com` 계정만 쓸 수 있어 가장 안전합니다*
+3. **사용자 인증 정보 → 사용자 인증 정보 만들기 → OAuth 클라이언트 ID**
+   - 애플리케이션 유형: **웹 애플리케이션**
+   - 승인된 리디렉션 URI 에 아래를 **정확히** 넣습니다
+
+     ```
+     https://<배포주소>.vercel.app/api/auth/callback
+     ```
+
+4. 만들어진 **클라이언트 ID** 와 **클라이언트 보안 비밀번호** 를 복사합니다
+
+### 2. Vercel 환경변수 넣기
+
+Vercel 프로젝트 → **Settings → Environment Variables** 에서 4개를 추가합니다.
+Production, Preview, Development 에 모두 체크하세요.
+
+| 이름 | 값 |
+|---|---|
+| `GOOGLE_CLIENT_ID` | 1단계에서 받은 클라이언트 ID |
+| `GOOGLE_CLIENT_SECRET` | 1단계에서 받은 보안 비밀번호 |
+| `ALLOWED_DOMAIN` | `dvi-ind.com` |
+| `SESSION_SECRET` | 아무도 모르는 긴 임의 문자열 |
+
+`SESSION_SECRET` 은 아래 명령으로 만들 수 있습니다.
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+```
+
+> 이 4개는 **절대 저장소에 넣지 마세요.** 이 저장소는 공개 상태입니다.
+> 값을 바꾸면 Vercel 에서 **Redeploy** 를 해야 반영됩니다.
+
+### 3. 배포
+
+환경변수를 넣은 뒤 Vercel 에서 **Redeploy** 를 누르면 끝입니다.
+빌드는 하지 않고 저장소에 들어 있는 사진·ZIP 을 그대로 내보냅니다 (`vercel.json`).
+
+### 동작 확인
+
+1. 시크릿 창으로 배포 주소를 엽니다 → 로그인 화면이 떠야 합니다
+2. 로그인 없이 `https://<배포주소>/photos/e01/001_엑셀01_시상식_단체사진.jpg` 를 직접 열어 봅니다
+   → **401 로그인이 필요합니다** 가 나와야 정상입니다
+3. 회사 Google 계정으로 로그인 → 목록이 뜨고 오른쪽 위에 계정이 표시됩니다
+4. 개인 Gmail 로 로그인 시도 → `dvi-ind.com 계정으로만 접속할 수 있습니다` 가 나와야 정상입니다
+
+### 자주 막히는 곳
+
+| 증상 | 원인 |
+|---|---|
+| `redirect_uri_mismatch` | 3-1 의 리디렉션 URI 가 실제 배포 주소와 다름. 끝의 `/api/auth/callback` 까지 정확히 일치해야 함 |
+| 로그인 후에도 계속 로그인 화면 | `SESSION_SECRET` 미설정 또는 Redeploy 안 함 |
+| 화면은 뜨는데 사진이 전부 깨짐 | `npm run build` 후 `photos/` 등을 커밋·푸시하지 않음 |
+| 배포는 됐는데 빈 화면 | Vercel 프로젝트 설정에서 Output Directory 를 `.` 로 지정 |
 
 ---
 
@@ -150,10 +223,12 @@ npm run build      # 사진 변환 · ZIP 묶기 · 목록 갱신
 | `downloads/` | 행사별 전체 ZIP | 아니오 — 빌드가 생성 |
 | `assets/data.js` | 화면이 읽는 목록 데이터 | 아니오 — 빌드가 생성 |
 | `tools/` | 빌드 스크립트 | 예 |
+| `middleware.js`, `api/auth/`, `lib/`, `login.html` | 배포본 로그인 | 예 |
+| `vercel.json` | Vercel 배포 설정 | 예 |
 
-`source/` 와 생성 폴더는 용량이 커서 `.gitignore` 에 넣어 두었습니다.
-저장소에는 화면·스크립트·`data/events.json` 만 올라가고, 사진과 ZIP 은 공유드라이브로 관리합니다.
-(저장소에 사진까지 올리려면 Git LFS 를 붙여야 하고 GitHub 무료 용량을 넘깁니다.)
+`source/` (촬영 원본 547MB) 만 `.gitignore` 로 빼고, 나머지 생성 폴더는 **일부러 저장소에 올립니다**.
+Vercel 빌드 서버에는 원본이 없어 사진을 다시 만들 수 없기 때문에, 만들어 둔 결과물을 그대로 배포합니다.
+그래서 `npm run build` 를 돌린 뒤에는 `photos/` 등의 변경도 함께 커밋·푸시해야 합니다.
 
 ---
 
