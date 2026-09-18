@@ -506,7 +506,8 @@ if (!LOCAL_FILE) {
     .then((r) => (r.ok ? r.json() : null))
     .then((me) => {
       if (!me?.signedIn) return;
-      $('accountWho').textContent = me.name ? `${me.name} · ${me.email}` : me.email;
+      // 개인 메일로 SSO 를 쓰는 계정은 이메일이 비어 있을 수 있다
+      $('accountWho').textContent = [me.name, me.email].filter(Boolean).join(' · ') || '사내 계정';
       $('account').hidden = false;
     })
     .catch(() => {});

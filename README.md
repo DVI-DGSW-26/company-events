@@ -76,7 +76,8 @@
 |---|---|
 | 방식 | OpenID Connect · Authorization Code + PKCE(S256) |
 | 엔드포인트 | 코드에 박지 않고 `.well-known/openid-configuration` 에서 읽음 |
-| 검증 | `iss` · `aud` · `nonce` · `exp` 확인 (선택적으로 이메일 도메인까지) |
+| 검증 | `iss` · `aud` · `nonce` · `exp` 확인 후 realm 역할 `employee` 보유 여부 |
+| 사용자 식별 | 토큰의 `sub` (이메일은 표시용으로만 씀 — 바뀔 수 있으므로) |
 | 세션 | HMAC-SHA256 서명 쿠키 12시간 · HttpOnly · Secure · SameSite=Lax |
 
 ### 1. Keycloak 클라이언트 등록 (백엔드 담당)
@@ -104,12 +105,16 @@ Vercel 프로젝트 → **Settings → Environment Variables**
 | `OIDC_CLIENT_ID` | 1단계에서 등록한 Client ID | 필수 |
 | `OIDC_CLIENT_SECRET` | Confidential 클라이언트일 때만 | 선택 |
 | `SESSION_SECRET` | 임의의 긴 문자열 (아래 명령으로 생성) | 필수 |
-| `ALLOWED_DOMAIN` | `dvi-ind.com` — 비워 두면 인증된 사내 계정 전부 허용 | 선택 |
+| `REQUIRED_REALM_ROLE` | 기본값 `employee` — 재직자 판별에 쓰는 realm 역할 | 선택 |
 | `OIDC_SCOPE` | 기본값 `openid profile email` | 선택 |
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
 ```
+
+**접근 권한** — 이메일 도메인은 보지 않습니다. 재직 인력 상당수가 개인 메일 계정으로
+SSO 에 로그인하기 때문입니다. 대신 Keycloak realm 역할 `employee` (부서가 배정된 재직자에게만
+부여) 보유 여부로 판단합니다. 퇴사자와 부서 미배정 계정은 자동으로 막힙니다.
 
 > 이 값들은 **저장소에 넣지 마세요.** 이 저장소는 공개 상태입니다.
 > 값을 바꾼 뒤에는 Vercel 에서 **Redeploy** 를 해야 반영됩니다.
@@ -135,7 +140,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
 | `설정이 필요합니다` 화면 | 환경변수 누락. 화면에 빠진 변수 이름이 표시됨 |
 | 토큰 발급 거절 (502) | Confidential 클라이언트인데 `OIDC_CLIENT_SECRET` 이 없거나 값이 틀림 |
 | 로그인 후에도 계속 로그인 화면 | `SESSION_SECRET` 미설정 또는 Redeploy 안 함 |
-| 로그인은 되는데 403 | `ALLOWED_DOMAIN` 과 계정 이메일 도메인이 다름. 사내 계정 전부 허용하려면 이 변수를 지우세요 |
+| 로그인은 되는데 403 | 계정에 `employee` realm 역할이 없음 (퇴사자·부서 미배정). 부서 배정 후 재시도 |
+| `권한을 확인할 수 없습니다` | 토큰에 역할 정보가 없음. Keycloak 클라이언트의 realm roles 매퍼를 켜야 함 |
 | 화면은 뜨는데 사진이 깨짐 | `npm run build` 후 `photos/` 등을 커밋·푸시하지 않음 |
 
 > 로그아웃은 **이 사이트의 세션만** 지웁니다. 같은 계정으로 열어 둔 다른 사내 서비스는
