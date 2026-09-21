@@ -7,6 +7,7 @@
  */
 import { SESSION_COOKIE, buildCookie } from '../../lib/session.js';
 import { AUTH_COOKIE } from '../../lib/oidc.js';
+import { clearTokenCookies } from '../../lib/keycloak.js';
 
 export const config = { runtime: 'edge' };
 
@@ -18,5 +19,6 @@ export default async function handler(req) {
   });
   headers.append('Set-Cookie', buildCookie(SESSION_COOKIE, '', 0));
   headers.append('Set-Cookie', buildCookie(AUTH_COOKIE, '', 0));
+  for (const c of clearTokenCookies()) headers.append('Set-Cookie', c);
   return new Response(null, { status: 302, headers });
 }

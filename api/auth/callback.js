@@ -13,6 +13,7 @@
 import { SESSION_COOKIE, SESSION_HOURS, buildCookie, readCookie, signSession, verifySession }
   from '../../lib/session.js';
 import { AUTH_COOKIE, configError, decodeJwt, discover, htmlError, safePath } from '../../lib/oidc.js';
+import { tokenCookies } from '../../lib/keycloak.js';
 
 export const config = { runtime: 'edge' };
 
@@ -138,5 +139,10 @@ export default async function handler(req) {
   });
   headers.append('Set-Cookie', buildCookie(SESSION_COOKIE, await signSession(session, secret), SESSION_HOURS * 3600));
   headers.append('Set-Cookie', buildCookie(AUTH_COOKIE, '', 0));
+
+  // 백엔드 API 가 Keycloak access token 을 요구한다. 화면 스크립트가 읽지 못하게
+  // HttpOnly 쿠키로만 보관한다. 갱신은 /api/archive 한 곳에서만 한다.
+  for (const c of tokenCookies(token)) headers.append('Set-Cookie', c);
+
   return new Response(null, { status: 302, headers });
 }
