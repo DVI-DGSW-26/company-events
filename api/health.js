@@ -20,10 +20,16 @@ const has = (name) => Boolean(process.env[name]);
  */
 function sampleUrls(sample) {
   if (!sample) return {};
+  const want = BASE ? new URL(BASE).origin : '';
   const judge = (v) => {
     if (!v) return '없음';
-    if (/^https?:\/\//.test(v)) return `주소 — ${v.slice(0, 110)}${v.length > 110 ? '…' : ''}`;
-    return `⚠ 저장 참조 (브라우저가 못 엶) — ${v.slice(0, 80)}`;
+    if (!/^https?:\/\//.test(v)) return `⚠ 저장 참조 (브라우저가 못 엶) — ${v.slice(0, 80)}`;
+    let origin = '';
+    try { origin = new URL(v).origin; } catch { /* 주소로 못 읽음 */ }
+    if (origin && origin !== want) {
+      return `⚠ 서버가 준 호스트가 다름 (${origin}) — 화면에 내보낼 때 ${want} 로 바로잡는 중`;
+    }
+    return `주소 — ${v.slice(0, 110)}${v.length > 110 ? '…' : ''}`;
   };
   return {
     표본_행사: sample.행사,
