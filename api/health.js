@@ -18,6 +18,37 @@ const has = (name) => Boolean(process.env[name]);
  * 브라우저가 쓸 수 있으려면 https:// 로 시작하는 완전한 주소여야 한다.
  * 저장 참조(예: 2026/09/3f2a….jpg)가 그대로 오면 화면에서 사진이 깨진다.
  */
+/**
+ * 사진 주소를 실제로 받아 본다.
+ * 호스트를 바로잡은 주소가 열리는지 확인해야, 화면이 안 뜨는 이유가
+ * 주소 때문인지 다른 것 때문인지 갈린다.
+ */
+async function probe(raw) {
+  if (!raw || !/^https?:\/\//.test(raw)) return '확인할 주소 없음';
+
+  const want = BASE ? new URL(BASE).origin : '';
+  let fixed = raw;
+  try {
+    const u = new URL(raw);
+    if (want && u.origin !== want) fixed = want + u.pathname + u.search;
+  } catch { return '주소를 읽지 못했습니다'; }
+
+  const hit = async (url) => {
+    try {
+      const r = await fetch(url, { headers: { accept: 'image/*' } });
+      return `${r.status}${r.ok ? ' 정상' : ''} · ${r.headers.get('content-type') ?? '형식 없음'}`;
+    } catch (e) { return `연결 실패 (${e.message})`; }
+  };
+
+  const out = { '호스트 바로잡은 주소': await hit(fixed) };
+  if (fixed !== raw) out['서버가 준 주소 그대로'] = await hit(raw);
+
+  out.판정 = out['호스트 바로잡은 주소'].startsWith('200')
+    ? '사진이 떠야 정상입니다. 안 뜨면 브라우저 캐시이니 Ctrl+Shift+R 로 새로고침하세요.'
+    : '바로잡은 주소도 열리지 않습니다. 서명에 호스트가 포함된 것으로 보여 서버 수정이 필요합니다.';
+  return out;
+}
+
 function sampleUrls(sample) {
   if (!sample) return {};
   const want = BASE ? new URL(BASE).origin : '';
@@ -91,7 +122,7 @@ export default async function handler(req) {
       } catch { /* 본문이 JSON 이 아님 */ }
 
       report.사내_행사_서버 = res.ok
-        ? { 응답: `정상 (${res.status})`, 행사수: count, ...sampleUrls(sample) }
+        ? { 응답: `정상 (${res.status})`, 행사수: count, ...sampleUrls(sample), 사진_실제확인: await probe(sample?.사진) }
         : {
           응답: `거절 (${res.status})`,
           설명: res.status === 401 ? '토큰이 없거나 만료되었습니다. 로그아웃 후 다시 로그인해 보세요.'
