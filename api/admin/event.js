@@ -9,7 +9,7 @@
  */
 import { requireAdmin, readJsonBody, json, cleanEvent, safePhotoName } from '../../lib/admin.js';
 import { accessToken } from '../../lib/keycloak.js';
-import { call, fail, json as apiJson, usingBackend } from '../../lib/backend.js';
+import { call, fail, json as apiJson, storageMissing, usingBackend } from '../../lib/backend.js';
 import baseline from '../../data/baseline.js';
 import { isBlobRef, paths, readArchive, refPath, removeFiles, writeArchive } from '../../lib/store.js';
 
@@ -24,6 +24,11 @@ export default async function handler(req) {
 
   const { event, errors } = cleanEvent(body?.event);
   if (errors.length) return json({ error: errors.join('\n') }, 400);
+
+  // 저장할 곳이 아직 정해지지 않았다. 서버 잘못이 아니라 설정 단계라 503 으로 알린다.
+  if (storageMissing()) {
+    return apiJson({ error: '환경변수가 설정되지 않았습니다: EVENTS_API' }, 503);
+  }
 
   if (usingBackend()) {
     // 본문 모양이 백엔드의 SaveEventRequest 와 같아 그대로 넘긴다

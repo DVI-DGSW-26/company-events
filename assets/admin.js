@@ -61,18 +61,22 @@ function showBootError(e) {
 
   if (missing) {
     box.append(el('p', null,
-      '고친 내용을 담아 둘 저장 공간이 아직 없습니다. ' +
-      'Vercel 화면에서 한 번 만들면 설정값이 자동으로 들어가고, 그 뒤에는 손댈 것이 없습니다.'));
+      '행사 자료를 읽고 쓸 곳이 아직 연결되지 않았습니다. ' +
+      'Vercel 에 아래 환경변수를 넣고 다시 배포하면 됩니다.'));
     const steps = el('pre');
     steps.textContent = [
-      'Vercel → 프로젝트 → Storage 탭',
-      '  → Create Database → Blob 선택 → Create',
-      '  → 이 프로젝트에 연결(Connect)',
-      '  → Deployments 탭에서 Redeploy',
+      'Vercel → 프로젝트 → Settings → Environment Variables',
+      '',
+      '  이름   EVENTS_API',
+      '  값     https://api.dvi-ind.com/events',
+      '  체크   Production · Preview · Development',
+      '',
+      '넣은 뒤 Deployments 탭 → 맨 위 ⋯ → Redeploy',
     ].join('\n');
     box.append(steps);
     box.append(el('p', 'fine',
-      `만들면 ${missing[1]} 값이 프로젝트에 자동으로 추가됩니다. 따로 복사해 넣을 것은 없습니다. ` +
+      '환경변수는 넣는 것만으로 반영되지 않습니다. 이미 돌고 있는 배포는 만들어질 때의 값을 쓰기 때문에 ' +
+      '반드시 Redeploy 가 필요합니다. 지금 상태는 /api/health 에서 확인할 수 있습니다. ' +
       '보기와 내려받기는 지금도 정상 동작합니다 — 등록·수정만 이 단계가 필요합니다.'));
   } else {
     box.append(el('p', null, e.message));

@@ -8,7 +8,7 @@
  */
 import { requireAdmin, readJsonBody, json, safePhotoName, jpegBase64 } from '../../lib/admin.js';
 import { accessToken } from '../../lib/keycloak.js';
-import { call, fail, json as apiJson, usingBackend } from '../../lib/backend.js';
+import { call, fail, json as apiJson, storageMissing, usingBackend } from '../../lib/backend.js';
 import { blobRef, paths, putFile } from '../../lib/store.js';
 
 const bytesOf = (b64) => {
@@ -33,6 +33,11 @@ export default async function handler(req) {
   const list = Array.isArray(body?.photos) ? body.photos : [];
   if (!list.length) return json({ error: '올릴 사진이 없습니다.' }, 400);
   if (list.length > 40) return json({ error: '한 번에 40장까지 올릴 수 있습니다.' }, 400);
+
+  // 저장할 곳이 아직 정해지지 않았다. 서버 잘못이 아니라 설정 단계라 503 으로 알린다.
+  if (storageMissing()) {
+    return apiJson({ error: '환경변수가 설정되지 않았습니다: EVENTS_API' }, 503);
+  }
 
   if (usingBackend()) {
     // 백엔드는 multipart 로 받고 썸네일도 직접 만든다. 화면이 보낸 썸네일은 쓰지 않는다.

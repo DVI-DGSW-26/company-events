@@ -6,7 +6,7 @@
  */
 import { requireAdmin, readJsonBody, json } from '../../lib/admin.js';
 import { accessToken } from '../../lib/keycloak.js';
-import { call, fail, json as apiJson, usingBackend } from '../../lib/backend.js';
+import { call, fail, json as apiJson, storageMissing, usingBackend } from '../../lib/backend.js';
 import baseline from '../../data/baseline.js';
 import { listUnder, paths, readArchive, removeFiles, writeArchive } from '../../lib/store.js';
 
@@ -21,6 +21,11 @@ export default async function handler(req) {
 
   const id = String(body?.id ?? '');
   if (!/^e\d{2,4}$/.test(id)) return json({ error: '행사 번호가 올바르지 않습니다.' }, 400);
+
+  // 저장할 곳이 아직 정해지지 않았다. 서버 잘못이 아니라 설정 단계라 503 으로 알린다.
+  if (storageMissing()) {
+    return apiJson({ error: '환경변수가 설정되지 않았습니다: EVENTS_API' }, 503);
+  }
 
   if (usingBackend()) {
     const { token } = await accessToken(req);
