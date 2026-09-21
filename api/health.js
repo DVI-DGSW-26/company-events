@@ -18,9 +18,9 @@ export default async function handler(req) {
   const report = {
     확인시각: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
 
-    행사자료를_읽는_곳: usingBackend() ? '사내 행사 서버 (전환 완료)'
-      : has('BLOB_READ_WRITE_TOKEN') ? 'Vercel Blob'
-        : '배포에 포함된 기준 자료 (등록·수정 불가)',
+    행사자료를_읽는_곳: usingBackend()
+      ? '사내 행사 서버 (전환 완료)'
+      : '배포에 포함된 기준 자료 — EVENTS_API 미설정 (등록·수정 불가)',
 
     로그인: session
       ? { 상태: '로그인됨', 이름: session.name, 관리권한: session.admin === true }
@@ -37,7 +37,6 @@ export default async function handler(req) {
       OIDC_CLIENT_ID: has('OIDC_CLIENT_ID') ? '설정됨' : '없음',
       OIDC_CLIENT_SECRET: has('OIDC_CLIENT_SECRET') ? '설정됨' : '없음',
       SESSION_SECRET: has('SESSION_SECRET') ? '설정됨' : '없음',
-      BLOB_READ_WRITE_TOKEN: has('BLOB_READ_WRITE_TOKEN') ? '설정됨' : '없음',
     },
   };
 

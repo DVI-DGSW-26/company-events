@@ -1,15 +1,17 @@
 /**
  * POST /api/admin/photos — 사진 올리기
  *
- * 사진은 브라우저에서 긴 변 1920px 로 줄이고 썸네일까지 만들어 보낸다.
- * 요청 본문 한도(수 MB)가 있어 화면이 알아서 나눠 보내고, 여기서는 받은 만큼만 넣는다.
+ * 화면은 브라우저에서 긴 변 1920px 로 줄인 사진을 base64 로 보낸다.
+ * 여기서 multipart(files)로 바꿔 사내 행사 서버에 넘긴다. 썸네일은 서버가 만든다.
  *
- * 본문: { id, photos: [{ name, image, thumb }] }   image·thumb 은 data:image/jpeg;base64,...
+ * 브라우저에서 이 경로까지는 요청 본문 한도(약 4.5MB)가 걸려 있어,
+ * 화면이 알아서 나눠 보내고 여기서는 받은 만큼만 넘긴다.
+ *
+ * 본문: { id, photos: [{ name, image }] }   image 는 data:image/jpeg;base64,...
  */
 import { requireAdmin, readJsonBody, json, safePhotoName, jpegBase64 } from '../../lib/admin.js';
 import { accessToken } from '../../lib/keycloak.js';
-import { call, fail, json as apiJson, storageMissing, usingBackend } from '../../lib/backend.js';
-import { blobRef, paths, putFile } from '../../lib/store.js';
+import { call, fail, json as apiJson, notConnected, usingBackend } from '../../lib/backend.js';
 
 const bytesOf = (b64) => {
   const bin = atob(b64);
@@ -23,6 +25,7 @@ export default async function handler(req) {
 
   const auth = await requireAdmin(req);
   if (!auth.ok) return auth.res;
+  if (!usingBackend()) return notConnected();
 
   const { body, error } = await readJsonBody(req);
   if (error) return error;
@@ -34,46 +37,17 @@ export default async function handler(req) {
   if (!list.length) return json({ error: '올릴 사진이 없습니다.' }, 400);
   if (list.length > 40) return json({ error: '한 번에 40장까지 올릴 수 있습니다.' }, 400);
 
-  // 저장할 곳이 아직 정해지지 않았다. 서버 잘못이 아니라 설정 단계라 503 으로 알린다.
-  if (storageMissing()) {
-    return apiJson({ error: '환경변수가 설정되지 않았습니다: EVENTS_API' }, 503);
+  const form = new FormData();
+  for (const p of list) {
+    const name = safePhotoName(p?.name);
+    if (!name) return json({ error: `사진 이름을 쓸 수 없습니다: ${String(p?.name).slice(0, 60)}` }, 400);
+    const image = jpegBase64(p?.image);
+    if (!image) return json({ error: `사진 형식이 올바르지 않습니다: ${name}` }, 400);
+    form.append('files', new Blob([bytesOf(image)], { type: 'image/jpeg' }), name);
   }
 
-  if (usingBackend()) {
-    // 백엔드는 multipart 로 받고 썸네일도 직접 만든다. 화면이 보낸 썸네일은 쓰지 않는다.
-    const form = new FormData();
-    for (const p of list) {
-      const name = safePhotoName(p?.name);
-      if (!name) return json({ error: `사진 이름을 쓸 수 없습니다: ${String(p?.name).slice(0, 60)}` }, 400);
-      const image = jpegBase64(p?.image);
-      if (!image) return json({ error: `사진 형식이 올바르지 않습니다: ${name}` }, 400);
-      form.append('files', new Blob([bytesOf(image)], { type: 'image/jpeg' }), name);
-    }
-    const { token } = await accessToken(req);
-    try {
-      return apiJson(await call(`/event/${encodeURIComponent(id)}/photo`, { token, method: 'POST', form }));
-    } catch (e) { return fail(e); }
-  }
-
-  const saved = [];
+  const { token } = await accessToken(req);
   try {
-    for (const p of list) {
-      const name = safePhotoName(p?.name);
-      if (!name) return json({ error: `사진 이름을 쓸 수 없습니다: ${String(p?.name).slice(0, 60)}` }, 400);
-
-      const image = jpegBase64(p?.image);
-      const thumb = jpegBase64(p?.thumb);
-      if (!image || !thumb) return json({ error: `사진 형식이 올바르지 않습니다: ${name}` }, 400);
-
-      const photoPath = paths.photo(id, name);
-      const thumbPath = paths.thumb(id, name);
-      const { size } = await putFile(photoPath, bytesOf(image), 'image/jpeg');
-      await putFile(thumbPath, bytesOf(thumb), 'image/jpeg');
-
-      saved.push({ name, src: blobRef(photoPath), thumb: blobRef(thumbPath), size });
-    }
-    return json({ ok: true, saved });
-  } catch (e) {
-    return json({ error: `사진을 저장하지 못했습니다: ${e.message}` }, 502);
-  }
+    return apiJson(await call(`/event/${encodeURIComponent(id)}/photo`, { token, method: 'POST', form }));
+  } catch (e) { return fail(e); }
 }
