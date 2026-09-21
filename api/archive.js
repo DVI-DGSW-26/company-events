@@ -12,6 +12,8 @@ import baseline from '../data/baseline.js';
 import { accessToken } from '../lib/keycloak.js';
 import { BackendError, call, fail, json, usingBackend } from '../lib/backend.js';
 
+export const config = { runtime: 'edge' };
+
 export default async function handler(req) {
   if (!usingBackend()) {
     // 아직 연결 전. 목록은 보여 주되 등록·수정은 막힌다(각 경로에서 503 으로 안내).

@@ -10,7 +10,8 @@
     "serve": "node tools/serve.mjs",
     "setup": "npm --prefix tools install",
     "articles": "cd tools && node make-articles.mjs",
-    "build": "cd tools && node build.mjs"
+    "build": "cd tools && node build.mjs",
+    "check": "cd tools && node check-api.mjs"
   },
   "dependencies": {
     "@vercel/edge": "^1.2.2"

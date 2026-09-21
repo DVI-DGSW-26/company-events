@@ -13,6 +13,8 @@ import { requireAdmin, readJsonBody, json, safePhotoName, jpegBase64 } from '../
 import { accessToken } from '../../lib/keycloak.js';
 import { call, fail, json as apiJson, notConnected, usingBackend } from '../../lib/backend.js';
 
+export const config = { runtime: 'edge' };
+
 const bytesOf = (b64) => {
   const bin = atob(b64);
   const out = new Uint8Array(bin.length);

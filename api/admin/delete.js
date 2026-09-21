@@ -8,6 +8,8 @@ import { requireAdmin, readJsonBody, json } from '../../lib/admin.js';
 import { accessToken } from '../../lib/keycloak.js';
 import { call, fail, json as apiJson, notConnected, usingBackend } from '../../lib/backend.js';
 
+export const config = { runtime: 'edge' };
+
 export default async function handler(req) {
   if (req.method !== 'POST') return json({ error: 'POST 로 요청해 주세요.' }, 405);
 

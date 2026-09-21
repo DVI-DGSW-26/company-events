@@ -9,6 +9,8 @@ import { SESSION_COOKIE, readCookie, verifySession } from '../lib/session.js';
 import { AT_COOKIE, RT_COOKIE, isUsable, readTokenCookie } from '../lib/keycloak.js';
 import { BASE, usingBackend } from '../lib/backend.js';
 
+export const config = { runtime: 'edge' };
+
 const has = (name) => Boolean(process.env[name]);
 
 export default async function handler(req) {
@@ -16,7 +18,8 @@ export default async function handler(req) {
   const at = readTokenCookie(req, AT_COOKIE);
 
   const report = {
-    확인시각: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+    // edge 런타임의 시간대 지원에 기대지 않고 한국 시각을 직접 만든다
+    확인시각: new Date(Date.now() + 9 * 3600_000).toISOString().replace('T', ' ').slice(0, 19) + ' (KST)',
 
     행사자료를_읽는_곳: usingBackend()
       ? '사내 행사 서버 (전환 완료)'

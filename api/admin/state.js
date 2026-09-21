@@ -7,6 +7,8 @@ import { requireAdmin } from '../../lib/admin.js';
 import { accessToken } from '../../lib/keycloak.js';
 import { call, fail, json, notConnected, usingBackend } from '../../lib/backend.js';
 
+export const config = { runtime: 'edge' };
+
 export default async function handler(req) {
   const auth = await requireAdmin(req);
   if (!auth.ok) return auth.res;
