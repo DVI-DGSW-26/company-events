@@ -40,14 +40,14 @@
     <div class="grid2">
       <label class="f f--wide"><span>행사명 <b>*</b></span>
         <input id="fTitle" maxlength="200" placeholder="예: 제9회 대구 스타트업 어워즈 — 대상 수상"></label>
-      <label class="f f--wide"><span>한 줄 부제</span>
-        <input id="fSubtitle" maxlength="200" placeholder="예: 우수 스타트업부문 대상"></label>
+      <label class="f f--wide"><span>수상·성과 <em>받은 상이나 이 행사에서의 성과</em></span>
+        <input id="fSubtitle" maxlength="200" placeholder="예: 우수 스타트업부문 대상 · 고용노동부 장관상"></label>
 
       <label class="f"><span>구분 <b>*</b></span>
         <select id="fCategory"><option value="사외">사외</option><option value="사내">사내</option></select></label>
       <label class="f"><span>행사구분 <b>*</b></span>
-        <input id="fType" maxlength="30" list="typeList" placeholder="예: 수상">
-        <datalist id="typeList"></datalist></label>
+        <select id="fTypeSelect"></select>
+        <input id="fTypeCustom" maxlength="30" placeholder="새 행사구분 입력" hidden></label>
       <label class="f"><span>일시 <b>*</b></span>
         <input id="fDate" type="date"></label>
       <label class="f"><span>장소</span>

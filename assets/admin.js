@@ -98,8 +98,54 @@ function renderPicks() {
     li.append(b);
     ul.append(li);
   }
-  const types = [...new Set(state.doc.events.map((e) => e.type))].sort((a, b) => a.localeCompare(b, 'ko'));
-  $('typeList').replaceChildren(...types.map((t) => { const o = el('option'); o.value = t; return o; }));
+  fillTypes();
+}
+
+const CUSTOM = '__직접입력';
+
+/**
+ * 행사구분은 고르는 것과 직접 쓰는 것을 모두 받는다.
+ * 쓰던 구분은 목록에서 고르고, 없는 구분은 '직접 입력'을 골라 새로 적는다.
+ */
+function fillTypes(current) {
+  const sel = $('fTypeSelect');
+  // 인자가 없으면(목록만 다시 채우는 경우) 지금 고른 값을 지킨다
+  const cur = current ?? (typeValue() || undefined);
+  const known = [...new Set(state.doc.events.map((e) => e.type).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, 'ko'));
+
+  sel.replaceChildren();
+  for (const t of known) {
+    const o = el('option', null, t);
+    o.value = t;
+    sel.append(o);
+  }
+  const custom = el('option', null, '+ 직접 입력…');
+  custom.value = CUSTOM;
+  sel.append(custom);
+
+  const box = $('fTypeCustom');
+  if (cur && !known.includes(cur)) {
+    sel.value = CUSTOM;
+    box.value = cur;
+    box.hidden = false;
+  } else {
+    sel.value = cur ?? known[0] ?? CUSTOM;
+    box.value = '';
+    box.hidden = sel.value !== CUSTOM;
+  }
+}
+
+$('fTypeSelect').addEventListener('change', () => {
+  const box = $('fTypeCustom');
+  box.hidden = $('fTypeSelect').value !== CUSTOM;
+  if (!box.hidden) box.focus(); else box.value = '';
+});
+
+/** 지금 폼에 들어 있는 행사구분 */
+function typeValue() {
+  const sel = $('fTypeSelect').value;
+  return sel === CUSTOM ? $('fTypeCustom').value.trim() : sel;
 }
 
 /* ── 편집 열기 ────────────────────────────────────────────── */
@@ -151,7 +197,7 @@ function fill(ev) {
   $('fTitle').value = ev.title ?? '';
   $('fSubtitle').value = ev.subtitle ?? '';
   $('fCategory').value = ev.category ?? '사외';
-  $('fType').value = ev.type ?? '';
+  fillTypes(ev.type ?? '');
   $('fDate').value = ev.date ?? '';
   $('fPlace').value = ev.place ?? '';
   $('fHost').value = ev.host ?? '';
@@ -315,7 +361,7 @@ function collect() {
   return {
     id: state.id,
     category: $('fCategory').value,
-    type: $('fType').value.trim(),
+    type: typeValue(),
     date: $('fDate').value,
     title: $('fTitle').value.trim(),
     subtitle: $('fSubtitle').value.trim() || undefined,
@@ -332,7 +378,9 @@ function validate(ev) {
   const bad = [];
   const mark = (id, ok) => { $(id).setAttribute('aria-invalid', String(!ok)); return ok; };
   if (!mark('fTitle', !!ev.title)) bad.push('행사명');
-  if (!mark('fType', !!ev.type)) bad.push('행사구분');
+  // 고르는 칸과 직접 입력 칸 중 지금 쓰이는 쪽에 표시한다
+  const typeBox = $('fTypeCustom').hidden ? 'fTypeSelect' : 'fTypeCustom';
+  if (!mark(typeBox, !!ev.type)) bad.push('행사구분');
   if (!mark('fDate', /^\d{4}-\d{2}-\d{2}$/.test(ev.date))) bad.push('일시');
   return bad;
 }

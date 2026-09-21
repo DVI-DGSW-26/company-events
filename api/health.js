@@ -13,6 +13,26 @@ export const config = { runtime: 'edge' };
 
 const has = (name) => Boolean(process.env[name]);
 
+/**
+ * 사진 주소가 어떤 모양으로 오는지 그대로 보여준다.
+ * 브라우저가 쓸 수 있으려면 https:// 로 시작하는 완전한 주소여야 한다.
+ * 저장 참조(예: 2026/09/3f2a….jpg)가 그대로 오면 화면에서 사진이 깨진다.
+ */
+function sampleUrls(sample) {
+  if (!sample) return {};
+  const judge = (v) => {
+    if (!v) return '없음';
+    if (/^https?:\/\//.test(v)) return `주소 — ${v.slice(0, 110)}${v.length > 110 ? '…' : ''}`;
+    return `⚠ 저장 참조 (브라우저가 못 엶) — ${v.slice(0, 80)}`;
+  };
+  return {
+    표본_행사: sample.행사,
+    표본_사진: judge(sample.사진),
+    표본_썸네일: judge(sample.썸네일),
+    표본_묶음: judge(sample.묶음),
+  };
+}
+
 export default async function handler(req) {
   const session = await verifySession(readCookie(req, SESSION_COOKIE), process.env.SESSION_SECRET);
   const at = readTokenCookie(req, AT_COOKIE);
@@ -49,14 +69,23 @@ export default async function handler(req) {
       const res = await fetch(`${BASE}/event`, {
         headers: { accept: 'application/json', ...(at ? { authorization: `Bearer ${at}` } : {}) },
       });
-      let count = null;
+      let count = null, sample = null;
       try {
         const body = await res.json();
-        count = body?.data?.events?.length ?? null;
+        const events = body?.data?.events ?? [];
+        count = events.length;
+        // 사진이 안 뜰 때 주소 모양을 바로 보기 위해 표본을 하나 싣는다
+        const withPhoto = events.find((e) => e.photos?.length) ?? events[0];
+        sample = {
+          행사: withPhoto?.title ?? null,
+          사진: withPhoto?.photos?.[0]?.src ?? null,
+          썸네일: withPhoto?.photos?.[0]?.thumb ?? null,
+          묶음: withPhoto?.bundle?.src ?? null,
+        };
       } catch { /* 본문이 JSON 이 아님 */ }
 
       report.사내_행사_서버 = res.ok
-        ? { 응답: `정상 (${res.status})`, 행사수: count }
+        ? { 응답: `정상 (${res.status})`, 행사수: count, ...sampleUrls(sample) }
         : {
           응답: `거절 (${res.status})`,
           설명: res.status === 401 ? '토큰이 없거나 만료되었습니다. 로그아웃 후 다시 로그인해 보세요.'
