@@ -7,6 +7,8 @@
  * 본문: { id, photos: [{ name, image, thumb }] }   image·thumb 은 data:image/jpeg;base64,...
  */
 import { requireAdmin, readJsonBody, json, safePhotoName, jpegBase64 } from '../../lib/admin.js';
+import { accessToken } from '../../lib/keycloak.js';
+import { call, fail, json as apiJson, usingBackend } from '../../lib/backend.js';
 import { blobRef, paths, putFile } from '../../lib/store.js';
 
 const bytesOf = (b64) => {
@@ -31,6 +33,22 @@ export default async function handler(req) {
   const list = Array.isArray(body?.photos) ? body.photos : [];
   if (!list.length) return json({ error: '올릴 사진이 없습니다.' }, 400);
   if (list.length > 40) return json({ error: '한 번에 40장까지 올릴 수 있습니다.' }, 400);
+
+  if (usingBackend()) {
+    // 백엔드는 multipart 로 받고 썸네일도 직접 만든다. 화면이 보낸 썸네일은 쓰지 않는다.
+    const form = new FormData();
+    for (const p of list) {
+      const name = safePhotoName(p?.name);
+      if (!name) return json({ error: `사진 이름을 쓸 수 없습니다: ${String(p?.name).slice(0, 60)}` }, 400);
+      const image = jpegBase64(p?.image);
+      if (!image) return json({ error: `사진 형식이 올바르지 않습니다: ${name}` }, 400);
+      form.append('files', new Blob([bytesOf(image)], { type: 'image/jpeg' }), name);
+    }
+    const { token } = await accessToken(req);
+    try {
+      return apiJson(await call(`/event/${encodeURIComponent(id)}/photo`, { token, method: 'POST', form }));
+    } catch (e) { return fail(e); }
+  }
 
   const saved = [];
   try {

@@ -106,7 +106,8 @@ Vercel 프로젝트 → **Settings → Environment Variables**
 | `OIDC_CLIENT_SECRET` | Confidential 클라이언트일 때만 | 선택 |
 | `SESSION_SECRET` | 임의의 긴 문자열 (아래 명령으로 생성) | 필수 |
 | `REQUIRED_REALM_ROLE` | 기본값 `employee` — 재직자 판별에 쓰는 realm 역할 | 선택 |
-| `BLOB_READ_WRITE_TOKEN` | Blob 저장소를 만들면 **자동으로 추가됩니다** | 등록·수정 기능에 필요 |
+| `EVENTS_API` | `https://api.dvi-ind.com/events` — 넣으면 사내 행사 서버를 쓰고, 빼면 예전 경로로 돌아갑니다 | 전환 시 |
+| `BLOB_READ_WRITE_TOKEN` | Blob 저장소를 만들면 자동으로 추가됩니다 | 사내 서버 전환 전까지 |
 | `OIDC_SCOPE` | 기본값 `openid profile email` | 선택 |
 
 ```bash

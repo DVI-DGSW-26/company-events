@@ -8,6 +8,8 @@
  * 본문: { event, media, removePhotos: [name], rev }
  */
 import { requireAdmin, readJsonBody, json, cleanEvent, safePhotoName } from '../../lib/admin.js';
+import { accessToken } from '../../lib/keycloak.js';
+import { call, fail, json as apiJson, usingBackend } from '../../lib/backend.js';
 import baseline from '../../data/baseline.js';
 import { isBlobRef, paths, readArchive, refPath, removeFiles, writeArchive } from '../../lib/store.js';
 
@@ -22,6 +24,18 @@ export default async function handler(req) {
 
   const { event, errors } = cleanEvent(body?.event);
   if (errors.length) return json({ error: errors.join('\n') }, 400);
+
+  if (usingBackend()) {
+    // 본문 모양이 백엔드의 SaveEventRequest 와 같아 그대로 넘긴다
+    const { token } = await accessToken(req);
+    try {
+      const data = await call(`/event/${encodeURIComponent(event.id)}`, {
+        token, method: 'PUT',
+        json: { event, media: body?.media ?? { photos: [] }, removePhotos: body?.removePhotos ?? [], rev: body?.rev },
+      });
+      return apiJson(data);
+    } catch (e) { return fail(e); }
+  }
 
   /* 사진 목록 — 화면이 보낸 순서를 그대로 쓴다 */
   const photos = (Array.isArray(body?.media?.photos) ? body.media.photos : [])

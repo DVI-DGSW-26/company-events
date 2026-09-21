@@ -5,6 +5,8 @@
  * 본문: { id, title, rev }   title 은 실수로 다른 행사를 지우는 것을 막는 확인용
  */
 import { requireAdmin, readJsonBody, json } from '../../lib/admin.js';
+import { accessToken } from '../../lib/keycloak.js';
+import { call, fail, json as apiJson, usingBackend } from '../../lib/backend.js';
 import baseline from '../../data/baseline.js';
 import { listUnder, paths, readArchive, removeFiles, writeArchive } from '../../lib/store.js';
 
@@ -19,6 +21,17 @@ export default async function handler(req) {
 
   const id = String(body?.id ?? '');
   if (!/^e\d{2,4}$/.test(id)) return json({ error: '행사 번호가 올바르지 않습니다.' }, 400);
+
+  if (usingBackend()) {
+    const { token } = await accessToken(req);
+    try {
+      const data = await call(`/event/${encodeURIComponent(id)}`, {
+        token, method: 'DELETE',
+        search: { rev: body?.rev, title: body?.title },
+      });
+      return apiJson(data);
+    } catch (e) { return fail(e); }
+  }
 
   try {
     let doc = await readArchive();

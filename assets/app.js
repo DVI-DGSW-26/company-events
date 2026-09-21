@@ -638,17 +638,54 @@ function start() {
 applyData(DATA);
 start();
 
-/* 저장된 최신 목록으로 갈아 끼운다. 실패하면 배포된 자료로 그대로 쓴다. */
-if (!LOCAL_FILE) {
-  fetch('/api/archive', { headers: { accept: 'application/json' } })
-    .then((r) => (r.ok ? r.json() : null))
-    .then((live) => {
-      if (!live?.events?.length) return;
-      applyData(live);
-      start();
+/* ── 최신 목록 읽기 ────────────────────────────────────────── */
+/* 사진 주소는 시간이 지나면 만료되는 서명 주소다. 주기적으로 받아 두는 대신
+   실제로 만료돼 사진이 안 뜰 때 한 번 다시 받는다. 화면이 헛돌지 않게. */
+const relogin = () => {
+  location.href = `/api/auth/login?next=${encodeURIComponent(location.pathname + location.search + location.hash)}`;
+};
+
+let loading = null;
+let lastLoad = 0;
+
+function loadLive({ keepView = false } = {}) {
+  if (LOCAL_FILE) return Promise.resolve(false);
+  if (loading) return loading;
+
+  loading = fetch('/api/archive', { headers: { accept: 'application/json' } })
+    .then(async (r) => {
+      const body = await r.json().catch(() => null);
+      if (r.status === 401 || body?.needsLogin) { relogin(); return false; }
+      if (!r.ok || !body?.events?.length) return false;
+
+      const keep = { id: state.id, photo: state.photo, tab: state.tab };
+      applyData(body);
+      lastLoad = Date.now();
+
+      if (keepView && EVENTS.some((e) => e.id === keep.id)) {
+        renderList();
+        state.photo = Math.min(keep.photo, Math.max(0, (current()?.photos.length ?? 1) - 1));
+        state.tab = keep.tab;
+        renderPreview();
+      } else start();
+      return true;
     })
-    .catch(() => {});
+    .catch(() => false)
+    .finally(() => { loading = null; });
+
+  return loading;
 }
+
+/** 사진이 안 뜨면 주소가 만료된 것으로 보고 목록을 한 번 다시 받는다 */
+function onMediaError() {
+  if (LOCAL_FILE || Date.now() - lastLoad < 30_000) return;
+  loadLive({ keepView: true });
+}
+window.addEventListener('error', (ev) => {
+  if (ev.target instanceof HTMLImageElement) onMediaError();
+}, true);
+
+loadLive();
 
 window.addEventListener('hashchange', () => {
   const id = location.hash.slice(1);

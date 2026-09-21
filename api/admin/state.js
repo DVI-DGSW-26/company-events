@@ -2,8 +2,11 @@
  * GET /api/admin/state — 편집 화면이 읽을 현재 자료
  *
  * rev 도 함께 준다. 저장할 때 그 사이 다른 사람이 고쳤는지 확인하는 데 쓴다.
+ * EVENTS_API 가 있으면 사내 행사 서버에서 읽고, 없으면 예전 경로(Blob)로 동작한다.
  */
-import { requireAdmin, json } from '../../lib/admin.js';
+import { requireAdmin } from '../../lib/admin.js';
+import { accessToken } from '../../lib/keycloak.js';
+import { call, fail, json, usingBackend } from '../../lib/backend.js';
 import baseline from '../../data/baseline.js';
 import { mediaUrl, readArchive, writeArchive } from '../../lib/store.js';
 
@@ -12,6 +15,14 @@ export default async function handler(req) {
   if (!auth.ok) return auth.res;
 
   const id = new URL(req.url).searchParams.get('id');
+
+  if (usingBackend()) {
+    // 토큰 갱신은 /api/archive 에서만 한다. 여기서는 있는 토큰을 그대로 쓴다.
+    const { token } = await accessToken(req);
+    try {
+      return json(await call('/event/state', { token, search: { id } }));
+    } catch (e) { return fail(e); }
+  }
 
   try {
     let doc = await readArchive();
