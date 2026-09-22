@@ -142,6 +142,33 @@ $('fTypeSelect').addEventListener('change', () => {
   if (!box.hidden) box.focus(); else box.value = '';
 });
 
+/* ── 주관: 사내 행사는 (주)디비전 ─────────────────────────── */
+const OWN_HOST = '(주)디비전';
+
+/** 구분에 맞춰 주관 칸의 안내 문구를 바꾼다 (값은 건드리지 않는다) */
+function syncHostHint() {
+  const inside = $('fCategory').value === '사내';
+  $('fHost').placeholder = inside ? OWN_HOST : '예: 대구광역시';
+  $('fHostHint').hidden = !inside;
+}
+
+/**
+ * 구분을 바꿀 때만 주관을 채우거나 비운다.
+ * 저장된 행사를 열 때는 부르지 않는다 — 보기만 했는데 값이 바뀌면 헷갈리기 때문이다.
+ */
+$('fCategory').addEventListener('change', () => {
+  const host = $('fHost');
+  if ($('fCategory').value === '사내') {
+    host.value = OWN_HOST;
+  } else if (host.value.trim() === OWN_HOST) {
+    // 사외 행사는 외부 기관 이름을 적어야 하므로 자동으로 넣은 값만 비운다.
+    // 직접 적은 다른 값은 그대로 둔다.
+    host.value = '';
+    host.focus();
+  }
+  syncHostHint();
+});
+
 /** 지금 폼에 들어 있는 행사구분 */
 function typeValue() {
   const sel = $('fTypeSelect').value;
@@ -201,6 +228,7 @@ function fill(ev) {
   $('fDate').value = ev.date ?? '';
   $('fPlace').value = ev.place ?? '';
   $('fHost').value = ev.host ?? '';
+  syncHostHint();
   $('fAttendees').value = ev.attendees ?? '';
   $('fSummary').value = ev.summary ?? '';
   $('fNotes').value = (ev.notes ?? []).join('\n');
