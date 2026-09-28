@@ -27,9 +27,6 @@ export default async function middleware(req) {
     return next();
   }
 
-  const login = new URL('/login.html', url.origin);
-  login.searchParams.set('next', url.pathname + url.search);
-
   // 페이지가 아니라 파일 요청이면 리다이렉트 대신 401 을 준다.
   // (이미지·다운로드 요청이 로그인 HTML 로 바뀌어 깨져 보이는 것을 막는다)
   const wantsHtml = (req.headers.get('accept') || '').includes('text/html');
@@ -40,5 +37,10 @@ export default async function middleware(req) {
     });
   }
 
+  // 로그인 화면을 거치지 않고 바로 통합 로그인을 시작한다. 허브 등에서
+  // 이미 로그인한 사람은 버튼 클릭 없이 그대로 통과된다. 실패하면
+  // 오류 화면이 /login.html 링크를 보여주므로 재시도 루프는 없다.
+  const login = new URL('/api/auth/login', url.origin);
+  login.searchParams.set('next', url.pathname + url.search);
   return Response.redirect(login.toString(), 302);
 }
