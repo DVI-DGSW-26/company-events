@@ -29,11 +29,39 @@ const state = {
   q: '', year: '', cat: '', type: '', pressOnly: false,
   dir: 'desc',
   id: null,      // 선택된 행사
+  newest: null,  // 가장 나중에 등록된 행사 — 사이트를 열면 이 행사를 펼친다
   photo: 0,      // 미리보기 사진 index
   tab: '전체',
   lb: -1,        // 확대보기 index (-1 = 닫힘)
   visible: [],
 };
+
+/**
+ * 가장 나중에 등록된 행사를 고른다.
+ *
+ * 목록은 행사 일시 순으로 세우지만, 사이트를 열었을 때 펼쳐 보여줄 것은
+ * 방금 올린 행사다. 지난 행사를 뒤늦게 등록하는 일이 잦아서 일시와 등록 순서가
+ * 서로 다르다.
+ *
+ * 등록 시각을 서버가 주면 그것을 쓰고, 없으면 붙여 온 순서와 행사 번호로 가늠한다.
+ * 어느 쪽도 못 믿을 때는 맨 뒤 행사를 고른다. 화면이 비지 않게 하는 것이 먼저다.
+ */
+function newestEntry(events) {
+  if (!events.length) return null;
+
+  const stamp = (e) => e.createdAt ?? e.registeredAt ?? e.updatedAt ?? '';
+  if (events.some((e) => stamp(e))) {
+    return events.reduce((a, b) => (stamp(b) > stamp(a) ? b : a)).id;
+  }
+
+  // e01, e02 … 처럼 등록하면서 번호가 올라간다
+  const num = (e) => Number(/(\d+)\s*$/.exec(e.id ?? '')?.[1]);
+  if (events.every((e) => Number.isFinite(num(e)))) {
+    return events.reduce((a, b) => (num(b) > num(a) ? b : a)).id;
+  }
+
+  return events[events.length - 1].id;
+}
 
 /* ── 자료 반영 ─────────────────────────────────────────────── */
 /* 배포본에서는 /api/archive 를 읽는다. 화면에서 등록·수정한 내용이 바로 보이게 하기
@@ -42,6 +70,7 @@ function applyData(data) {
   $('orgName').textContent = data?.company ?? '';
   EVENTS.length = 0;
   EVENTS.push(...(data?.events ?? []));
+  state.newest = newestEntry(EVENTS);
 
   const n = (f) => EVENTS.reduce((s, e) => s + f(e), 0);
   $('tally').innerHTML =
@@ -199,14 +228,19 @@ function rowDownload(e) {
 }
 
 /* 행 선택 */
+/* 사람이 직접 고른 행사. 주소에 행사를 적어 들어온 경우도 고른 것으로 본다.
+   잠시 뒤 서버 자료를 받아 화면을 다시 그릴 때 이 선택을 덮지 않기 위해 남긴다. */
+let chosen = location.hash.slice(1) || null;
+const pick = (id) => { chosen = id; select(id); };
+
 $('rows').addEventListener('click', (ev) => {
   const tr = ev.target.closest('tr[data-id]');
-  if (tr) select(tr.dataset.id);
+  if (tr) pick(tr.dataset.id);
 });
 $('rows').addEventListener('keydown', (ev) => {
   const tr = ev.target.closest('tr[data-id]');
   if (!tr) return;
-  if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); select(tr.dataset.id); }
+  if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(tr.dataset.id); }
   else if (ev.key === 'ArrowDown' && tr.nextElementSibling) { ev.preventDefault(); tr.nextElementSibling.focus(); }
   else if (ev.key === 'ArrowUp' && tr.previousElementSibling) { ev.preventDefault(); tr.previousElementSibling.focus(); }
 });
@@ -626,12 +660,14 @@ $('sheetYes').addEventListener('click', async () => {
   }
 });
 
-/* ── 시작 — 홈 화면 없이 최신 행사를 바로 펼친다 ──────────── */
+/* ── 시작 — 홈 화면 없이 가장 나중에 등록한 행사를 바로 펼친다 ──────────── */
 function start() {
   renderList();
-  const wanted = EVENTS.some((e) => e.id === location.hash.slice(1)) ? location.hash.slice(1) : null;
+  const wanted = chosen && EVENTS.some((e) => e.id === chosen) ? chosen
+    // 사람이 고른 것이 없으면 방금 등록한 행사. 걸러져서 안 보이면 맨 윗줄.
+    : state.visible.some((e) => e.id === state.newest) ? state.newest
+      : state.visible[0]?.id;
   if (wanted) select(wanted);
-  else if (state.visible.length) select(state.visible[0].id);
   else { state.id = null; $('preview').hidden = true; }
 }
 
@@ -689,6 +725,6 @@ loadLive();
 
 window.addEventListener('hashchange', () => {
   const id = location.hash.slice(1);
-  if (id && id !== state.id && EVENTS.some((e) => e.id === id)) select(id);
+  if (id && id !== state.id && EVENTS.some((e) => e.id === id)) pick(id);
 });
 })();
