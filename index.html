@@ -87,11 +87,13 @@
         <tbody id="rows"></tbody>
       </table>
       <p class="empty" id="empty" hidden>조건에 맞는 행사가 없습니다. 검색어나 필터를 바꿔 보세요.</p>
+      <p class="empty" id="loading" hidden>행사 자료를 불러오는 중입니다…</p>
     </div>
   </section>
 
   <!-- ───────────────── 미리보기 ───────────────── -->
-  <aside class="preview" id="preview" aria-label="행사 미리보기">
+  <!-- 자료를 받아 첫 행사를 고를 때까지는 접어 둔다 (app.js 의 첫 그리기) -->
+  <aside class="preview" id="preview" aria-label="행사 미리보기" hidden>
     <header class="preview__bar">
       <h2>미리보기</h2>
       <button id="pvClose" class="iconbtn" type="button" aria-label="미리보기 닫기">&times;</button>

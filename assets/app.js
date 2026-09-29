@@ -595,7 +595,7 @@ if (!LOCAL_FILE) {
         document.body.dataset.admin = '1';
         $('adminLink').hidden = false;
         $('newEvent').hidden = false;
-        renderList();          // 관리 열을 다시 그린다
+        if (painted) renderList();   // 관리 열을 다시 그린다 (아직 안 그렸으면 첫 그리기가 맡는다)
       }
     })
     .catch(() => {});
@@ -671,8 +671,21 @@ function start() {
   else { state.id = null; $('preview').hidden = true; }
 }
 
-applyData(DATA);
-start();
+/**
+ * 화면을 처음 그린다. 한 번만 그리는 것이 중요하다.
+ *
+ * 배포본에서는 서버 자료를 받은 뒤에 그린다. 배포에 들어 있는 기준 자료로 먼저
+ * 그리면 그 자료에 없는(방금 등록한) 행사가 빠져 있어, 잠깐 다른 행사가 펼쳐졌다가
+ * 바뀌어 보인다.
+ */
+let painted = false;
+
+function paint(data) {
+  applyData(data);
+  start();
+  painted = true;
+  $('loading').hidden = true;
+}
 
 /* ── 최신 목록 읽기 ────────────────────────────────────────── */
 /* 사진 주소는 시간이 지나면 만료되는 서명 주소다. 주기적으로 받아 두는 대신
@@ -704,6 +717,9 @@ function loadLive({ keepView = false } = {}) {
         state.tab = keep.tab;
         renderPreview();
       } else start();
+
+      painted = true;
+      $('loading').hidden = true;
       return true;
     })
     .catch(() => false)
@@ -721,7 +737,18 @@ window.addEventListener('error', (ev) => {
   if (ev.target instanceof HTMLImageElement) onMediaError();
 }, true);
 
-loadLive();
+/* 첫 그리기 */
+if (LOCAL_FILE) paint(DATA);
+else {
+  $('loading').hidden = false;
+  // 서버가 늦으면 마냥 기다리지 않는다. 기준 자료라도 먼저 보여 주고,
+  // 자료가 도착하면 그때 다시 그린다. 빈 화면을 보여 주는 것이 더 나쁘다.
+  const late = setTimeout(() => { if (!painted) paint(DATA); }, 2500);
+  loadLive().then((ok) => {
+    clearTimeout(late);
+    if (!ok && !painted) paint(DATA);   // 서버를 못 읽었을 때의 기준 자료
+  });
+}
 
 window.addEventListener('hashchange', () => {
   const id = location.hash.slice(1);
