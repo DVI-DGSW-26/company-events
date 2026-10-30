@@ -132,6 +132,20 @@ a{color:inherit}
 .adminlink:hover{background:var(--mark);color:var(--white)}
 .adminlink:not([hidden]) ~ .tally{margin-left:.875rem}
 
+/* 사용법 — 캡처로 만든 설명서(guide/)로 간다 */
+.helplink{
+  flex:none;display:inline-flex;align-items:center;gap:.375rem;
+  color:var(--alu-700);font-size:var(--t-sm);text-decoration:none;white-space:nowrap;
+}
+.helplink__q{
+  width:18px;height:18px;border-radius:50%;
+  display:inline-grid;place-items:center;
+  border:1px solid var(--alu-300);color:var(--alu-500);
+  font-size:.72rem;font-weight:700;line-height:1;
+}
+.helplink:hover{color:var(--mark-deep)}
+.helplink:hover .helplink__q{border-color:var(--mark);color:var(--mark)}
+
 /* 로그인 계정 — 배포본에서만 보인다 */
 .account{
   flex:none;display:flex;align-items:center;gap:.625rem;
