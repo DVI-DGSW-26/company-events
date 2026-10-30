@@ -610,6 +610,14 @@ const toast = (msg, ms = 6000) => {
   toast._t = setTimeout(() => { t.hidden = true; }, ms);
 };
 
+/* 처음 온 사람에게 한 번만 사용법 위치를 알려 준다 */
+try {
+  if (!localStorage.getItem('guideSeen')) {
+    localStorage.setItem('guideSeen', '1');
+    setTimeout(() => toast('처음이신가요? 오른쪽 위 [? 사용법] 에서 화면 사용법을 볼 수 있습니다.', 8000), 1200);
+  }
+} catch {}
+
 const sheet = $('sheet');
 let pending = null;
 const closeSheet = () => { sheet.hidden = true; pending = null; };
