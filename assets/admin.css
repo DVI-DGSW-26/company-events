@@ -92,6 +92,7 @@ a{color:inherit}
 
 /* 블록 */
 .block{margin-top:1.5rem;padding-top:1.125rem;border-top:var(--edge)}
+.block--drop{outline:2px dashed var(--mark);outline-offset:.375rem;border-radius:var(--r);background:var(--mark-wash)}
 .block__bar{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.375rem}
 .block__bar h2{margin:0;font-size:.9375rem;font-weight:600}
 .cnt{font-size:.75rem;color:var(--alu-500);font-weight:400}

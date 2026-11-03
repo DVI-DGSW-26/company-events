@@ -57,14 +57,14 @@
       <label class="f"><span>참석</span>
         <input id="fAttendees" maxlength="300" placeholder="예: 류영균 대표이사"></label>
 
-      <label class="f f--wide"><span>행사 개요</span>
-        <textarea id="fSummary" rows="3" maxlength="2000" placeholder="어떤 행사였는지 한두 문장"></textarea></label>
+      <label class="f f--wide"><span>행사 개요 <em>양식은 자유롭게 고쳐 쓸 수 있습니다</em></span>
+        <textarea id="fSummary" rows="7" maxlength="2000"></textarea></label>
       <label class="f f--wide"><span>참고 사항 <em>한 줄에 하나씩</em></span>
         <textarea id="fNotes" rows="3" placeholder="단체사진: 앞줄 좌측 세번째 ○○○ 상무"></textarea></label>
     </div>
 
     <!-- 사진 -->
-    <section class="block">
+    <section class="block" id="photoBlock">
       <div class="block__bar">
         <h2>사진 <span class="cnt" id="photoCount">0</span></h2>
         <div>
@@ -72,9 +72,9 @@
           <input id="pick" type="file" accept="image/*" multiple hidden>
         </div>
       </div>
-      <p class="hint">올린 사진은 긴 변 1920px 로 줄여 저장합니다. 촬영 원본은 공유드라이브에 그대로 두세요.</p>
+      <p class="hint">사진을 이 영역으로 끌어다 놓아도 추가됩니다. 올린 사진은 긴 변 1920px 로 줄여 저장합니다. 촬영 원본은 공유드라이브에 그대로 두세요.</p>
       <div class="photos" id="photos"></div>
-      <p class="empty" id="photoEmpty">아직 사진이 없습니다.</p>
+      <p class="empty" id="photoEmpty">아직 사진이 없습니다. 여기로 사진을 끌어다 놓으세요.</p>
     </section>
 
     <!-- 언론기사 -->

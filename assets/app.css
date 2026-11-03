@@ -431,6 +431,7 @@ a{color:inherit}
   margin:.75rem 0 0;
   font-size:var(--t-base);line-height:1.7;color:var(--alu-700);
   max-width:56ch;
+  white-space:pre-line;   /* 개요에 넣은 줄바꿈을 그대로 보여 준다 */
 }
 
 /* 사실 목록 */

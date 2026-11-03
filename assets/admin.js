@@ -220,6 +220,16 @@ function newEvent() {
 
 function show() { $('blank').hidden = true; $('edit').hidden = false; }
 
+/* 행사 개요의 기본 양식. 개요가 비어 있는 행사에만 채운다. */
+const SUMMARY_TEMPLATE = '1. 행사목적\n\n\n2. 주요내용\n';
+
+/** 양식을 하나도 채우지 않았으면 빈 개요로 본다 (사이트에 제목만 나가지 않게) */
+function summaryValue() {
+  const text = $('fSummary').value.trim();
+  const bare = (s) => s.replace(/\s/g, '');
+  return bare(text) === bare(SUMMARY_TEMPLATE) ? undefined : text || undefined;
+}
+
 function fill(ev) {
   $('fTitle').value = ev.title ?? '';
   $('fSubtitle').value = ev.subtitle ?? '';
@@ -230,7 +240,7 @@ function fill(ev) {
   $('fHost').value = ev.host ?? '';
   syncHostHint();
   $('fAttendees').value = ev.attendees ?? '';
-  $('fSummary').value = ev.summary ?? '';
+  $('fSummary').value = ev.summary || SUMMARY_TEMPLATE;
   $('fNotes').value = (ev.notes ?? []).join('\n');
 
   $('articles').replaceChildren();
@@ -258,6 +268,7 @@ function renderPhotos() {
     const wrap = el('div', 'shot__img');
     const img = el('img');
     img.src = p.url; img.alt = ''; img.loading = 'lazy';
+    img.draggable = false;   // 올려 둔 사진을 끌어도 새 사진으로 다시 추가되지 않게
     wrap.append(img);
     if (p.file) wrap.append(el('span', 'shot__badge', '새로 올림'));
 
@@ -312,32 +323,87 @@ function makeName(index, original) {
   return `${String(index).padStart(3, '0')}_${base}.jpg`;
 }
 
-$('pick').addEventListener('change', async (ev) => {
-  const files = [...ev.target.files].filter((f) => /^image\//.test(f.type));
-  ev.target.value = '';
-  if (!files.length) return;
+/** 고르거나 끌어다 놓은 파일 중 사진만 줄여서 목록에 더한다 */
+async function addPhotos(picked) {
+  const files = picked.filter((f) => /^image\//.test(f.type));
+  if (!files.length) {
+    if (picked.length) say('사진 파일만 올릴 수 있습니다.', 'bad');
+    return;
+  }
 
   say(`사진 ${files.length}장 준비 중…`);
-  let n = state.photos.length;
-  const used = new Set(state.photos.map((p) => p.name));
+  const owner = state.id;
+  const fresh = [];
+  const failed = [];
 
   for (const file of files) {
     try {
       const img = await loadImage(file);
       const web = resize(img, WEB_MAX, WEB_Q);
       const thumb = resize(img, THUMB_MAX, THUMB_Q);
-      let name = makeName(++n, file.name);
-      while (used.has(name)) name = makeName(++n, file.name);
-      used.add(name);
-      state.photos.push({
-        name, caption: '', orig: file.name, w: web.w, h: web.h, taken: null,
-        url: web.dataUrl, file: { image: web.dataUrl, thumb: thumb.dataUrl },
-      });
-    } catch (e) { say(e.message, 'bad'); }
+      fresh.push({ file, web, thumb });
+    } catch { failed.push(file.name); }
+  }
+  // 줄이는 사이 다른 행사를 열었으면 그 행사에 섞이지 않게 버린다
+  if (state.id !== owner) return;
+
+  // 이름은 여기서 한 번에 정한다. 줄이는 동안 또 끌어다 놓아도 겹치지 않는다.
+  let n = state.photos.length;
+  const used = new Set(state.photos.map((p) => p.name));
+  for (const { file, web, thumb } of fresh) {
+    let name = makeName(++n, file.name);
+    while (used.has(name)) name = makeName(++n, file.name);
+    used.add(name);
+    state.photos.push({
+      name, caption: '', orig: file.name, w: web.w, h: web.h, taken: null,
+      url: web.dataUrl, file: { image: web.dataUrl, thumb: thumb.dataUrl },
+    });
   }
   renderPhotos(); counts();
-  say(`사진 ${files.length}장 추가했습니다. 저장을 눌러야 반영됩니다.`);
+
+  const skipped = picked.length - files.length;
+  const notes = [];
+  if (failed.length) notes.push(`읽지 못한 사진: ${failed.join(', ')}`);
+  if (skipped) notes.push(`사진이 아니라 뺀 파일 ${skipped}개`);
+  const msg = fresh.length ? `사진 ${fresh.length}장 추가했습니다. 저장을 눌러야 반영됩니다.` : '사진을 추가하지 못했습니다.';
+  say(notes.length ? `${msg}\n${notes.join(' · ')}` : msg, failed.length ? 'bad' : '');
+}
+
+$('pick').addEventListener('change', (ev) => {
+  const files = [...ev.target.files];
+  ev.target.value = '';
+  addPhotos(files);
 });
+
+/* 끌어다 놓기: 사진 영역 어디에 놓아도 추가한다 */
+const dragsFiles = (e) => [...(e.dataTransfer?.types ?? [])].includes('Files');
+const photoBlock = $('photoBlock');
+
+photoBlock.addEventListener('dragover', (e) => {
+  if (!dragsFiles(e)) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  photoBlock.classList.add('block--drop');
+});
+photoBlock.addEventListener('dragleave', (e) => {
+  // 안쪽 요소로 옮겨 갈 때도 불리므로, 영역을 정말 벗어날 때만 표시를 끈다
+  if (!photoBlock.contains(e.relatedTarget)) photoBlock.classList.remove('block--drop');
+});
+photoBlock.addEventListener('drop', (e) => {
+  if (!dragsFiles(e)) return;
+  e.preventDefault();
+  photoBlock.classList.remove('block--drop');
+  addPhotos([...e.dataTransfer.files]);
+});
+
+// 영역 밖에 잘못 놓아도 브라우저가 사진을 열면서 입력 중인 내용이 사라지지 않게 막는다
+for (const type of ['dragover', 'drop']) {
+  window.addEventListener(type, (e) => {
+    if (!dragsFiles(e) || photoBlock.contains(e.target)) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'none';
+  });
+}
 
 /* ── 기사 · 영상 줄 ───────────────────────────────────────── */
 function addArticleRow(a = {}) {
@@ -396,7 +462,7 @@ function collect() {
     place: $('fPlace').value.trim() || undefined,
     host: $('fHost').value.trim() || undefined,
     attendees: $('fAttendees').value.trim() || undefined,
-    summary: $('fSummary').value.trim() || undefined,
+    summary: summaryValue(),
     notes: lines($('fNotes').value),
     articles, videos,
   };
