@@ -17,8 +17,8 @@ const el = (tag, cls, text) => {
   return n;
 };
 
-const ICON_DL = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m0 0 3.2-3.2M8 10 4.8 6.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 11.5v1.2a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-1.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
-const ICON_OUT = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9.2 3h3.8v3.8M12.6 3.4 7.4 8.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4 9.6v3a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const ICON_DL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>';
+const ICON_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
 
 const fmtDate = (iso) => iso.replace(/-/g, '.');
 const fmtSize = (n) => (!n ? '' : n < 1024 * 1024 ? `${Math.round(n / 1024)}KB` : `${(n / 1048576).toFixed(n < 10485760 ? 1 : 0)}MB`);
