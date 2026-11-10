@@ -41,7 +41,7 @@
 
   /* 치수 */
   --topbar:6rem;
-  --pv-w:clamp(380px,34vw,520px);
+  --pv-w:clamp(360px,30vw,480px);
 }
 
 @media (min-width:1024px){ html{font-size:106.25%} }
@@ -79,27 +79,14 @@ a{color:inherit}
 }
 
 /* ─────────────────────────── 헤더 ─────────────────────────
-   사이드바가 없는 서비스: 로고 + 24px + 화면 제목. 바탕은 surface 하나. */
+   왼쪽 메뉴(nav.css)와 같은 surface 바탕. 왼쪽에 화면 제목. */
 .top{
-  height:var(--topbar);
+  height:var(--topbar); flex:none;
   display:flex;align-items:center;gap:1rem;
   padding:0 1.5rem;
   background:var(--color-surface);
 }
 
-.brand{display:flex;align-items:center;gap:1.5rem;flex:none;min-width:0}
-.brand__mark{
-  flex:none;width:6px;height:2.5rem;border-radius:2px;
-  background:linear-gradient(var(--color-brand) 0 55%,var(--color-fg-faint) 55% 100%);
-}
-.brand__name{
-  margin:0;font-size:1.875rem;font-weight:700;line-height:1.2;color:var(--color-fg);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.brand__org{
-  font-size:.875rem;font-weight:500;color:var(--color-fg-muted);white-space:nowrap;
-}
-.brand__org:empty{display:none}
 
 .search{position:relative;flex:1 1 auto;max-width:460px;margin-left:.5rem}
 .search__icon{
@@ -175,9 +162,11 @@ a{color:inherit}
 .account__out:hover{background:var(--color-surface-2);color:var(--color-fg)}
 
 /* ─────────────────────────── 레이아웃 ────────────────────── */
+.app{height:100vh}
+.app__col{overflow:hidden}
 .shell{
   display:flex;
-  height:calc(100vh - var(--topbar));
+  flex:1 1 auto;min-height:0;
 }
 
 /* ─────────────────────────── 목록 ────────────────────────── */
@@ -607,26 +596,26 @@ a{color:inherit}
 }
 
 /* ─────────────────────────── 좁은 화면 ───────────────────── */
-@media (max-width:1400px){
-  .c-host{display:none}
+@media (max-width:1600px){
+  /* 머리칸과 본문 칸을 함께 숨긴다 (6번째 열 = 주관) */
+  .grid tr>:nth-child(6){display:none}
 }
 @media (max-width:1000px){
   :root{--pv-w:min(420px,46vw)}
-  .c-type{display:none}
+  .grid tr>:nth-child(3){display:none}   /* 행사구분 */
 }
 @media (max-width:820px){
   body{overflow:auto}
   .top{flex-wrap:wrap;height:auto;min-height:3.5rem;padding:.75rem 1rem;gap:.5rem}
-  .brand__name{font-size:1.25rem;font-weight:600}
-  .brand__mark{height:1.5rem}
-  .brand{gap:.75rem}
+  .app{height:auto}
+  .app__col{overflow:visible}
   .search{order:3;flex-basis:100%;max-width:none;margin-left:0}
   .tally{order:2}
   .shell{flex-direction:column;height:auto}
   .list{padding:1rem}
   .tablewrap{max-height:none}
   .grid,body[data-admin="1"] .grid{min-width:0}
-  .c-mat{display:none}
+  .grid tr>:nth-child(7){display:none}   /* 보유 자료 */
   .preview{
     position:fixed;inset:0;z-index:40;width:100%;
     border-left:0;

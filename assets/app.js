@@ -593,7 +593,8 @@ if (!LOCAL_FILE) {
       if (me.admin) {
         isAdmin = true;
         document.body.dataset.admin = '1';
-        $('adminLink').hidden = false;
+        $('navNew').hidden = false;
+        $('navManage').hidden = false;
         $('newEvent').hidden = false;
         if (painted) renderList();   // 관리 열을 다시 그린다 (아직 안 그렸으면 첫 그리기가 맡는다)
       }

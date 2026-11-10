@@ -40,9 +40,10 @@ async function boot() {
     $('who').textContent = s.user?.name ? `${s.user.name} 님` : '';
     renderPicks();
 
-    // 목록 화면의 '수정' 은 /admin.html#행사ID 로 들어온다
+    // 목록 화면의 '수정' 은 /admin.html#행사ID, 메뉴의 '행사 등록' 은 /admin.html#new 로 들어온다
     const wanted = location.hash.slice(1);
-    if (wanted && state.doc.events.some((e) => e.id === wanted)) await open(wanted);
+    if (wanted === 'new') newEvent();
+    else if (wanted && state.doc.events.some((e) => e.id === wanted)) await open(wanted);
   } catch (e) {
     showBootError(e);
   }
@@ -179,6 +180,7 @@ function typeValue() {
 async function open(id) {
   const ev = state.doc.events.find((e) => e.id === id);
   if (!ev) return;
+  setNav('manage');
   say('');
   state.id = id;
   state.removed = [];
@@ -201,8 +203,17 @@ async function open(id) {
   renderPicks();
 }
 
+/** 왼쪽 메뉴에서 지금 화면(등록 / 관리)을 표시하고 헤더 제목을 맞춘다 */
+function setNav(kind) {
+  const isNew = kind === 'new';
+  $('navNew').setAttribute('aria-current', isNew ? 'page' : 'false');
+  $('navManage').setAttribute('aria-current', isNew ? 'false' : 'page');
+  $('pageTitle').textContent = isNew ? '행사 등록' : '행사 관리';
+}
+
 function newEvent() {
   say('');
+  setNav('new');
   const used = new Set(state.doc.events.map((e) => e.id));
   let n = 1;
   while (used.has(`e${String(n).padStart(2, '0')}`)) n++;
@@ -215,6 +226,7 @@ function newEvent() {
   fill({ category: '사외', date: new Date().toISOString().slice(0, 10) });
   show();
   renderPicks();
+  state.blankForm = formSnapshot();   // 손대기 전 모습. 이것과 같으면 나갈 때 묻지 않는다
   $('fTitle').focus();
 }
 
@@ -606,9 +618,24 @@ $('del').addEventListener('click', () => {
 });
 
 $('newEvent').addEventListener('click', newEvent);
+// 이 화면에서 메뉴의 '행사 등록' 을 누르면 새로 고치지 않고 바로 빈 양식을 연다
+$('navNew').addEventListener('click', (ev) => {
+  if ($('newEvent').disabled) return;
+  ev.preventDefault();
+  history.replaceState(null, '', '#new');
+  newEvent();
+});
 
+/** 편집 칸에 적힌 값 전체 (기사·영상 줄을 더하면 칸 수도 달라진다) */
+function formSnapshot() {
+  return JSON.stringify([...$('edit').querySelectorAll('input:not([type=file]), select, textarea')].map((x) => x.value));
+}
+
+// 새 사진을 넣었거나, 새 행사 양식에 실제로 무언가 적었을 때만 나가기 전에 묻는다.
+// (빈 양식을 열어 보기만 하고 다른 메뉴로 갈 때는 묻지 않는다)
 window.addEventListener('beforeunload', (e) => {
-  if (state.photos.some((p) => p.file) || state.dirtyNew) { e.preventDefault(); e.returnValue = ''; }
+  const typed = state.dirtyNew && formSnapshot() !== state.blankForm;
+  if (state.photos.some((p) => p.file) || typed) { e.preventDefault(); e.returnValue = ''; }
 });
 
 boot();
