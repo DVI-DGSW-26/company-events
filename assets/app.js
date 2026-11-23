@@ -581,8 +581,10 @@ document.addEventListener('keydown', (ev) => {
 });
 
 /* ── 로그인 계정 표시 (배포본 전용) ───────────────────────── */
-/* 사내망 서버나 파일로 열 때는 인증이 없으므로 조용히 넘어간다 */
-if (!LOCAL_FILE) {
+/* 사내망 서버나 파일로 열 때는 인증이 없으므로 조용히 넘어간다.
+   /api/archive 가 토큰을 갱신한 뒤에 부른다. 갱신 결과로 로그인 상태를 판단하기 때문이다. */
+function showAccount() {
+  if (LOCAL_FILE) return;
   fetch('/api/auth/me', { headers: { accept: 'application/json' } })
     .then((r) => (r.ok ? r.json() : null))
     .then((me) => {
@@ -699,7 +701,19 @@ function paint(data) {
 /* ── 최신 목록 읽기 ────────────────────────────────────────── */
 /* 사진 주소는 시간이 지나면 만료되는 서명 주소다. 주기적으로 받아 두는 대신
    실제로 만료돼 사진이 안 뜰 때 한 번 다시 받는다. 화면이 헛돌지 않게. */
+
+/* 로그인이 끊기면 버튼 없이 바로 통합 로그인으로 보낸다. SSO 가 살아 있으면 화면 없이
+   돌아온다. 다녀온 지 1분 안에 또 끊기면 되풀이하지 않고 멈춰서 안내한다. */
+const RELOGIN_KEY = 'ev_relogin_at';
 const relogin = () => {
+  let last = 0;
+  try { last = Number(sessionStorage.getItem(RELOGIN_KEY)) || 0; } catch {}
+  if (Date.now() - last < 60_000) {
+    $('loading').hidden = true;
+    toast('로그인을 이어가지 못했습니다.\n잠시 후 새로고침하거나, 로그아웃한 뒤 다시 로그인해 주세요.', 600_000);
+    return;
+  }
+  try { sessionStorage.setItem(RELOGIN_KEY, String(Date.now())); } catch {}
   location.href = `/api/auth/login?next=${encodeURIComponent(location.pathname + location.search + location.hash)}`;
 };
 
@@ -756,6 +770,7 @@ else {
   loadLive().then((ok) => {
     clearTimeout(late);
     if (!ok && !painted) paint(DATA);   // 서버를 못 읽었을 때의 기준 자료
+    showAccount();
   });
 }
 

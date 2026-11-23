@@ -24,9 +24,13 @@ const state = {
 const say = (msg, tone) => { const s = $('status'); s.textContent = msg; s.dataset.tone = tone ?? ''; };
 
 /* ── 불러오기 ─────────────────────────────────────────────── */
-async function loadState(id) {
+async function loadState(id, retried = false) {
   const res = await fetch(`/api/admin/state${id ? `?id=${encodeURIComponent(id)}` : ''}`, { headers: { accept: 'application/json' } });
-  if (res.status === 401) { relogin(); throw new Error('로그인이 만료되었습니다. 다시 로그인해 주세요.'); }
+  if (res.status === 401) {
+    if (!retried && await renew()) return loadState(id, true);
+    relogin();
+    throw new Error('로그인이 만료되었습니다. 다시 로그인해 주세요.');
+  }
   if (res.status === 403) throw new Error('행사를 고칠 권한이 없습니다.');
   if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || '자료를 읽지 못했습니다.');
   return res.json();
@@ -491,14 +495,25 @@ function validate(ev) {
   return bad;
 }
 
-/** 로그인이 만료됐을 때 다시 로그인으로 보낸다 */
+/** 로그인이 만료됐을 때 버튼 없이 다시 로그인으로 보낸다.
+    다녀온 지 1분 안에 또 만료되면 되풀이하지 않는다 (목록 화면과 같은 기록을 쓴다) */
+const RELOGIN_KEY = 'ev_relogin_at';
 const relogin = () => {
+  let last = 0;
+  try { last = Number(sessionStorage.getItem(RELOGIN_KEY)) || 0; } catch {}
+  if (Date.now() - last < 60_000) return;   // 부른 곳이 오류 안내를 띄운다
+  try { sessionStorage.setItem(RELOGIN_KEY, String(Date.now())); } catch {}
   location.href = `/api/auth/login?next=${encodeURIComponent(location.pathname + location.hash)}`;
 };
 
 /* 토큰 갱신은 /api/archive 한 곳에서만 한다. 401 이 오면 그 경로를 한 번 부르고
    같은 요청을 다시 보낸다. 여러 곳에서 동시에 갱신하면 Keycloak 이 재사용으로
    보고 세션을 끊기 때문이다. */
+let renewing = null;
+const renew = () => (renewing ??= fetch('/api/archive', { headers: { accept: 'application/json' } })
+  .then((r) => r.ok).catch(() => false)
+  .finally(() => { renewing = null; }));
+
 async function post(path, body, retried = false) {
   const res = await fetch(path, {
     method: 'POST',
@@ -508,9 +523,7 @@ async function post(path, body, retried = false) {
   const out = await res.json().catch(() => ({}));
 
   if (res.status === 401 && !retried) {
-    const renewed = await fetch('/api/archive', { headers: { accept: 'application/json' } })
-      .then((r) => r.ok).catch(() => false);
-    if (renewed) return post(path, body, true);
+    if (await renew()) return post(path, body, true);
     relogin();
   }
   if (!res.ok) { const e = new Error(out.error || `저장하지 못했습니다 (${res.status})`); e.status = res.status; throw e; }

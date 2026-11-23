@@ -10,10 +10,10 @@
  * 이메일 도메인은 보지 않는다. 생산 인력 등 상당수가 개인 메일 계정으로
  * SSO 에 로그인하기 때문에, 도메인으로 거르면 정작 행사 참여자가 막힌다.
  */
-import { SESSION_COOKIE, SESSION_HOURS, buildCookie, readCookie, signSession, verifySession }
+import { SESSION_COOKIE, buildCookie, readCookie, signSession, verifySession }
   from '../../lib/session.js';
 import { AUTH_COOKIE, configError, decodeJwt, discover, htmlError, safePath } from '../../lib/oidc.js';
-import { tokenCookies } from '../../lib/keycloak.js';
+import { refreshLifetime, tokenCookies } from '../../lib/keycloak.js';
 
 export const config = { runtime: 'edge' };
 
@@ -44,6 +44,17 @@ export default async function handler(req) {
   if (!secret || !issuer || !clientId) return configError('서버 환경변수가 설정되지 않았습니다.');
 
   if (url.searchParams.get('error')) {
+    // 로그인 탭을 여러 개 열어 두면 Keycloak 이 앞서 연 탭을 authentication_expired 로 돌려보낸다.
+    // 다시 시작하면 바로 들어가지므로 한 번은 로그인을 다시 시작한다. 두 번째에도 같으면 안내한다.
+    if (url.searchParams.get('error_description') === 'authentication_expired') {
+      const before = await verifySession(readCookie(req, AUTH_COOKIE), secret);
+      if (!before?.retried) {
+        const again = new URL('/api/auth/login', url.origin);
+        again.searchParams.set('next', safePath(before?.next));
+        again.searchParams.set('retried', '1');
+        return Response.redirect(again.toString(), 302);
+      }
+    }
     const desc = url.searchParams.get('error_description') || url.searchParams.get('error');
     return htmlError('로그인하지 못했습니다', `통합 로그인에서 거절되었습니다. (${desc})`);
   }
@@ -124,20 +135,22 @@ export default async function handler(req) {
     }
   }
 
-  /* 사용자 식별은 sub 으로 한다. 이메일은 바뀔 수 있지만 sub 은 바뀌지 않는다. */
+  /* 사용자 식별은 sub 으로 한다. 이메일은 바뀔 수 있지만 sub 은 바뀌지 않는다.
+     세션은 refresh token 과 같은 시각에 끝난다. 이후로는 /api/archive 가 갱신할 때마다 늘어난다. */
+  const lifetime = refreshLifetime(token);
   const session = {
     sub: claims.sub,
     email: String(claims.email || '').toLowerCase(),
     name: claims.name || claims.preferred_username || '사내 계정',
     admin: roles.client.includes('admin'),
-    exp: Math.floor(Date.now() / 1000) + SESSION_HOURS * 3600,
+    exp: Math.floor(Date.now() / 1000) + lifetime,
   };
 
   const headers = new Headers({
     Location: new URL(safePath(pending.next), url.origin).toString(),
     'cache-control': 'no-store',
   });
-  headers.append('Set-Cookie', buildCookie(SESSION_COOKIE, await signSession(session, secret), SESSION_HOURS * 3600));
+  headers.append('Set-Cookie', buildCookie(SESSION_COOKIE, await signSession(session, secret), lifetime));
   headers.append('Set-Cookie', buildCookie(AUTH_COOKIE, '', 0));
 
   // 백엔드 API 가 Keycloak access token 을 요구한다. 화면 스크립트가 읽지 못하게

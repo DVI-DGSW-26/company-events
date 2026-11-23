@@ -29,6 +29,8 @@ export default async function handler(req) {
 
   const url = new URL(req.url);
   const next = safePath(url.searchParams.get('next'));
+  // callback 이 authentication_expired 로 한 번 다시 시작한 로그인이다. 또 실패하면 다시 시작하지 않는다.
+  const retried = url.searchParams.get('retried') === '1';
 
   const state = randomString(24);
   const nonce = randomString(24);
@@ -36,7 +38,7 @@ export default async function handler(req) {
 
   // 로그인 진행 상태는 10분만 유효하다
   const pending = await signSession(
-    { state, nonce, verifier, next, exp: Math.floor(Date.now() / 1000) + 600 },
+    { state, nonce, verifier, next, retried, exp: Math.floor(Date.now() / 1000) + 600 },
     secret,
   );
 
